@@ -1,0 +1,9 @@
+*.DStore
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.vrb
+*.nav
