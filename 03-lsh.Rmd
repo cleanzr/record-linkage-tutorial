@@ -1,0 +1,22 @@
+---
+title: "Introduction to locality sensitive hashing"
+author: Andee Kaplan
+institute: |
+    | Duke University
+    | Department of Statistical Science
+    | andrea.kaplan@duke.edu
+shortinstitute: andrea.kaplan@duke.edu
+date: |
+  | February 9, 2018
+  |
+  | Slides available at <http://bit.ly/cimat-lsh>
+  |
+output: 
+  beamer_presentation:
+    keep_tex: false
+    template: beamer.tex
+fig_caption: true
+classoption: compress
+natbib: true
+---
+
