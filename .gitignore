@@ -7,3 +7,6 @@
 *.synctex.gz
 *.vrb
 *.nav
+.Rproj.user
+
+record-linkage-tutorial.Rproj
