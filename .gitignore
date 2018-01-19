@@ -8,5 +8,6 @@
 *.vrb
 *.nav
 .Rproj.user
+.Rhistory
 
 record-linkage-tutorial.Rproj

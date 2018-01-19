@@ -20,3 +20,42 @@ classoption: compress
 natbib: true
 ---
 
+# Goal and outline
+
+# Finding similar items
+
+# Jaccard similarity
+
+# Shingling
+
+# Your turn (shingling and Jaccard similarity by hand)
+
+# Useful packages/functions in `R`
+
+# Example data
+
+# Your turn (shinging and Jaccard similarity with R)
+
+# Hashing
+
+Why do it?
+
+# Similarity preserving summaries of sets
+
+# Characteristic matrix
+
+# Minhashing
+
+# LSH (avoid pairwise comparisons)
+
+# Banding and buckets
+
+# Your turn (banding in R)
+
+# Putting it all together
+
+# "Easy" LSH in R
+
+# Evaluation
+
+
