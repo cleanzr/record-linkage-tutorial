@@ -7,7 +7,7 @@ institute: |
     | andrea.kaplan@duke.edu
 shortinstitute: andrea.kaplan@duke.edu
 date: |
-  | February 9, 2018
+  | February 8, 2018
   |
   | Slides available at <http://bit.ly/cimat-lsh>
   |
@@ -28,13 +28,17 @@ natbib: true
 
 # Shingling
 
-# Your turn (shingling and Jaccard similarity by hand)
+# Your turn
+
+shingling and Jaccard similarity by hand
 
 # Useful packages/functions in `R`
 
 # Example data
 
-# Your turn (shinging and Jaccard similarity with R)
+# Your turn 
+
+shinging and Jaccard similarity with R
 
 # Hashing
 
@@ -50,12 +54,18 @@ Why do it?
 
 # Banding and buckets
 
-# Your turn (banding in R)
+# Your turn 
+
+banding in R
 
 # Putting it all together
 
 # "Easy" LSH in R
 
 # Evaluation
+
+# Your turn
+
+perform LSH and evaluate how we did
 
 
