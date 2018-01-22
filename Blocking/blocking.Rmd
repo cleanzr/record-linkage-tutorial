@@ -1,0 +1,130 @@
+---
+title: "Introduction to blocking techniques"
+author: Brenda Betancourt
+institute: |
+    | Duke University
+    | Department of Statistical Science
+    | bb222@stat.duke.edu
+shortinstitute: bb222@stat.duke.edu
+date: |
+  | February 8, 2018
+  |
+  |
+output: 
+  beamer_presentation:
+    keep_tex: false
+    template: beamer.tex
+fig_caption: true
+classoption: compress
+natbib: true
+---
+
+# Motivation
+
+- Naively matching two files or finding duplicates within a file requires comparing all pairs of records.
+
+\vspace{3mm}
+
+- Infeasible for large files even when the comparisons are computationally inexpensive.
+
+\vspace{3mm}
+
+- The number of record pairs grows quadratically with the size of
+the dataset
+    * Just 5,000 records $\rightarrow$ 12,497,500 comparisons!
+
+# What is blocking?
+
+Technique to reduce the comparison space: 
+
+- Filter out dissimilar record pairs that are extremely unlikely to be matches.
+    * Perform record linkage only within blocks 
+
+
+\vspace{3mm}
+
+- Traditional blocking : compare record pairs that match on one or more keys.
+
+\vspace{3mm}
+
+- Cover true matches by using reliable features in the data.
+
+# Example: Traditional blocking
+
+All-to-all record comparisons (left) versus partitioning records into
+blocks by lastname initial and comparing records only within each partition (right).
+
+![alt text](figures/noblocking_plot.pdf){ width=50% }
+![alt text](figures/blocking_plot.pdf){ width=50% }
+
+# Example: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(RecordLinkage)
+data(RLdata500)
+head(RLdata500)
+```
+
+# Continuation: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+
+# Record pairs for comparison
+choose(500,2)
+
+# Blocking by last name initial  
+last_init <- substr(RLdata500[,"lname_c1"], 1, 1)
+head(last_init)
+# Number of blocks
+length(unique(last_init))
+
+```
+# Continuation: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+
+# Number of records per block
+tbl <- table(last_init)
+head(tbl)
+
+# Block sizes can vary a lot
+summary(as.numeric(tbl))
+
+```
+
+# Continuation: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+
+# Number of records pairs per block
+sapply(tbl, choose, k=2)
+
+# Reduction on comparison space
+sum(sapply(tbl, choose, k=2))
+
+```
+# How to choose the blocking key or keys
+
+- Relatively noise free fields in the data.
+
+\vspace{3mm}
+
+- More complex blocking schemes can be constructed using disjunctions of conjunctions.
+    * Retain only pairs which agree on either lastname initial or/and gender
+
+# Example: Voter Survey data
+
+Add data description and ask 
+Which fields are reliable for blocking in this example?
+
+
+# Blocking caveats
+
+- Missing true matches 
+- Tradeoff between block sizes for computational efficiency (running
+processes in parallel) and increased false negative rates
+
+
+# Fuzzy Blocking
+
+- Talk about bigram indexing and maybe canopy clustering 
