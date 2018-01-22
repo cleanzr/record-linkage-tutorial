@@ -193,7 +193,7 @@ time <- difftime(Sys.time(), time, units = "secs")
 ```
 
 \normalsize
-This took took $`r round(time, 2)`$ seconds $\approx `r round(time/(60), 2)`$ minutes!
+This took took $`r round(time, 2)`$ seconds $\approx `r round(time/(60), 2)`$ minutes
 
 # Your turn solution (cont'd)
 
@@ -226,14 +226,40 @@ For a dataset of size $n$, the number of comparisons we must compute is $\frac{n
 
 # Hashing shingles
 
-- Instead of storing the strings (shingles), we can just store the *hashed values* 
-- These are integers, they will take less space which will be useful if we have large documents
-- Instead of performing the pairwise Jaccard similarities on the strings, we can perform them on the hashes
+Instead of storing the strings (shingles), we can just store the *hashed values*  
 
-```{r, echo=TRUE}
+These are integers, they will take less space
+
+\footnotesize
+
+```{r hash-tokens, echo=TRUE}
 # instead store hash values (less memory)
-hashed_shingles <- lapply(shingles, hash_string)
+hashed_shingles <- apply(dat, 1, function(x) {
+  string <- paste(x, collapse=" ")
+  shingles <- tokenize_character_shingles(string, n = 3)[[1]]
+  hash_string(shingles)
+})
 ```
+
+```{r hash-tokens-jaccard, cache=TRUE}
+# Jaccard similarity on hashed shingles
+hashed_jaccard <- expand.grid(record1 = seq_len(nrow(dat)),
+                       record2 = seq_len(nrow(dat)))
+
+# don't need to compare the same things twice
+hashed_jaccard <- hashed_jaccard[hashed_jaccard$record1 < hashed_jaccard$record2,]
+
+time <- Sys.time()
+hashed_jaccard$similarity <- apply(hashed_jaccard, 1, function(pair) {
+  jaccard_similarity(hashed_shingles[[pair[1]]], hashed_shingles[[pair[2]]])
+})
+time <- difftime(Sys.time(), time, units = "secs")
+```
+
+\normalsize
+This took up $`r object.size(hashed_shingles)`$ bytes, while storing the shingles took $`r object.size(shingles)`$ bytes. However, the whole pairwise comparison still took the same amount of time ($\approx `r round(time/(60), 2)`$ minutes).
+
+# Similarity preserving summaries of sets
 
 # Characteristic matrix
 
