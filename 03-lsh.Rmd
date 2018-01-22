@@ -22,7 +22,7 @@ natbib: true
 
 ```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
-library(tidyr)
+library(ggplot2)
 library(RecordLinkage)
 
 opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
@@ -105,7 +105,7 @@ Suppose our document is the string "Hello world" and $k  = 2$, then
 
 We have the following two records:
 
-```{r}
+```{r your-turn1}
 data("RLdata500")
 records <- RLdata500[129:130, c(1,3)]
 names(records) <- c("First name", "Last name")
@@ -126,15 +126,87 @@ kable(records)
 
 # Useful packages/functions in `R`
 
+(Obviously) We don't want to do this by hand most times. Here are some useful packages in `R` that can help us!
+
+```{r helpful-packages, echo = TRUE}
+# detecting text reuse and document similarity + shingles
+library(textreuse) 
+library(tokenizers)
+```
+
+We can use the following functions to create $k$-shingles and calculate Jaccard similarity for our data
+
+```{r helpful-functions, eval=FALSE, echo=TRUE}
+# get k-shingles
+tokenize_character_shingles(x, n)
+
+# calculate jaccard similarity for two sets
+jaccard_similarity(a, b) 
+```
+
 # Example data
+
+Research paper headers and citations, with information on authors, title, institutions, venue, date, page numbers and several other fields.
+
+\tiny
+```{r load-ex-data, echo=TRUE}
+library(RLdata)
+data(cora)
+str(cora)
+```
 
 # Your turn 
 
-shinging and Jaccard similarity with R
+Using the `title`, `authors`, and `journal` fields in the `cora` dataset,
+
+\vfill
+1. Get the $3$-shingles for each record (**hint:** use `tokenize_character_shingles`).
+\vfill
+2. Obtain the Jaccard similarity between each pair of records (**hint:** use `jaccard_similarity`).
+\vfill
+
+# Your turn solution
+
+```{r your-turn2-sol, echo=TRUE, cache=TRUE}
+# get only the columns we want
+dat <- cora[, c("title", "authors", "journal")]
+
+# 1. paste the columns together and tokenize for each record
+shingles <- apply(dat, 1, function(x) {
+  tokenize_character_shingles(paste(x, collapse=" "), n = 3)
+})
+
+# 2. Jaccard similarity between pairs
+jaccard <- expand.grid(record1 = seq_len(nrow(dat)),
+                       record2 = seq_len(nrow(dat)))
+
+# don't need to compare the same things twice
+jaccard <- jaccard[jaccard$record1 < jaccard$record2,]
+
+time <- Sys.time()
+jaccard$similarity <- apply(jaccard, 1, function(pair) {
+  jaccard_similarity(shingles[[pair[1]]], shingles[[pair[2]]])
+})
+time <- difftime(Sys.time(), time, units = "secs")
+```
+This took took $r round(time, 2)$ seconds $\approx r round(time/(60), 2)$ minutes!
+
+# Your turn solution (cont'd)
+
+```{r your-turn2-plot}
+ggplot(jaccard) +
+  geom_raster(aes(x = record1, y = record2, fill=similarity)) +
+  theme(aspect.ratio = 1)
+```
 
 # Hashing
 
-Why do it?
+For a dataset of size $n$, the number of comparisons we must compute is $\frac{n(n-1)}{2}$. 
+
+- For our set of records, we needed to compute $`r nrow(dat)*(nrow(dat) - 1)/2`$ comparisons
+\vfill
+- A better approach for datasets of any realistic size is to use *hashing*
+\vfill
 
 # Similarity preserving summaries of sets
 
@@ -151,6 +223,8 @@ Why do it?
 banding in R
 
 # Putting it all together
+
+Choosing shingle size - somewhere?
 
 # "Easy" LSH in R
 
