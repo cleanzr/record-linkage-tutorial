@@ -20,17 +20,109 @@ classoption: compress
 natbib: true
 ---
 
+```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyr)
+library(RecordLinkage)
+
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
+```
+
 # Goal and outline
+
+**Goal: ** Introduce locality sensitive hashing, a fast method of blocking for record linkage, and get some experience doing LSH in `R`.
+
+\vfill
+1. Defining similarity
+\vfill
+1. Representing data as sets (shingling)
+\vfill
+1. Hashing
+\vfill
+1. Hashing with compression (minhashing)
+\vfill
+1. Too many pairs to compare! (LSH)
+\vfill
+1. Evaluation
+\vfill
 
 # Finding similar items
 
+- We want to find similar items
+\vfill
+    - Maybe we are looking for near duplicate documents (plagiarism)
+    \vfill
+    - More likely, we are trying to block our data which we can later pass to a record linkage process
+    \vfill
+- How do we define *similar*?
+\vfill
+
 # Jaccard similarity
 
-# Shingling
+There are many ways to define similarity, we will use *Jaccard similarity* for this task.
+$$
+Jac(S, T) = \frac{\mid S \cap T\mid}{\mid S \cup T \mid}
+$$
+
+ 
+\begin{figure}[h]
+\centering
+\includegraphics[width=.5\textwidth]{images/jaccard}
+\caption{Two sets S and T with Jaccard similarity 3/7. The two sets share 3 elements in common, and there are 7 elements in total.}
+\label{fig:jaccard}
+\end{figure}
+
+# How to represent data as sets
+
+We want to talk about similarity of data $\Rightarrow$ we need sets to compare!
+
+- One way is to construct from the data the set of **short strings** that appear within it
+\vfill
+- Similar documents/datasets will have many common elements, i.e. many commong short strings
+\vfill
+- We can do construct these short strings using *shingling*
+\vfill
+
+# $k$-shingling (how-to)
+
+1. Think of a document or record as a string of characters
+\vfill
+2. A $k$-shingle (k-gram) is any sub-string (word) of length $k$ found within the document or record
+\vfill
+3. Associate with each document or record the set of $k$-shingles that appear one or more times within it
+\vfill
+
+# Let's try
+
+Suppose our document is the string "Hello world" and $k  = 2$, then 
+
+- the set of $2$-shingles is $\{\text{he, el, ll, lo, ow, wo, or, rl, ld}\}$
+\vfill
+- the set of $3$-shingles is $\{\text{hel, ell, llo, low, owo, wor, orl, rld}\}$
+\vfill
 
 # Your turn
 
-shingling and Jaccard similarity by hand
+We have the following two records:
+
+```{r}
+data("RLdata500")
+records <- RLdata500[129:130, c(1,3)]
+names(records) <- c("First name", "Last name")
+kable(records)
+```
+
+1. Compute the $2$-shingles for each record
+\vfill
+2. Using Jaccard similarity, how similar are they?
+\vfill
+
+# Your turn solution
+\vfill
+1. The $2$-shingles for the first record are $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el}\}$ and for the second are $\{\text{mi, ic, ch, ha, ae, el, lm, me, ey, ye, er}\}$.
+\vfill
+2. There are 6 items in common $\{\text{mi, ic, ch, ha, ae, el}\}$ and 16 items total $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el, lm, me, ey, ye, er}\}$, so the Jaccard similarity is $\frac{6}{16} = \frac{3}{8} = `r round(3/8, 4)`$
+\vfill
 
 # Useful packages/functions in `R`
 
