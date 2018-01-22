@@ -175,7 +175,7 @@ dat <- cora[, c("title", "authors", "journal")]
 
 # 1. paste the columns together and tokenize for each record
 shingles <- apply(dat, 1, function(x) {
-  tokenize_character_shingles(paste(x, collapse=" "), n = 3)
+  tokenize_character_shingles(paste(x, collapse=" "), n = 3)[[1]]
 })
 
 # 2. Jaccard similarity between pairs
@@ -213,7 +213,27 @@ For a dataset of size $n$, the number of comparisons we must compute is $\frac{n
 - A better approach for datasets of any realistic size is to use *hashing*
 \vfill
 
-# Similarity preserving summaries of sets
+# Hash functions
+
+- Traditionally, a *hash function* maps objects to integers such that similar objects are far apart
+- Instead, we want special hash functions that do the **opposite** of this, i.e. similar objects are placed closed together!
+
+
+## Definition: Hash function
+*Hash functions* $h()$ are defined such that
+
+> If records $A$ and $B$ have high similarity, then the probability that $h(A) = h(B)$ is **high** and if records $A$ and $B$ have low similarity, then the probability that $h(A) \not= h(B)$ is **high**.
+
+# Hashing shingles
+
+- Instead of storing the strings (shingles), we can just store the *hashed values* 
+- These are integers, they will take less space which will be useful if we have large documents
+- Instead of performing the pairwise Jaccard similarities on the strings, we can perform them on the hashes
+
+```{r, echo=TRUE}
+# instead store hash values (less memory)
+hashed_shingles <- lapply(shingles, hash_string)
+```
 
 # Characteristic matrix
 
