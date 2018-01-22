@@ -1,0 +1,38 @@
+---
+title: "Introduction to Bayesian record linkage "
+author: Brenda Betancourt and Andee Kaplan
+institute: |
+    | Duke University
+    | Department of Statistical Science
+shortinstitute: Duke University
+date: |
+  | February 8, 2018
+  |
+  | Slides available at <http://bit.ly/cimat-bayes>
+  |
+output: 
+  beamer_presentation:
+    keep_tex: false
+    template: beamer.tex
+fig_caption: true
+classoption: compress
+natbib: true
+---
+
+# Why Bayes?
+
+# Common approaches
+
+Felligi-Sutner  
+Clustering  
+Beka's  
+
+# Empirical Bayes graphical model for record linkage
+
+
+# `blink` package
+
+
+# Example (RL500)
+
+
