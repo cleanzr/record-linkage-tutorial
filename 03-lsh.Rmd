@@ -167,6 +167,8 @@ Using the `title`, `authors`, and `journal` fields in the `cora` dataset,
 
 # Your turn solution
 
+\tiny
+
 ```{r your-turn2-sol, echo=TRUE, cache=TRUE}
 # get only the columns we want
 dat <- cora[, c("title", "authors", "journal")]
@@ -189,7 +191,9 @@ jaccard$similarity <- apply(jaccard, 1, function(pair) {
 })
 time <- difftime(Sys.time(), time, units = "secs")
 ```
-This took took $r round(time, 2)$ seconds $\approx r round(time/(60), 2)$ minutes!
+
+\normalsize
+This took took $`r round(time, 2)`$ seconds $\approx `r round(time/(60), 2)`$ minutes!
 
 # Your turn solution (cont'd)
 
@@ -203,7 +207,8 @@ ggplot(jaccard) +
 
 For a dataset of size $n$, the number of comparisons we must compute is $\frac{n(n-1)}{2}$. 
 
-- For our set of records, we needed to compute $`r nrow(dat)*(nrow(dat) - 1)/2`$ comparisons
+\vfill
+- For our set of records, we needed to compute $`r scales::comma(nrow(dat)*(nrow(dat) - 1)/2)`$ comparisons
 \vfill
 - A better approach for datasets of any realistic size is to use *hashing*
 \vfill
