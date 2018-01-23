@@ -114,8 +114,8 @@
 
 
 
-\title[Introduction to Record Linkage]
-{Introduction to Record Linkage}
+\title[Entity Resolution: \\Measuring and Reporting Quality]
+{Entity Resolution: \\Measuring and Reporting Quality}
 \author[Rebecca C. Steorts, beka@stat.duke.edu]{Rebecca C. Steorts} 
 
 \institute{\normalsize Department of Statistical Science, affiliated faculty in Computer Science, Biostatistics and Bioinformatics, the information initiative at Duke (iiD) and \\the Social Science Research Institute (SSRI) \\ Duke University and U.S. Census Bureau\\ \vspace*{1em}
@@ -605,9 +605,9 @@ under the estimate, which we refer to as true negatives (TN).
 \frame{
 \frametitle{Recall, Precision, Reduction Ratio}
 
-$$\text{Recall} = \frac{FN}{CL + FN} = 1 - FNR.$$\\
+$$\text{Recall} = \frac{FN}{TP + FN} = 1 - FNR.$$\\
 \pause
-$$\text{Precision} = \frac{FP}{CNL + FP} = 1 - FPR.$$\\
+$$\text{Precision} = \frac{FP}{TN + FP} = 1 - FPR.$$\\
 
 \pause
 
@@ -768,180 +768,215 @@ Robustness, computational time complexity, and sensitivity analysis can be furth
 }
 
 \frame{
+\frametitle{What Record Linkage Needs}
 
-Let's turn back to our motivating application of the US Census or the Syrian conflict. How would we estimate the sample and standard error in practice?
+\begin{enumerate}
+\item Workshops and Forums 
+\item Open Source Software
+\item Reproducibility and Fairness
+\item Evaluation Metrics and Comparisons
+\item Transparency 
+\item Ethical Use of Data
+\item Proper Privacy Protections of Sensitive Data
+\end{enumerate}
+
+
 
 }
 
+%\frame{
+%
+%Let's turn back to our motivating application of the US Census or the Syrian conflict. How would we estimate the sample and standard error in practice?
+%
+%}
+
+%\frame{
+%
+%Suppose that we have a total of $M$ records in $D$ data sets. 
+%
+%\begin{enumerate}
+%\item We seek models that are much less than $O(M^2)$ (quadratic).
+%\item We seek models that are reliable, accurate, fit the data well, and account for the uncertainty of the model.
+%\end{enumerate}
+%
+%\pause
+%These two goals fundamentally go against one another, making entity resolution a very challenging problem.
+%\vspace*{1em}
+%
+%
+%\pause
+%In order to solve the problem at hand, we will solve a slightly easier problem, where we simply provide an estimate and standard error of the documented identifiable deaths. 
+%\vspace*{1em}
+%
+%\pause
+%
+%We refer to this subtask of entity resolution as unique entity estimation. 
+%
+%}
+%
+%\frame{
+%\frametitle{Our Contributions}
+%
+%\begin{enumerate}
+%\item We formalize unique entity estimation as approximating the number of connected components in a graph with sub-quadratic  computational time. 
+%\item Our proposed methodology makes no assumptions regarding the generating process of the records and gives an estimate in sample (with standard errors). 
+%\item Our proposal leverages locality sensitive hashing (LSH) in a novel way for the estimation process, where our estimator is unbiased and has provably low variance compared to random sampling based approaches. 
+%\item We apply our method to official statistics data, music data, food data, and a subset of the ongoing conflict in Syria. 
+%\end{enumerate}
+%
+%Chen, Shrivastava, \textbf{RCS} (2018), AoAS (Minor Revision), \url{https://arxiv.org/abs/1710.02690},\\
+% \href{https://github.com/keroro824/RL_data/blob/master/README}{Code Link}
+%
+%}
+%
+%\frame{
+%\frametitle{Fast Unique Entity Estimation}
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{figures/flow}
+%%\caption{default}
+%\label{default}
+%\end{center}
+%\end{figure}
+%
+%
+%}
+%
+%\frame{
+%\frametitle{Applications}
+%
+%The proposed method is applied to three real applications, with comparisons to standards in the literature. 
+%
+%\begin{table}[t]
+%	\caption{ presents five important features of the four data sets.
+%%	(three well-labeled real data set and Syrian data set).
+%	\textbf{Domain} reflects the variety of the data type we used in the experiments. \textbf{Size} is the number of total records respectively. \textbf{\# Matching Pairs} shows how many pair of records point to the same entity in each data set. \textbf{\# Attributes} represents the dimensionality of individual record. \textbf{\# Entities} is the number of unique records.}
+%	\label{table1}
+%	\centering
+%	\tiny
+%				
+%	\begin{tabular}{lccccc}
+%		\toprule
+%		\textbf{DBname} & \textbf{Domain}& \textbf{Size} & \textbf{\# Matching Pairs} & \textbf{\# Attributes}& \textbf{\# Entities} \\
+%		\midrule
+%		Restaurants & Restaurant Guide&864  &112 & 4&752 \\
+%	
+%		CD & Music CDs&9,763  &299 & 106 & 9,508\\
+%	
+%		Voter & Registration Info&324,074  & 70,359 & 6 & 255,447\\
+%	
+%		Syria & Death Records&296,245  & N/A & 7 & N/A\\
+%		\bottomrule
+%	\end{tabular}	
+%\end{table}
+%
+%
+%}
+%
+%
+%\frame{
+%\frametitle{Results}
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{figures/restaurant}
+%%\caption{In its third report on Syria commissioned by the United Nations, the Human Rights Data Analysis Group identified 191,369 deaths from the start of the conflict in March 2011 to April 2014, more than double the 92,901 deaths cited in the group?s last report, which covered the first two years of the conflict.}
+%\label{default}
+%\end{center}
+%\end{figure}
+%
+%\begin{itemize}
+%\item Our methods: Red (LSHE) and black (LSHE + SVM) 
+%\item Comparisons: blue and green (random sampling)
+%\end{itemize}
+%
+%
+%}
+%
+%\frame{
+%\frametitle{Results}
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{figures/cd}
+%%\caption{In its third report on Syria commissioned by the United Nations, the Human Rights Data Analysis Group identified 191,369 deaths from the start of the conflict in March 2011 to April 2014, more than double the 92,901 deaths cited in the group?s last report, which covered the first two years of the conflict.}
+%\label{default}
+%\end{center}
+%\end{figure}
+%
+%\begin{itemize}
+%\item Our methods: Red (LSHE) and black (LSHE + SVM) 
+%\item Comparisons: blue and green (random sampling)
+%\end{itemize}
+%
+%
+%}
+%
+%\frame{
+%\frametitle{Results}
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{figures/voter}
+%%\caption{In its third report on Syria commissioned by the United Nations, the Human Rights Data Analysis Group identified 191,369 deaths from the start of the conflict in March 2011 to April 2014, more than double the 92,901 deaths cited in the group?s last report, which covered the first two years of the conflict.}
+%\label{default}
+%\end{center}
+%\end{figure}
+%
+%\begin{itemize}
+%\item Our methods: Red (LSHE) and black (LSHE + SVM) 
+%\item Comparisons: blue and green (random sampling)
+%\end{itemize}
+%
+%
+%}
+%
+%\frame{
+%\frametitle{Syrian data set}
+%
+%\begin{itemize}
+%\item Using our proposed methodology, used 917,577 sampled pairs and then used an SVM for classification of matches and non-matches. 
+%\item After looking at a sensitivity analysis of the tuning parameters for our proposed method, we report that there are 191,874 documented identifiable deaths, with standard deviation of 1,772, which is very close to HRDAG's estimate of 191,369 in Price et al. (2014).
+%\item Furthermore, we also report the recall (false positives) = 0.83 and the precision (false negatives) = 0.99. 
+%\item Finally, one iteration of the method takes only 127 seconds!  
+%\end{itemize}
+%
+%
+%}
+
+
+
+
+%\frame{
+%\frametitle{Summary}
+%
+%
+%\begin{enumerate}
+%
+%
+%
+%\end{enumerate}
+
+
+
+%}
+
 \frame{
+\center
+Thank you!  Questions?\\
 
-Suppose that we have a total of $M$ records in $D$ data sets. 
+\vspace*{1em}
 
-\begin{enumerate}
-\item We seek models that are much less than $O(M^2)$ (quadratic).
-\item We seek models that are reliable, accurate, fit the data well, and account for the uncertainty of the model.
-\end{enumerate}
+Thank you to the National Science Foundation for NSF CAREER Microclustering and NSF Big Data Privacy. The views in this talk are of the authors alone and not of the funding organization. \\
 
-\pause
-These two goals fundamentally go against one another, making entity resolution a very challenging problem.
 \vspace*{1em}
 
 
-\pause
-In order to solve the problem at hand, we will solve a slightly easier problem, where we simply provide an estimate and standard error of the documented identifiable deaths. 
-\vspace*{1em}
 
-\pause
-
-We refer to this subtask of entity resolution as unique entity estimation. 
-
-}
-
-\frame{
-\frametitle{Our Contributions}
-
-\begin{enumerate}
-\item We formalize unique entity estimation as approximating the number of connected components in a graph with sub-quadratic  computational time. 
-\item Our proposed methodology makes no assumptions regarding the generating process of the records and gives an estimate in sample (with standard errors). 
-\item Our proposal leverages locality sensitive hashing (LSH) in a novel way for the estimation process, where our estimator is unbiased and has provably low variance compared to random sampling based approaches. 
-\item We apply our method to official statistics data, music data, food data, and a subset of the ongoing conflict in Syria. 
-\end{enumerate}
-
-Chen, Shrivastava, \textbf{RCS} (2018), AoAS (Minor Revision), \url{https://arxiv.org/abs/1710.02690},\\
- \href{https://github.com/keroro824/RL_data/blob/master/README}{Code Link}
-
-}
-
-\frame{
-\frametitle{Fast Unique Entity Estimation}
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.7\textwidth]{figures/flow}
-%\caption{default}
-\label{default}
-\end{center}
-\end{figure}
-
-
-}
-
-\frame{
-\frametitle{Applications}
-
-The proposed method is applied to three real applications, with comparisons to standards in the literature. 
-
-\begin{table}[t]
-	\caption{ presents five important features of the four data sets.
-%	(three well-labeled real data set and Syrian data set).
-	\textbf{Domain} reflects the variety of the data type we used in the experiments. \textbf{Size} is the number of total records respectively. \textbf{\# Matching Pairs} shows how many pair of records point to the same entity in each data set. \textbf{\# Attributes} represents the dimensionality of individual record. \textbf{\# Entities} is the number of unique records.}
-	\label{table1}
-	\centering
-	\tiny
-				
-	\begin{tabular}{lccccc}
-		\toprule
-		\textbf{DBname} & \textbf{Domain}& \textbf{Size} & \textbf{\# Matching Pairs} & \textbf{\# Attributes}& \textbf{\# Entities} \\
-		\midrule
-		Restaurants & Restaurant Guide&864  &112 & 4&752 \\
-	
-		CD & Music CDs&9,763  &299 & 106 & 9,508\\
-	
-		Voter & Registration Info&324,074  & 70,359 & 6 & 255,447\\
-	
-		Syria & Death Records&296,245  & N/A & 7 & N/A\\
-		\bottomrule
-	\end{tabular}	
-\end{table}
-
-
-}
-
-
-\frame{
-\frametitle{Results}
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.7\textwidth]{figures/restaurant}
-%\caption{In its third report on Syria commissioned by the United Nations, the Human Rights Data Analysis Group identified 191,369 deaths from the start of the conflict in March 2011 to April 2014, more than double the 92,901 deaths cited in the group?s last report, which covered the first two years of the conflict.}
-\label{default}
-\end{center}
-\end{figure}
-
-\begin{itemize}
-\item Our methods: Red (LSHE) and black (LSHE + SVM) 
-\item Comparisons: blue and green (random sampling)
-\end{itemize}
-
-
-}
-
-\frame{
-\frametitle{Results}
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.7\textwidth]{figures/cd}
-%\caption{In its third report on Syria commissioned by the United Nations, the Human Rights Data Analysis Group identified 191,369 deaths from the start of the conflict in March 2011 to April 2014, more than double the 92,901 deaths cited in the group?s last report, which covered the first two years of the conflict.}
-\label{default}
-\end{center}
-\end{figure}
-
-\begin{itemize}
-\item Our methods: Red (LSHE) and black (LSHE + SVM) 
-\item Comparisons: blue and green (random sampling)
-\end{itemize}
-
-
-}
-
-\frame{
-\frametitle{Results}
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.7\textwidth]{figures/voter}
-%\caption{In its third report on Syria commissioned by the United Nations, the Human Rights Data Analysis Group identified 191,369 deaths from the start of the conflict in March 2011 to April 2014, more than double the 92,901 deaths cited in the group?s last report, which covered the first two years of the conflict.}
-\label{default}
-\end{center}
-\end{figure}
-
-\begin{itemize}
-\item Our methods: Red (LSHE) and black (LSHE + SVM) 
-\item Comparisons: blue and green (random sampling)
-\end{itemize}
-
-
-}
-
-\frame{
-\frametitle{Syrian data set}
-
-\begin{itemize}
-\item Using our proposed methodology, used 917,577 sampled pairs and then used an SVM for classification of matches and non-matches. 
-\item After looking at a sensitivity analysis of the tuning parameters for our proposed method, we report that there are 191,874 documented identifiable deaths, with standard deviation of 1,772, which is very close to HRDAG's estimate of 191,369 in Price et al. (2014).
-\item Furthermore, we also report the recall (false positives) = 0.83 and the precision (false negatives) = 0.99. 
-\item Finally, one iteration of the method takes only 127 seconds!  
-\end{itemize}
-
-
-}
-
-
-
-
-\frame{
-\frametitle{Summary}
-
-
-\begin{enumerate}
-
-\item Fill this in.
-
-\end{enumerate}
-
-
+Contact: beka@stat.duke.edu\\
+Webpage: resteorts.github.io\\
+(All papers and software can be found above).
 
 }
 
