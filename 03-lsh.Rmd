@@ -261,9 +261,123 @@ This took up $`r object.size(hashed_shingles)`$ bytes, while storing the shingle
 
 # Similarity preserving summaries of sets
 
+- Sets of shingles are large (larger than the original document)
+\vfill
+- If we have millions of documents, it may not be possible to store all the shingle-sets in memory
+\vfill
+- We can replace large sets by smaller representations, called *signatures*
+\vfill
+- And use these signatures to **approximate** Jaccard similarity
+\vfill
+
 # Characteristic matrix
 
+In order to get a signature of our data set, we first build a *characteristic matrix* 
+
+Columns correspond to records and the rows correspond to all hashed shingles
+
+```{r characteristic, cache=TRUE}
+# return if an item is in a list
+item_in_list <- function(item, list) {
+  as.integer(item %in% list) 
+}
+
+# get the characteristic matrix
+# items are all the unique hash values
+# columns will be each record
+# we want to keep track of where each hash is included 
+char_mat <- data.frame(item = unique(unlist(hashed_shingles)))
+
+contained <- lapply(hashed_shingles, function(col) {
+  vapply(char_mat$item, FUN = item_in_list, FUN.VALUE = integer(1), list = col)
+})
+
+char_mat <- do.call(cbind, contained)
+rownames(char_mat) <- unique(unlist(hashed_shingles))
+colnames(char_mat) <- paste("Record", seq_len(nrow(dat)))
+
+kable(char_mat[10:15, 1:5])
+```
+
+The result is a $`r dim(char_mat)[1]`\times `r dim(char_mat)[2]`$ matrix.
+
+**Question: **Why would we not store the data as a characteristic matrix?
+
 # Minhashing
+
+Want create the signature matrix through minhashing
+
+1. Permute the rows of the characteristic matrix 
+\vspace{.2in}
+2. Iterate over each column of the permuted matrix 
+\vspace{.2in}
+3. Populate the signature matrix, row-wise, with the row index from the first `1` value found in the column 
+
+The signature matrix is a hashing of values from the permuted characteristic matrix and has one row for the number of permutations calculated, and a column for each record
+
+# Minhashing (cont'd)
+
+```{r minhash-1, cache=TRUE}
+# set seed for reproducibility
+set.seed(02082018)
+
+# function to get signature for 1 permutation
+get_sig <- function(char_mat) {
+  # get permutation order
+  permute_order <- sample(seq_len(nrow(char_mat)))
+  
+  # get min location of "1" for each column (apply(2, ...))
+  t(apply(char_mat[permute_order, ], 2, function(col) min(which(col == 1))))
+}
+
+# repeat many times
+m <- 360
+sig_mat <- matrix(NA, nrow=m, ncol=ncol(char_mat))
+for(i in 1:m) {
+  sig_mat[i, ] <- get_sig(char_mat)
+}
+colnames(sig_mat) <- colnames(char_mat)
+
+# inspect results
+kable(sig_mat[1:10, 1:5])
+```
+
+# Signature matrix and Jaccard similarity
+
+The relationship between the random permutations of the characteristic matrix and the Jaccard Similarity is
+$$
+Pr\{\min[h(A)] = \min[h(B)]\} = \frac{|A \cap B|}{|A \cup B|}
+$$
+
+\vfill
+
+We use this relationship to **approximate** the similarity between any two records 
+
+\vfill
+We look down each column of the signature matrix, and compare it to any other column
+
+\vfill
+The number of agreements over the total number of combinations is an approximation to Jaccard measure
+
+\vfill
+
+# Jaccard similarity approximation
+
+```{r jaccard-sig, fig.height=4, cache=TRUE}
+# add jaccard similarity approximated from the minhash to compare
+# number of agreements over the total number of combinations
+hashed_jaccard$similarity_minhash <- apply(hashed_jaccard, 1, function(row) {
+  sum(sig_mat[, row[["record1"]]] == sig_mat[, row[["record2"]]])/nrow(sig_mat)
+})
+
+# how far off is this approximation?
+qplot(hashed_jaccard$similarity_minhash - hashed_jaccard$similarity) +
+  xlab("Difference between Jaccard similarity and minhash approximation")
+```
+
+Used minhashing to get an approximation to the Jaccard similarity, which helps by allowing us to store less data (hashing) and avoid storing sparse data (signature matrix)
+
+We still haven't addressed the issue of **pairwise comparisons**.
 
 # LSH (avoid pairwise comparisons)
 
