@@ -379,24 +379,105 @@ Used minhashing to get an approximation to the Jaccard similarity, which helps b
 
 We still haven't addressed the issue of **pairwise comparisons**.
 
-# LSH (avoid pairwise comparisons)
+# Avoiding pairwise comparisons
+
+- Performing pairwise comparisons is time-consuming because the number of comparisons grows at $O(n^2)$
+\vfill
+- Most of those comparisons are **unnecessary** because they do not result in matches due to sparsity 
+\vfill
+- We will use the combination of minhash and locality-sensitive hashing (LSH) to compute possible matches only once for each document, so that the cost of computation grows **linearly**
+\vfill
+
+# Locality Sensitive Hashing (LSH)
+
+**Idea: ** We want to hash items several times such that similar items are more likely to be hashed into the same bucket.
+
+Any pair that is hashed to the same bucket for any hashing is called a *candidate pair* and we only check candidate pairs for similarity.
+
+
+1. Divide up the signature matrix into $b$ bands with $r$ rows such that $m = b * r$ where *m* is the number of times that we drew a permutation of the characteristic matrix in the process of minhashing (number of rows in the signature matrix).
+2. Each band is hashed to a bucket by comparing the minhash for those permutations. If they match within the band, then they will be hashed to the same bucket.
+3. If two documents are hashed to the same bucket they will be considered candidate pairs. Each pair of documents has as many chances to be considered a candidate as there are bands, and the fewer rows there are in each band, the more likely it is that each document will match another.
 
 # Banding and buckets
 
-# Your turn 
+```{r banding, results='asis'}
+print(xtable::xtable(sig_mat[1:10, 1:5]), hline.after = c(-1,0,5,10), comment=F)
+```
 
-banding in R
+# Tuning
 
-# Putting it all together
+## How to choose $k$
 
-Choosing shingle size - somewhere?
+How large $k$ should be depends on how long our data strings are. The important thing to remember is $k$ should be picked large enough such that the probability of any given shingle is *low*.
+
+## How to choose $b$
+
+$b$ must divide $m$ evenly such that there are the same number of rows $r$ in each band. What else?
+
+# Choosing $b$
+
+\scriptsize
+$$
+P(\text{two documents w/ Jaccard similarity } s \text{ marked as potential match}) = 1 - (1 - s^{m/b})^b
+$$
+
+\normalsize
+
+```{r inclusion-probs, fig.cap=paste0("Probability that a pair of documents with a Jaccard similarity $s$ will be marked as potential matches for various bin sizes $b$ for $s = .25, .75$ for the number of permutations we did, $m = ", m, "$."), fig.height=3}
+library(numbers)
+
+
+# look at probability of binned together for various bin sizes and similarity values
+bin_probs <- expand.grid(s = c(.25, .75), h = m, b = divisors(m))
+bin_probs$prob <- apply(bin_probs, 1, function(x) lsh_probability(x[["h"]], x[["b"]], x[["s"]]))
+
+
+# plot as curves
+ggplot(bin_probs) +
+  geom_line(aes(x = prob, y = b, colour = factor(s), group = factor(s))) +
+  geom_point(aes(x = prob, y = b, colour = factor(s)))
+  
+```
+\vspace{-.2in}
+For $b = 120$, a pair of records with Jaccard similarity $.25$ will have a `r scales::percent(bin_probs[bin_probs$b == 120 & bin_probs$s == .25, "prob"])` chance of being matched as candidates and a pair of records with Jaccard similarity $.75$ will have a `r scales::percent(bin_probs[bin_probs$b == 120 & bin_probs$s == .75, "prob"])` chance of being matched as candidates. 
 
 # "Easy" LSH in R
 
-# Evaluation
+There an easy way to do LSH using the built in functions in the `textreuse` package via the functions `minhash_generator` and `lsh` (so we don't have to perform it by hand): 
+
+```{r show-package-lsh, eval=FALSE}
+b <- 120
+
+# create the minhash function
+minhash <- minhash_generator(n = m, seed = 02082018)
+
+# build the corpus using textreuse
+docs <- apply(dat, 1, paste, collapse=" ")
+corpus <- TextReuseCorpus(text = docs, 
+                          tokenizer = tokenize_character_shingles, n = 3,
+                          progress = FALSE,
+                          keep_tokens = TRUE,
+                          minhash_func = minhash)
+
+# perform lsh to get buckets
+buckets <- lsh(corpus, bands = b, progress = FALSE)
+
+# grab candidate pairs
+candidates <- lsh_candidates(buckets)
+
+# get Jaccard similarities only for candidates
+lsh_compare(candidates, corpus, jaccard_similarity, progress = FALSE) %>%
+  arrange(desc(score)) %>%
+  kable()
+```
+
+
+# Putting it all together
+
+
 
 # Your turn
 
-perform LSH and evaluate how we did
 
 
