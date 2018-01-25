@@ -165,7 +165,7 @@ Using the `title`, `authors`, and `journal` fields in the `cora` dataset,
 2. Obtain the Jaccard similarity between each pair of records (**hint:** use `jaccard_similarity`).
 \vfill
 
-# Your turn solution
+# Your turn (solution)
 
 \tiny
 
@@ -197,7 +197,7 @@ time <- difftime(Sys.time(), time, units = "secs")
 \normalsize
 This took took $`r round(time, 2)`$ seconds $\approx `r round(time/(60), 2)`$ minutes
 
-# Your turn solution (cont'd)
+# Your turn (solution, cont'd)
 
 ```{r your-turn2-plot}
 ggplot(jaccard) +
@@ -473,7 +473,11 @@ candidates <- lsh_candidates(buckets)
 
 # get Jaccard similarities only for candidates
 lsh_jaccard <- lsh_compare(candidates, corpus, jaccard_similarity, progress = FALSE)
+```
 
+# "Easy" LSH in R (cont'd)
+
+```{r, lsh-plot}
 qplot(lsh_jaccard$score)
 ```
 
@@ -482,7 +486,8 @@ qplot(lsh_jaccard$score)
 
 The last thing we need is to be able to go from candidate pairs to blocks.
 
-```{r}
+\tiny 
+```{r, echo=TRUE}
 # formating object
 candidates <- as.data.frame(candidates)[, 1:2]
 candidates$block <- 1
