@@ -171,16 +171,18 @@ Using the `title`, `authors`, and `journal` fields in the `cora` dataset,
 
 ```{r your-turn2-sol, echo=TRUE, cache=TRUE}
 # get only the columns we want
-dat <- cora[, c("title", "authors", "journal")]
+n <- nrow(cora)
+dat <- data.frame(id = seq_len(n))
+dat <- cbind(dat, cora[, c("title", "authors", "journal")])
 
 # 1. paste the columns together and tokenize for each record
 shingles <- apply(dat, 1, function(x) {
-  tokenize_character_shingles(paste(x, collapse=" "), n = 3)[[1]]
+  tokenize_character_shingles(paste(x[-1], collapse=" "), n = 3)[[1]]
 })
 
 # 2. Jaccard similarity between pairs
-jaccard <- expand.grid(record1 = seq_len(nrow(dat)),
-                       record2 = seq_len(nrow(dat)))
+jaccard <- expand.grid(record1 = seq_len(n),
+                       record2 = seq_len(n))
 
 # don't need to compare the same things twice
 jaccard <- jaccard[jaccard$record1 < jaccard$record2,]
@@ -235,7 +237,7 @@ These are integers, they will take less space
 ```{r hash-tokens, echo=TRUE}
 # instead store hash values (less memory)
 hashed_shingles <- apply(dat, 1, function(x) {
-  string <- paste(x, collapse=" ")
+  string <- paste(x[-1], collapse=" ")
   shingles <- tokenize_character_shingles(string, n = 3)[[1]]
   hash_string(shingles)
 })
@@ -243,8 +245,8 @@ hashed_shingles <- apply(dat, 1, function(x) {
 
 ```{r hash-tokens-jaccard, cache=TRUE}
 # Jaccard similarity on hashed shingles
-hashed_jaccard <- expand.grid(record1 = seq_len(nrow(dat)),
-                       record2 = seq_len(nrow(dat)))
+hashed_jaccard <- expand.grid(record1 = seq_len(n),
+                       record2 = seq_len(n))
 
 # don't need to compare the same things twice
 hashed_jaccard <- hashed_jaccard[hashed_jaccard$record1 < hashed_jaccard$record2,]
@@ -417,6 +419,7 @@ $b$ must divide $m$ evenly such that there are the same number of rows $r$ in ea
 
 # Choosing $b$
 
+\vspace{-.2in}
 \scriptsize
 $$
 P(\text{two documents w/ Jaccard similarity } s \text{ marked as potential match}) = 1 - (1 - s^{m/b})^b
@@ -439,23 +442,25 @@ ggplot(bin_probs) +
   geom_point(aes(x = prob, y = b, colour = factor(s)))
   
 ```
-\vspace{-.2in}
-For $b = 120$, a pair of records with Jaccard similarity $.25$ will have a `r scales::percent(bin_probs[bin_probs$b == 120 & bin_probs$s == .25, "prob"])` chance of being matched as candidates and a pair of records with Jaccard similarity $.75$ will have a `r scales::percent(bin_probs[bin_probs$b == 120 & bin_probs$s == .75, "prob"])` chance of being matched as candidates. 
+
+For $b = 90$, a pair of records with Jaccard similarity $.25$ will have a `r scales::percent(bin_probs[bin_probs$b == 90 & bin_probs$s == .25, "prob"])` chance of being matched as candidates and a pair of records with Jaccard similarity $.75$ will have a `r scales::percent(bin_probs[bin_probs$b == 90 & bin_probs$s == .75, "prob"])` chance of being matched as candidates. 
 
 # "Easy" LSH in R
 
 There an easy way to do LSH using the built in functions in the `textreuse` package via the functions `minhash_generator` and `lsh` (so we don't have to perform it by hand): 
 
-```{r show-package-lsh, eval=FALSE}
-b <- 120
+\tiny
+```{r show-package-lsh, echo=TRUE, cache=TRUE}
+b <- 90
 
 # create the minhash function
 minhash <- minhash_generator(n = m, seed = 02082018)
 
 # build the corpus using textreuse
-docs <- apply(dat, 1, paste, collapse=" ")
+docs <- apply(dat, 1, function(x) paste(x[-1], collapse = " "))
+names(docs) <- dat$id
 corpus <- TextReuseCorpus(text = docs, 
-                          tokenizer = tokenize_character_shingles, n = 3,
+                          tokenizer = tokenize_character_shingles, n = 3, simplify = TRUE,
                           progress = FALSE,
                           keep_tokens = TRUE,
                           minhash_func = minhash)
@@ -467,17 +472,57 @@ buckets <- lsh(corpus, bands = b, progress = FALSE)
 candidates <- lsh_candidates(buckets)
 
 # get Jaccard similarities only for candidates
-lsh_compare(candidates, corpus, jaccard_similarity, progress = FALSE) %>%
-  arrange(desc(score)) %>%
-  kable()
+lsh_jaccard <- lsh_compare(candidates, corpus, jaccard_similarity, progress = FALSE)
+
+qplot(lsh_jaccard$score)
 ```
 
 
 # Putting it all together
 
+The last thing we need is to be able to go from candidate pairs to blocks.
 
+```{r}
+# formating object
+candidates <- as.data.frame(candidates)[, 1:2]
+candidates$block <- 1
+
+# identify groups truth
+prev_id <- candidates[1, 1]
+for(i in unique(candidates[-1, 1])) {
+  matches <- candidates[candidates[, 1] == prev_id, 2]
+  if(!(i %in% matches)) {
+    candidates[candidates[, 1] == i, "block"] <- unique(candidates[candidates[, 1] == prev_id, "block"]) + 1
+    prev_id <- i
+  } else {
+    candidates[candidates[, 1] == i, "block"] <- unique(candidates[candidates[, 1] == prev_id, "block"])
+  } 
+}
+
+# each record that has a match uniquely with its group
+unique_grp <- rbind(setNames(candidates[, c(1, 3)], c("id", "block")), 
+                    setNames(candidates[, c(2, 3)], c("id", "block")))
+unique_grp <- unique(unique_grp)
+
+# add in record that have no match
+no_match <- setdiff(dat$id, unique_grp$id)
+
+# get the blocks and ids
+unique_grp <- rbind(unique_grp,
+      data.frame(id = no_match,
+                 block = (max(unique_grp$block) + 1):(max(unique_grp$block) + length(no_match))))
+```
 
 # Your turn
+
+Using the `fname_c1` and `lname_c1` columns in the `RecordLinkage::RL500` dataset, 
+
+1. use LSH to get candidate pairs for the dataset
+  - What $k$ to use for shingling?
+  - What $b$ to use for bucket size?
+  
+2. Append the blocks to the original dataset as a new column, `block`
+
 
 
 
