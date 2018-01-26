@@ -1026,6 +1026,21 @@ We refer to this subtask of entity resolution as unique entity estimation.
 }
 
 \frame{
+\frametitle{The Linkage Graph}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{figures/mapping}
+\caption{Left: Records contained in $D$ datasets. Right: The unlinked data set and relationship of records viewed as a graphical model.}
+\label{default}
+\end{center}
+\end{figure}
+
+We don't know the edges. How do we go about estimating the probability of an edge or non-edge? 
+
+}
+
+\frame{
 \frametitle{Desiderata} 
 
 \begin{enumerate}
@@ -1034,11 +1049,10 @@ We refer to this subtask of entity resolution as unique entity estimation.
   \item  In most real entity resolution tasks, duplicated data can occur with arbitrarily large changes including missing information, which we observe in the Syrian data set, and standard modeling assumptions may not hold due to the noise inherent in the data. Due to this, we prefer not to make strong modeling assumptions regarding the data generation process.
 \end{enumerate}
 
-
 }
 
 \frame{
-\frametitle{Related Literature}
+\frametitle{Related Literature: Random Sampling}
 There are two methods based upon random sampling that do satisfy the above requirements, but they are sub-optimal. 
 \begin{enumerate}
 \item Frank (1978) proposed sampling a large enough subgraph to estimate the total number of connected components based on the properties of the sub-sampled subgraph. 
@@ -1049,6 +1063,25 @@ There are two methods based upon random sampling that do satisfy the above requi
 %\item One major issue with random sampling is that most sampled pairs are unlikely to be matches (no edge) providing nearly no information as the underlying graph is generally very sparse in practice. 
 %\item In addition, such methods often lead to a high variance of the resulting estimator. 
 %\end{itemize}
+
+}
+
+\frame{
+\frametitle{Related Literature: Random Sampling}
+
+\begin{itemize}
+\item One major issue with random sampling is that most sampled pairs are unlikely to be matches (no edge) providing nearly no information as the underlying graph is generally very sparse in practice. 
+\item In addition, such methods often lead to a high variance of the resulting estimator. 
+\item Finally, random sampling requires a threshold $t$ (fixed budget), which implies $t$ pairwise comparisons. 
+\end{itemize}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=\textwidth]{figures/random-sample}
+%\caption{Left: Records contained in $D$ datasets. Right: The unlinked data set and relationship of records viewed as a graphical model.}
+\label{default}
+\end{center}
+\end{figure}
 
 }
 
@@ -1067,6 +1100,21 @@ There are two methods based upon random sampling that do satisfy the above requi
 %}
 
 \frame{
+\frametitle{Adaptive Sampling}
+
+\begin{itemize}
+\item Here, we sample based on the similarity of the vertex pair. 
+\item We assume that duplicates are likely to be similar in their textual attributes.
+\item We do not assume any fixed threshold, making the method robust and computationally effient. 
+\end{itemize}
+
+Does there exist a random sampling method based on similarity with computational complexity less than sub-quadratic? 
+
+Yes! (It's a variant of locality sensitive hashing (LSH). 
+
+}
+
+\frame{
 \frametitle{Our Contributions}
 
 \begin{enumerate}
@@ -1079,7 +1127,7 @@ There are two methods based upon random sampling that do satisfy the above requi
 %Our unique entity estimation procedure is broadly applicable to many applications, and we illustrate this on three additional real, fully labelled, entity resolution data sets, which include the food industry, the music industry, and an application from official statistics. In the absence of ground truth information, we estimate that the number of documented identifiable deaths for the Syrian conflict is 191,874, with standard deviation of 1,772, reported casualties, which is very close to the 2014 HRDAG estimate of 191,369. This clearly demonstrates the power of our efficient estimator in practice, which does not rely on any strong modeling assumptions. Out of 63 billion possible pairs, our estimator only queries around 450,000 adaptively sampled pairs ($\simeq O(M)$) for labels, yielding a 99.99\% reduction. The labelling was done using support vector machines (SVMs) trained on a small number of hand-matched, labeled examples provided by five domain experts. Our work is an example of the efforts required to solve a real noisy challenging problem where modeling assumptions may not hold.
 \end{enumerate}
 
-Chen, Shrivastava, Steorts (2017), Minor Revision, AoAS \url{https://arxiv.org/abs/1710.02690},\\
+Chen, Shrivastava, Steorts (2018), Minor Revision, AoAS \url{https://arxiv.org/abs/1710.02690},\\
  \href{https://github.com/keroro824/RL_data/blob/master/README}{Code Link}
 
 
