@@ -26,11 +26,21 @@ library(ggplot2)
 library(RecordLinkage)
 
 opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
+theme_set(theme_bw(base_family = "serif", base_size = 30))
 ```
 
-# Goal and outline
+# Goal
 
-**Goal: ** Introduce locality sensitive hashing, a fast method of blocking for record linkage, and get some experience doing LSH in `R`.
+**Goal: ** Introduce locality sensitive hashing, a fast method of blocking for record linkage, and get some experience doing LSH in `R`
+
+\vfill
+
+![](images/lsh.png)
+
+\vfill
+
+
+# Outline for today
 
 \vfill
 1. Defining similarity
@@ -59,7 +69,7 @@ opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 
 # Jaccard similarity
 
-There are many ways to define similarity, we will use *Jaccard similarity* for this task.
+There are many ways to define similarity, we will use *Jaccard similarity* for this task
 $$
 Jac(S, T) = \frac{\mid S \cap T\mid}{\mid S \cup T \mid}
 $$
@@ -106,9 +116,14 @@ Suppose our document is the string "Hello world" and $k  = 2$, then
 We have the following two records:
 
 ```{r your-turn1}
+# load RL data
 data("RLdata500")
+
+# select only 2 records
 records <- RLdata500[129:130, c(1,3)]
 names(records) <- c("First name", "Last name")
+
+# inspect records
 kable(records)
 ```
 
@@ -119,7 +134,7 @@ kable(records)
 
 # Your turn solution
 \vfill
-1. The $2$-shingles for the first record are $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el}\}$ and for the second are $\{\text{mi, ic, ch, ha, ae, el, lm, me, ey, ye, er}\}$.
+1. The $2$-shingles for the first record are $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el}\}$ and for the second are $\{\text{mi, ic, ch, ha, ae, el, lm, me, ey, ye, er}\}$
 \vfill
 2. There are 6 items in common $\{\text{mi, ic, ch, ha, ae, el}\}$ and 16 items total $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el, lm, me, ey, ye, er}\}$, so the Jaccard similarity is $\frac{6}{16} = \frac{3}{8} = `r round(3/8, 4)`$
 \vfill
@@ -129,9 +144,8 @@ kable(records)
 (Obviously) We don't want to do this by hand most times. Here are some useful packages in `R` that can help us!
 
 ```{r helpful-packages, echo = TRUE}
-# detecting text reuse and document similarity + shingles
-library(textreuse) 
-library(tokenizers)
+library(textreuse) # text reuse/document similarity
+library(tokenizers) # shingles
 ```
 
 We can use the following functions to create $k$-shingles and calculate Jaccard similarity for our data
@@ -146,13 +160,13 @@ jaccard_similarity(a, b)
 
 # Example data
 
-Research paper headers and citations, with information on authors, title, institutions, venue, date, page numbers and several other fields.
+Research paper headers and citations, with information on authors, title, institutions, venue, date, page numbers and several other fields
 
 \tiny
 ```{r load-ex-data, echo=TRUE}
-library(RLdata)
-data(cora)
-str(cora)
+library(RLdata) # data library
+data(cora) # load the cora data set
+str(cora) # structure of cora
 ```
 
 # Your turn 
@@ -160,9 +174,9 @@ str(cora)
 Using the `title`, `authors`, and `journal` fields in the `cora` dataset,
 
 \vfill
-1. Get the $3$-shingles for each record (**hint:** use `tokenize_character_shingles`).
+1. Get the $3$-shingles for each record (**hint:** use `tokenize_character_shingles`)
 \vfill
-2. Obtain the Jaccard similarity between each pair of records (**hint:** use `jaccard_similarity`).
+2. Obtain the Jaccard similarity between each pair of records (**hint:** use `jaccard_similarity`)
 \vfill
 
 # Your turn (solution)
@@ -171,27 +185,28 @@ Using the `title`, `authors`, and `journal` fields in the `cora` dataset,
 
 ```{r your-turn2-sol, echo=TRUE, cache=TRUE}
 # get only the columns we want
-n <- nrow(cora)
-dat <- data.frame(id = seq_len(n))
-dat <- cbind(dat, cora[, c("title", "authors", "journal")])
+n <- nrow(cora) # number of records
+dat <- data.frame(id = seq_len(n)) # create id column
+dat <- cbind(dat, cora[, c("title", "authors", "journal")]) # get columnds we want
 
 # 1. paste the columns together and tokenize for each record
 shingles <- apply(dat, 1, function(x) {
+  # tokenize strings
   tokenize_character_shingles(paste(x[-1], collapse=" "), n = 3)[[1]]
 })
 
 # 2. Jaccard similarity between pairs
-jaccard <- expand.grid(record1 = seq_len(n),
+jaccard <- expand.grid(record1 = seq_len(n), # empty holder for similarities
                        record2 = seq_len(n))
 
 # don't need to compare the same things twice
 jaccard <- jaccard[jaccard$record1 < jaccard$record2,]
 
-time <- Sys.time()
+time <- Sys.time() # for timing comparison
 jaccard$similarity <- apply(jaccard, 1, function(pair) {
-  jaccard_similarity(shingles[[pair[1]]], shingles[[pair[2]]])
+  jaccard_similarity(shingles[[pair[1]]], shingles[[pair[2]]]) # get jaccard for each pair
 })
-time <- difftime(Sys.time(), time, units = "secs")
+time <- difftime(Sys.time(), time, units = "secs") # timing
 ```
 
 \normalsize
@@ -199,15 +214,18 @@ This took took $`r round(time, 2)`$ seconds $\approx `r round(time/(60), 2)`$ mi
 
 # Your turn (solution, cont'd)
 
-```{r your-turn2-plot}
+```{r your-turn2-plot, fig.cap="Jaccard similarity for each pair of records. Light blue indicates the two records are more similar and dark blue indicates less similar."}
+# plot the jaccard similarities for each pair of records
 ggplot(jaccard) +
   geom_raster(aes(x = record1, y = record2, fill=similarity)) +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  scale_fill_gradient("Jaccard similarity") +
+  xlab("Record id") + ylab("Record id")
 ```
 
 # Hashing
 
-For a dataset of size $n$, the number of comparisons we must compute is $\frac{n(n-1)}{2}$. 
+For a dataset of size $n$, the number of comparisons we must compute is $\frac{n(n-1)}{2}$ 
 
 \vfill
 - For our set of records, we needed to compute $`r scales::comma(nrow(dat)*(nrow(dat) - 1)/2)`$ comparisons
@@ -237,29 +255,28 @@ These are integers, they will take less space
 ```{r hash-tokens, echo=TRUE}
 # instead store hash values (less memory)
 hashed_shingles <- apply(dat, 1, function(x) {
-  string <- paste(x[-1], collapse=" ")
-  shingles <- tokenize_character_shingles(string, n = 3)[[1]]
-  hash_string(shingles)
+  string <- paste(x[-1], collapse=" ") # get the string
+  shingles <- tokenize_character_shingles(string, n = 3)[[1]] # 3-shingles
+  hash_string(shingles) # return hashed shingles
 })
 ```
 
 ```{r hash-tokens-jaccard, cache=TRUE}
 # Jaccard similarity on hashed shingles
-hashed_jaccard <- expand.grid(record1 = seq_len(n),
-                       record2 = seq_len(n))
+hashed_jaccard <- expand.grid(record1 = seq_len(n), record2 = seq_len(n))
 
 # don't need to compare the same things twice
 hashed_jaccard <- hashed_jaccard[hashed_jaccard$record1 < hashed_jaccard$record2,]
 
-time <- Sys.time()
+time <- Sys.time() # see how long this takes
 hashed_jaccard$similarity <- apply(hashed_jaccard, 1, function(pair) {
   jaccard_similarity(hashed_shingles[[pair[1]]], hashed_shingles[[pair[2]]])
-})
-time <- difftime(Sys.time(), time, units = "secs")
+}) # get jaccard for each hashed pair
+time <- difftime(Sys.time(), time, units = "secs") # timing
 ```
 
 \normalsize
-This took up $`r object.size(hashed_shingles)`$ bytes, while storing the shingles took $`r object.size(shingles)`$ bytes. However, the whole pairwise comparison still took the same amount of time ($\approx `r round(time/(60), 2)`$ minutes).
+This took up $`r object.size(hashed_shingles)`$ bytes, while storing the shingles took $`r object.size(shingles)`$ bytes; the whole pairwise comparison still took the same amount of time ($\approx `r round(time/(60), 2)`$ minutes)
 
 # Similarity preserving summaries of sets
 
@@ -290,18 +307,20 @@ item_in_list <- function(item, list) {
 # we want to keep track of where each hash is included 
 char_mat <- data.frame(item = unique(unlist(hashed_shingles)))
 
+# for each hashed shingle, see if it is in each row
 contained <- lapply(hashed_shingles, function(col) {
   vapply(char_mat$item, FUN = item_in_list, FUN.VALUE = integer(1), list = col)
 })
 
-char_mat <- do.call(cbind, contained)
-rownames(char_mat) <- unique(unlist(hashed_shingles))
-colnames(char_mat) <- paste("Record", seq_len(nrow(dat)))
+char_mat <- do.call(cbind, contained) # list to matrix
+rownames(char_mat) <- unique(unlist(hashed_shingles)) # row names
+colnames(char_mat) <- paste("Record", seq_len(nrow(dat))) # column names
 
+# inspect results
 kable(char_mat[10:15, 1:5])
 ```
 
-The result is a $`r dim(char_mat)[1]`\times `r dim(char_mat)[2]`$ matrix.
+The result is a $`r dim(char_mat)[1]`\times `r dim(char_mat)[2]`$ matrix
 
 **Question: **Why would we not store the data as a characteristic matrix?
 
@@ -334,11 +353,11 @@ get_sig <- function(char_mat) {
 
 # repeat many times
 m <- 360
-sig_mat <- matrix(NA, nrow=m, ncol=ncol(char_mat))
+sig_mat <- matrix(NA, nrow=m, ncol=ncol(char_mat)) #empty matrix
 for(i in 1:m) {
-  sig_mat[i, ] <- get_sig(char_mat)
+  sig_mat[i, ] <- get_sig(char_mat) #fill matrix
 }
-colnames(sig_mat) <- colnames(char_mat)
+colnames(sig_mat) <- colnames(char_mat) #column names
 
 # inspect results
 kable(sig_mat[1:10, 1:5])
@@ -372,14 +391,14 @@ hashed_jaccard$similarity_minhash <- apply(hashed_jaccard, 1, function(row) {
   sum(sig_mat[, row[["record1"]]] == sig_mat[, row[["record2"]]])/nrow(sig_mat)
 })
 
-# how far off is this approximation?
+# how far off is this approximation? plot differences
 qplot(hashed_jaccard$similarity_minhash - hashed_jaccard$similarity) +
   xlab("Difference between Jaccard similarity and minhash approximation")
 ```
 
 Used minhashing to get an approximation to the Jaccard similarity, which helps by allowing us to store less data (hashing) and avoid storing sparse data (signature matrix)
 
-We still haven't addressed the issue of **pairwise comparisons**.
+We still haven't addressed the issue of **pairwise comparisons**
 
 # Avoiding pairwise comparisons
 
@@ -392,18 +411,19 @@ We still haven't addressed the issue of **pairwise comparisons**.
 
 # Locality Sensitive Hashing (LSH)
 
-**Idea: ** We want to hash items several times such that similar items are more likely to be hashed into the same bucket.
+**Idea: ** We want to hash items several times such that similar items are more likely to be hashed into the same bucket
 
-Any pair that is hashed to the same bucket for any hashing is called a *candidate pair* and we only check candidate pairs for similarity.
-
-
-1. Divide up the signature matrix into $b$ bands with $r$ rows such that $m = b * r$ where *m* is the number of times that we drew a permutation of the characteristic matrix in the process of minhashing (number of rows in the signature matrix).
-2. Each band is hashed to a bucket by comparing the minhash for those permutations. If they match within the band, then they will be hashed to the same bucket.
-3. If two documents are hashed to the same bucket they will be considered candidate pairs. Each pair of documents has as many chances to be considered a candidate as there are bands, and the fewer rows there are in each band, the more likely it is that each document will match another.
+1. Divide signature matrix into $b$ bands with $r$ rows each so $m = b * r$ where *m* is the number of times that we drew a permutation of the characteristic matrix in the process of minhashing
+2. Each band is hashed to a bucket by comparing the minhash for those permutations 
+  - If they match within the band, then they will be hashed to the same bucket
+3. If two documents are hashed to the same bucket they will be considered candidate pairs 
+  
+We only check *candidate pairs* for similarity
 
 # Banding and buckets
 
 ```{r banding, results='asis'}
+# view the signature matrix
 print(xtable::xtable(sig_mat[1:10, 1:5]), hline.after = c(-1,0,5,10), comment=F)
 ```
 
@@ -411,11 +431,15 @@ print(xtable::xtable(sig_mat[1:10, 1:5]), hline.after = c(-1,0,5,10), comment=F)
 
 ## How to choose $k$
 
-How large $k$ should be depends on how long our data strings are. The important thing to remember is $k$ should be picked large enough such that the probability of any given shingle is *low*.
+How large $k$ should be depends on how long our data strings are
+
+The important thing is $k$ should be picked large enough such that the probability of any given shingle is *low*
 
 ## How to choose $b$
 
-$b$ must divide $m$ evenly such that there are the same number of rows $r$ in each band. What else?
+$b$ must divide $m$ evenly such that there are the same number of rows $r$ in each band 
+
+What else?
 
 # Choosing $b$
 
@@ -428,8 +452,8 @@ $$
 \normalsize
 
 ```{r inclusion-probs, fig.cap=paste0("Probability that a pair of documents with a Jaccard similarity $s$ will be marked as potential matches for various bin sizes $b$ for $s = .25, .75$ for the number of permutations we did, $m = ", m, "$."), fig.height=3}
-library(numbers)
-
+# library to get divisors of m
+library(numbers) 
 
 # look at probability of binned together for various bin sizes and similarity values
 bin_probs <- expand.grid(s = c(.25, .75), h = m, b = divisors(m))
@@ -438,12 +462,14 @@ bin_probs$prob <- apply(bin_probs, 1, function(x) lsh_probability(x[["h"]], x[["
 
 # plot as curves
 ggplot(bin_probs) +
-  geom_line(aes(x = prob, y = b, colour = factor(s), group = factor(s))) +
-  geom_point(aes(x = prob, y = b, colour = factor(s)))
+  geom_line(aes(x = prob, y = b, colour = factor(s), group = factor(s)), size = 2) +
+  geom_point(aes(x = prob, y = b, colour = factor(s)), size = 3) +
+  xlab("Probability") +
+  scale_color_discrete("s")
   
 ```
 
-For $b = 90$, a pair of records with Jaccard similarity $.25$ will have a `r scales::percent(bin_probs[bin_probs$b == 90 & bin_probs$s == .25, "prob"])` chance of being matched as candidates and a pair of records with Jaccard similarity $.75$ will have a `r scales::percent(bin_probs[bin_probs$b == 90 & bin_probs$s == .75, "prob"])` chance of being matched as candidates. 
+For $b = 90$, a pair of records with Jaccard similarity $.25$ will have a `r scales::percent(bin_probs[bin_probs$b == 90 & bin_probs$s == .25, "prob"])` chance of being matched as candidates and a pair of records with Jaccard similarity $.75$ will have a `r scales::percent(bin_probs[bin_probs$b == 90 & bin_probs$s == .75, "prob"])` chance of being matched as candidates
 
 # "Easy" LSH in R
 
@@ -451,19 +477,20 @@ There an easy way to do LSH using the built in functions in the `textreuse` pack
 
 \tiny
 ```{r show-package-lsh, echo=TRUE, cache=TRUE}
+# choose appropriate num of bands
 b <- 90
 
 # create the minhash function
 minhash <- minhash_generator(n = m, seed = 02082018)
 
 # build the corpus using textreuse
-docs <- apply(dat, 1, function(x) paste(x[-1], collapse = " "))
-names(docs) <- dat$id
-corpus <- TextReuseCorpus(text = docs, 
-                          tokenizer = tokenize_character_shingles, n = 3, simplify = TRUE,
-                          progress = FALSE,
-                          keep_tokens = TRUE,
-                          minhash_func = minhash)
+docs <- apply(dat, 1, function(x) paste(x[-1], collapse = " ")) # get strings
+names(docs) <- dat$id # add id as names in vector
+corpus <- TextReuseCorpus(text = docs, # dataset
+                          tokenizer = tokenize_character_shingles, n = 3, simplify = TRUE, # shingles
+                          progress = FALSE, # quietly
+                          keep_tokens = TRUE, # store shingles
+                          minhash_func = minhash) # use minhash
 
 # perform lsh to get buckets
 buckets <- lsh(corpus, bands = b, progress = FALSE)
@@ -478,51 +505,53 @@ lsh_jaccard <- lsh_compare(candidates, corpus, jaccard_similarity, progress = FA
 # "Easy" LSH in R (cont'd)
 
 ```{r, lsh-plot}
+# plot jaccard similarities that are candidates
 qplot(lsh_jaccard$score)
 ```
 
 
 # Putting it all together
 
-The last thing we need is to be able to go from candidate pairs to blocks.
+The last thing we need is to go from candidate pairs to blocks
 
 \tiny 
 ```{r, echo=TRUE}
 # formating object
-candidates <- as.data.frame(candidates)[, 1:2]
-candidates$block <- 1
+candidates <- as.data.frame(candidates)[, 1:2] # as data frame
+candidates$block <- 1 # default all blocks to 1
 
 # identify groups truth
-prev_id <- candidates[1, 1]
-for(i in unique(candidates[-1, 1])) {
-  matches <- candidates[candidates[, 1] == prev_id, 2]
-  if(!(i %in% matches)) {
-    candidates[candidates[, 1] == i, "block"] <- unique(candidates[candidates[, 1] == prev_id, "block"]) + 1
-    prev_id <- i
+prev_id <- candidates[1, 1] # get the first id
+for(i in unique(candidates[-1, 1])) { # go through all other ids
+  matches <- candidates[candidates[, 1] == prev_id, 2] # ids that get matched to the first id
+  prev_block <- candidates[candidates[, 1] == prev_id, "block"] # block of the previous id
+  if(!(i %in% matches)) { # if i is not matched
+    candidates[candidates[, 1] == i, "block"] <- unique(prev_block) + 1 # get new block number
+    prev_id <- i # update previous id
   } else {
-    candidates[candidates[, 1] == i, "block"] <- unique(candidates[candidates[, 1] == prev_id, "block"])
+    candidates[candidates[, 1] == i, "block"] <- unique(prev_block) # assign old block number
   } 
 }
 
-# each record that has a match uniquely with its group
+# get all ids and their blocks uniquely
 unique_grp <- rbind(setNames(candidates[, c(1, 3)], c("id", "block")), 
                     setNames(candidates[, c(2, 3)], c("id", "block")))
 unique_grp <- unique(unique_grp)
 
-# add in record that have no match
-no_match <- setdiff(dat$id, unique_grp$id)
+# find records that have no match
+no_match <- setdiff(dat$id, unique_grp$id) # these are id's not blocked
+no_match <- data.frame(id = no_match,
+                       block = (max(unique_grp$block) + 1):(max(unique_grp$block) + length(no_match)))
 
 # get the blocks and ids
-unique_grp <- rbind(unique_grp,
-      data.frame(id = no_match,
-                 block = (max(unique_grp$block) + 1):(max(unique_grp$block) + length(no_match))))
+unique_grp <- rbind(unique_grp, no_match)
 ```
 
 # Your turn
 
 Using the `fname_c1` and `lname_c1` columns in the `RecordLinkage::RL500` dataset, 
 
-1. use LSH to get candidate pairs for the dataset
+1. Use LSH to get candidate pairs for the dataset
   - What $k$ to use for shingling?
   - What $b$ to use for bucket size?
   
