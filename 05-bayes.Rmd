@@ -19,6 +19,14 @@ classoption: compress
 natbib: true
 ---
 
+```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(ggplot2)
+
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
+theme_set(theme_bw(base_family = "serif", base_size = 30))
+```
+
 # Why Bayes?
 
 # Common approaches
@@ -32,7 +40,128 @@ Beka's
 
 # `blink` package
 
+`R` package that removes duplicate entries from multiple databses using the empirical Bayes graphical method:
 
-# Example (RL500)
+```{r blink-install, eval=FALSE, echo=TRUE}
+install.packages("blink")
+```
+
+- Formatting data for use with `blink`
+- Tuning parameters
+- Running the Gibbs sampler (estimate model parameters)
+- Output
+
+
+# `RLdata500` data
+
+We will continue with the  `RLdata500` dataset in the `RecordLinkage` package consisting of $500$ records with 10% duplication.
+
+```{r data, echo=TRUE}
+library(blink) # load blink library
+library(RecordLinkage) # load data library
+data("RLdata500") # load data
+head(RLdata500) # take a look
+```
+
+# Formatting the data
+
+```{r, echo=TRUE}
+# categorical variables
+X.c <- as.matrix(RLdata500[, c("by","bm","bd")]) 
+p.c <- ncol(X.c) 
+
+# string variables 
+X.s <- as.matrix(RLdata500[, c("fname_c1", "lname_c1")]) 
+p.s <- ncol(X.s) 
+```
+
+`X.c` and `X.s` include all files stacked on top of each other, for categorical and string variables respectively
+
+```{r echo=TRUE}
+# keep track of which rows of are in which files
+file.num <- rep(c(1, 2, 3), c(200, 150, 150))
+```
+
+# Tuning parameters
+
+## Hyperparameters
+
+```{r, echo=TRUE}
+# Subjective choices for distortion probability prior
+# parameters of a Beta(a,b)
+a <- 1
+b <- 999
+```
+
+## Distortion
+
+```{r, echo=TRUE}
+# string distance function example
+d <- function(s1, s2) {
+  adist(s1, s2) # approximate string distance
+}
+
+# steepness parameter
+c <- 1
+```
+
+# Running the Gibbs sampler
+
+```{r, echo=TRUE, cache=TRUE, results='hide'}
+lam.gs <- rl.gibbs(file.num = file.num, # number of the file
+                    X.s = X.s, X.c = X.c, # data 
+                    num.gs = 5000, # number of iterations
+                    a = a, b = b, c = c, d = d, M = 500) # hyperparams
+```
+
+# Output
+
+```{r get-estimates-sizes, echo=TRUE}
+# count how many unique latent individuals
+size_est <- apply(lam.gs , 1, function(x) { length(unique(x)) })
+```
+
+```{r plots, fig.width=3, fig.show='hold'}
+ggplot() +
+  geom_line(aes(1:5000, size_est)) +
+  xlab("Iteration") +
+  ylab("Estimated size")
+
+ggplot() +
+  geom_histogram(aes(size_est[-(1:100)])) +
+  geom_vline(aes(xintercept=450), colour = "red") +
+  geom_vline(aes(xintercept=mean(size_est)), lty=2)
+  xlab("Estimated size")
+  
+```
+
+# Evaluation
+
+```{r, echo=TRUE}
+# estimated pairwise links
+est_links_pair <- pairwise(links(lam.gs[-(1:100), ]))
+
+# true pairwise links
+true_links_pair <- pairwise(links(matrix(identity.RLdata500, nrow = 1)))
+
+#comparison
+comparison <- links.compare(est_links_pair, true_links_pair, counts.only = TRUE)
+
+# false positive rate
+fpr <- comparison$incorrect/comparison$correct
+
+# false negative rate
+fnr <- comparison$missing/comparison$correct
+
+# false discover rate
+fdr <- comparison$incorrect/(comparison$correct + comparison$incorrect)
+
+# results
+c(fpr, fnr, fdr)
+```
+
+
+# Your turn
+
 
 

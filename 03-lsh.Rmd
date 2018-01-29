@@ -557,6 +557,10 @@ Using the `fname_c1` and `lname_c1` columns in the `RecordLinkage::RL500` datase
   
 2. Append the blocks to the original dataset as a new column, `block`
 
+# Even faster?
+
+
+
 
 
 
