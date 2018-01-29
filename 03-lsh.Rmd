@@ -328,13 +328,13 @@ The result is a $`r dim(char_mat)[1]`\times `r dim(char_mat)[2]`$ matrix
 
 Want create the signature matrix through minhashing
 
-1. Permute the rows of the characteristic matrix 
+1. Permute the rows of the characteristic matrix $m$ times
 \vspace{.2in}
 2. Iterate over each column of the permuted matrix 
 \vspace{.2in}
 3. Populate the signature matrix, row-wise, with the row index from the first `1` value found in the column 
 
-The signature matrix is a hashing of values from the permuted characteristic matrix and has one row for the number of permutations calculated, and a column for each record
+The signature matrix is a hashing of values from the permuted characteristic matrix and has one row for the number of permutations calculated ($m$), and a column for each record
 
 # Minhashing (cont'd)
 
@@ -558,6 +558,16 @@ Using the `fname_c1` and `lname_c1` columns in the `RecordLinkage::RL500` datase
 2. Append the blocks to the original dataset as a new column, `block`
 
 # Even faster?
+
+(**fast**): In minhashing we have to perform $m$ permutations to create multiple hashes
+
+(**faster**): We would like to reduce the number of hashes we need to create -- "Densified" One Permutation Hashing (DOPH)
+
+- One permutation of the signature matrix is used
+- The feature space is then binned into $m$ evenly spaced bins
+- The $m$ minimums (for each bin separately) are the $m$ different hash values
+
+![](images/doph.png)
 
 
 

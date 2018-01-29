@@ -27,6 +27,18 @@ opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 theme_set(theme_bw(base_family = "serif", base_size = 30))
 ```
 
+# What is "Bayesian"?
+
+1. Setting up a *full probability model* -- a joint probability distribution for all observable and unobservable quantities
+    \begin{align*}
+    p(\boldsymbol x | \boldsymbol \theta) &- \text{ likelihood} \\
+    p(\boldsymbol \theta) &- \text{ prior}
+    \end{align*}
+2. Conditioning on observed data -- calculating and interpreting the appropriate *posterior distribution*
+    $$
+    p(\boldsymbol \theta | \boldsymbol x) = \frac{p(\boldsymbol x, \boldsymbol \theta)}{p(\boldsymbol x)} = \frac{p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)}{p(\boldsymbol x)} \propto p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)
+    $$
+
 # Why Bayes?
 
 # Common approaches
@@ -108,38 +120,46 @@ c <- 1
 # Running the Gibbs sampler
 
 ```{r, echo=TRUE, cache=TRUE, results='hide'}
-lam.gs <- rl.gibbs(file.num = file.num, # number of the file
-                    X.s = X.s, X.c = X.c, # data 
-                    num.gs = 5000, # number of iterations
-                    a = a, b = b, c = c, d = d, M = 500) # hyperparams
+lam.gs <- rl.gibbs(file.num = file.num, # file
+                   X.s = X.s, X.c = X.c, # data 
+                   num.gs = 100000, # iterations
+                   a = a, b = b, # prior params
+                   c = c, d = d, # distortion
+                   M = 500) # max # latents
 ```
 
 # Output
 
-```{r get-estimates-sizes, echo=TRUE}
+\scriptsize
+
+```{r get-estimates-sizes, echo=TRUE, results="hide"}
 # count how many unique latent individuals
-size_est <- apply(lam.gs , 1, function(x) { length(unique(x)) })
+size_est <- apply(lam.gs, 1, function(x) { 
+  length(unique(x)) 
+  })
 ```
 
-```{r plots, fig.width=3, fig.show='hold'}
+```{r plots, fig.width=2.5, fig.height=2.5, fig.show='hold'}
+theme_set(theme_bw(base_family = "serif", base_size = 15))
+
 ggplot() +
-  geom_line(aes(1:5000, size_est)) +
+  geom_line(aes(1:100000, size_est)) +
   xlab("Iteration") +
   ylab("Estimated size")
 
 ggplot() +
-  geom_histogram(aes(size_est[-(1:100)])) +
+  geom_histogram(aes(size_est[-(1:50000)])) +
   geom_vline(aes(xintercept=450), colour = "red") +
-  geom_vline(aes(xintercept=mean(size_est)), lty=2)
+  geom_vline(aes(xintercept=mean(size_est)), lty=2) +
   xlab("Estimated size")
   
 ```
 
 # Evaluation
-
+\scriptsize
 ```{r, echo=TRUE}
 # estimated pairwise links
-est_links_pair <- pairwise(links(lam.gs[-(1:100), ]))
+est_links_pair <- pairwise(links(lam.gs[-(1:50000), ]))
 
 # true pairwise links
 true_links_pair <- pairwise(links(matrix(identity.RLdata500, nrow = 1)))
@@ -153,7 +173,7 @@ fpr <- comparison$incorrect/comparison$correct
 # false negative rate
 fnr <- comparison$missing/comparison$correct
 
-# false discover rate
+# false discovery rate
 fdr <- comparison$incorrect/(comparison$correct + comparison$incorrect)
 
 # results
