@@ -1,0 +1,336 @@
+---
+title: "Introduction to blocking techniques"
+author: "Brenda Betancourt"
+date: |
+  | February 8, 2018
+  |
+  |
+output:
+  beamer_presentation:
+    keep_tex: no
+    template: beamer.tex
+  ioslides_presentation: default
+  slidy_presentation: default
+institute: |
+  | Duke University
+  | Department of Statistical Science
+  | bb222@stat.duke.edu
+natbib: yes
+fig_caption: yes
+shortinstitute: bb222@stat.duke.edu
+classoption: compress
+---
+
+# Motivation
+
+- Naively matching two files or finding duplicates within a file requires comparing all pairs of records.
+
+\vspace{3mm}
+
+- Infeasible for large files even when the comparisons are computationally inexpensive.
+
+\vspace{3mm}
+
+- The number of record pairs grows quadratically with the size of
+the dataset
+    * Two files with 5,000 records $\rightarrow$ 25,000,000 comparisons!
+
+# What is blocking?
+
+Technique to reduce the comparison space: 
+
+- Filter out dissimilar record pairs that are extremely unlikely to be matches.
+    * Perform record linkage only within blocks 
+
+
+\vspace{3mm}
+
+- Traditional blocking : compare record pairs that match on one or more keys.
+    * Creates a partition of the data
+
+\vspace{3mm}
+
+- Record pairs that do not meet the blocking criteria are automatically classified as non-matches.
+
+
+# Example: Traditional blocking
+
+All-to-all record comparisons (left) versus partitioning records into
+blocks by lastname initial and comparing records only within each partition (right).
+
+![alt text](figures/noblocking_plot.pdf){ width=50% }
+![alt text](figures/blocking_plot.pdf){ width=50% }
+
+# Example: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(RecordLinkage)
+data(RLdata500)
+head(RLdata500)
+```
+
+# Continuation: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+
+# Record pairs for comparison
+choose(500,2)
+
+# Blocking by last name initial  
+last_init <- substr(RLdata500[,"lname_c1"], 1, 1)
+head(last_init)
+# Number of blocks
+length(unique(last_init))
+
+```
+# Continuation: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+
+# Number of records per block
+tbl <- table(last_init)
+head(tbl)
+
+# Block sizes can vary a lot
+summary(as.numeric(tbl))
+
+```
+
+# Continuation: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+
+# Number of records pairs per block
+sapply(tbl, choose, k=2)
+
+# Reduction on comparison space
+sum(sapply(tbl, choose, k=2))
+
+```
+# How to choose the blocking key or keys
+
+- Fields containing the fewest errors or missing values should be chosen as blocking variables e.g. clinical diagnosis in EHR.
+
+\vspace{3mm}
+
+- Understand the kinds of errors that are unlikely for a certain field or a combination of them.
+
+\vspace{3mm}
+
+- More complex blocking schemes can be constructed using conjunctions.
+    * Retain only pairs which agree on either last name initial and zip code
+
+# Example: Voter Survey data
+
+The Views of the Electorate Research (VOTER) Survey was conducted by the survey firm YouGov. 
+
+\vspace{2mm}
+
+- 8,000 adults (age 18+) with internet access took the survey on-line between November 29 and December 29, 2016.
+
+\vspace{2mm}
+
+- These respondents were originally interviewed by YouGov in 2011-2012.
+
+\vspace{2mm}
+
+- Barack Obama (Democrat) won in 2012 and Donald Trump (Republican) won in 2016.
+
+
+# Continuation: Voter Survey data
+
+- Demographic variables
+    * Year of birth (age) 
+    * Gender
+    * Race
+    * State
+    * Education level
+    * Family income
+
+\vspace{3mm}
+
+- Party affiliation: democrat, republican, independent, other 
+
+\vspace{3mm}
+
+Which fields are reliable for blocking in this example?
+
+# Continuation: Is race reliable?
+
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{Gray}{gray}{0.9}
+\begin{center}
+\begin{tabular}{l|cc}
+
+           &     2012 &  2016 \\ 
+\hline \hline          
+White      &     6244 &  6198 \\ 
+Black      &       654 &  645 \\ 
+Hispanic   &      400 &  397  \\ 
+Mixed      &       160 &  186  \\ 
+Other      &      137 &  167  \\ 
+Asian      &       117 &  118  \\ 
+Native American &   60 &   59 \\ 
+Middle Eastern  &  10 &   12 \\ \hline \hline
+\end{tabular}
+
+\begin{tabular}{r|cccc}
+      & White & Black & Mixed & Other \\ 
+\hline \hline      
+White & 6073  &   5   & {\cellcolor{LightCyan}46}    & 74 \\ 
+Black &    4  & 627   & 10    & 10 \\ 
+Mixed &  {\cellcolor{LightCyan}31}  &   6   & 100   &  8 \\ 
+Other &   50  &   4   & 14    & 62 \\ \hline \hline
+\end{tabular}
+\end{center}
+
+# Continuation: Is party affiliation reliable?
+
+\begin{center}
+\begin{tabular}{l|ccccc}
+           & Democrat   & Indepen.  & Republican & Not sure & Other\\
+\hline \hline            
+  Democrat    &    2424   &       192   &      90   &    25  &   23 \\
+  Indepen. &     263   &     1929    &    221    &   16  &  57 \\
+  Republican  &      39   &      215    &   1881    &   11  &  60 \\
+  Not sure    &      48   &       48    &     54    &   41  &   5 \\
+  Other       &      17   &       46    &     34    &    2  &  41 \\
+  \hline \hline
+\end{tabular}
+\end{center}
+
+# Blocking caveats
+
+- Fields can be unreliable for many applications and blocking may miss large proportions of matches i.e. increased false negatives rates.
+
+\vspace{3mm}
+
+- The frequency distribution of the values in the fields used as blocking keys will affect the size of the blocks.
+
+\vspace{3mm}
+
+- Trade-off between block sizes: true matches being missed vs computational efficiency.
+
+# Blocking by disjunctions 
+
+- Produces overlapping blocks of the data.
+
+\vspace{3mm}
+
+- Using multiple keys to consider typographical
+or measurement errors that would exclude true matches.
+    * Blocking by last name initial or zip code
+    
+\begin{center}
+\begin{tabular}{ l l l l }
+ {\color{red}\emph{A}} & Mary Clain & 123 Oak St & 90210 \\
+ {\color{red}\emph{B}} & Mary Klein & 123 Oak Street & 90210 \\
+ {\color{red}\emph{C}} & Mary Klain & 123 Oak St & 50210 \\
+\end{tabular}
+\end{center}
+
+- Reduction in false negative rates.
+
+
+# Soundex algorithm
+
+
+- Generates a code that represents the phonetic pronunciation of a word, helps identifying spelling variations of names. 
+
+\vspace{2mm}
+
+- The Soundex code for a name consists of a letter followed by three numerical digits: 
+    * the letter is the first letter of the name,
+    * the digits encode the remaining consonants.
+
+\vspace{2mm}
+
+- Consonants at a similar place of articulation share the same digit 
+    * e.g. the labial consonants B, F, P and V are each encoded as the number 1.
+
+# Example: Soundex algorithm
+
+```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
+RLdata500c <- RLdata500[,-c(2,4)]
+cln <- table(identity.RLdata500)
+iddup <- which(cln>1)-1
+dup <- which(identity.RLdata500%in%iddup)
+sub_dup <- RLdata500c[dup,]
+oid <- order(identity.RLdata500[dup])
+dup_set <- sub_dup[oid,]
+tail(dup_set)
+```
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(SoundexBR)
+tail(soundexBR(dup_set$fname_c1))
+tail(soundexBR(dup_set$lname_c1))
+```
+
+# Example: Soundex algorithm
+
+```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
+head(dup_set)
+```
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(SoundexBR)
+head(soundexBR(dup_set$lname_c1))
+```
+# Cluster-based Blocking
+
+- Records agree on the blocking variables but are still very different 
+    * e.g. two different people with the same lastname initial and gender
+
+\vspace{2mm}
+
+- The records in a cluster should be similar and therefore good candidate pairs for linkage.
+
+\vspace{2mm}
+
+- Methods to find clusters based on strings and cheap distance measures  
+    * Threshold Nearest Neighbor 
+    * K-Nearest Neighbor 
+    * Canopies (fuzzy blocking)
+
+# TNN and KNN
+
+- Start with a single record as the base of the first cluster.
+
+\vspace{2mm}
+
+- Recursively add the nearest neighbors of records to the cluster until the distance to the nearest neighbor exceeds some threshold $t$.
+
+\vspace{2mm}
+
+- Choose one of the remaining records to start the next cluster.
+
+\vspace{2mm}
+
+- For KNN, ensure that each cluster has at least k records.
+
+# Canopies
+
+- Canopies is not strictly a blocking method $\rightarrow$ fuzzy blocking
+
+\vspace{1mm}
+
+- Records can be assigned to multiple blocks $\rightarrow$ overlapping clusters not a partition of the data.
+    * Randomly pick a record to be the base of the first canopy
+    * Records within distance $t_1$ are grouped into that canopy 
+    * Remove records within distance $t_2 \leq t_1$ of the base
+    * Pick another new record to start a second canopy
+
+
+# Drawbacks
+
+- Rough distance measures for complicated high-dimensional records are non-trivial.
+
+\vspace{2mm}
+
+- Requires actually performing all or nearly all comparisons to compute  
+pairwise distances.
+
+\vspace{2mm}
+
+- Note that performing traditional blocking as a first step can reduce the space considerably.
+
+[[I think I'd like to talk about hierarchical clustering and kmeans and show an illustration with the package, don't know if instead of TNN and KNN or added]]
