@@ -35,48 +35,6 @@ conditional on the observed data.
 - Propagating linkage error as an added component of uncertainty in the estimation process.
     * Relevant for subsequent modeling.
 
-
-# The Fellegi-Sunter approach (1969)
-
-- Represent every pair of records using vector of features that describe similarity between individual record fields. 
-    * Use string metrics (Jaro-Winkler) and edit-distances for names and strings        of numbers.
-
-\vspace{2mm}
-
-- Place feature vectors for record pairs into three classes: matches $(M)$, nonmatches $(U)$, and possible matches.
-
-\vspace{2mm}
-
-- Let $P(\gamma|M)$ and $P(\gamma|U)$ be probabilities of observing a feature vector $\gamma$ for a matched and nonmatched pair, respectively.
-
-# The Fellegi-Sunter approach (1969)
-
-- Perform record-pair classification by calculating the ratio $(P(\gamma|M)/P(\gamma|U))$ for each candidate record pair.
-
-\vspace{2mm}
-
-- Establish two thresholds based on desired error levels to optimally separate the ratio values for matches, possibly matches, and nonmatches.
-
-\vspace{2mm}
-
--  \textcolor{blue}{Drawbacks}: only for two files, no trasitive closures.
-
-# Fellegi-Sunter generalization
-
-
-- Extension for multiple files solving the problem of non–transitive decisions.
-
-\vspace{2mm}
-
-- Provide matching probabilities for the record K-tuples, necessary to incorporate the uncertainty of the linkage procedure in posterior analysis
-
-\vspace{2mm}
-
-- M. Sadinle and S.E. Fienberg (2013). “A Generalized Fellegi-Sunter Framework for Multiple Record Linkage With Application to Homicide Record Systems.” J. Amer. Statist. Assoc., 108 (502), 385–397.
-
-<!-- 67 homicides recorded by Colombia DANE, 62 by National Police, and 33 Forensics Institute (medicina legal) --> 
-
-
 # Clustering Approaches
 
 - Record linkage can be naturally seen as a clustering problem.
@@ -86,8 +44,24 @@ conditional on the observed data.
 
 - Records representing the same individual are clustered to a latent entity producing a partition of the data.
     * Steorts, R., Hall, R., and Fienberg, S.E. (2016). A Bayesian Approach to Graphical Record Linkage and De-duplication, Journal of the American Statistical Association, 111:516 (1660-1672).
+    \vspace{1mm}
     * Sadinle, M. (2014). Detecting duplicates in a homicide registry using a
-275 bayesian partitioning approach. The Annals of Applied Statistics, Vol. 8, No. 4, 2404–2434
+bayesian partitioning approach. The Annals of Applied Statistics, Vol. 8, No. 4, 2404–2434
+
+# Record Linkage and Clustering 
+
+Which records correspond to the same person?
+\begin{figure}
+\includegraphics[scale=0.35,keepaspectratio]{figures/DukeRL}
+\end{figure}
+
+# Record Linkage and Clustering 
+
+Each entity is associated with one or more records and the
+goal is to recover the latent entities (clusters).
+\begin{figure}
+\includegraphics[scale=0.3,keepaspectratio]{figures/DukeRLlatent}
+\end{figure}
 
 # Graphical Record Linkage
 
@@ -100,7 +74,6 @@ Graphical model representation of  \textcolor{blue}{Steorts et al. (2016)}:
 such that each record is assumed to be equally likely a priori to correspond to any of the N latent individuals. Thus, it treats the records as if they are a random sample drawn with replacement.
 % any two partitions with the same number of latent entities are equally probably a priori.--> 
 - Requires information about the number of latent entities a priori and it is very informative.
-\textcolor{red}{[[Ask Beka for Fig 2 in SMERED paper, network representation]]}
 
 # Partition-based Bayesian clustering models
 
