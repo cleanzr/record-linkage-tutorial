@@ -514,37 +514,21 @@ qplot(lsh_jaccard$score)
 
 The last thing we need is to go from candidate pairs to blocks
 
-\tiny 
+\footnotesize
 ```{r, echo=TRUE}
-# formating object
-candidates <- as.data.frame(candidates)[, 1:2] # as data frame
-candidates$block <- 1 # default all blocks to 1
+library(igraph) #graph package
 
-# identify groups truth
-prev_id <- candidates[1, 1] # get the first id
-for(i in unique(candidates[-1, 1])) { # go through all other ids
-  matches <- candidates[candidates[, 1] == prev_id, 2] # ids that get matched to the first id
-  prev_block <- candidates[candidates[, 1] == prev_id, "block"] # block of the previous id
-  if(!(i %in% matches)) { # if i is not matched
-    candidates[candidates[, 1] == i, "block"] <- unique(prev_block) + 1 # get new block number
-    prev_id <- i # update previous id
-  } else {
-    candidates[candidates[, 1] == i, "block"] <- unique(prev_block) # assign old block number
-  } 
-}
+# think of each record as a node
+# there is an edge between nodes if they are candidates
+g <- make_empty_graph(n, directed = FALSE) # empty graph
+g <- add_edges(g, as.vector(t(candidates[, 1:2]))) # candidate edges
+g <- set_vertex_attr(g, "id", value = dat$id) # add id
 
-# get all ids and their blocks uniquely
-unique_grp <- rbind(setNames(candidates[, c(1, 3)], c("id", "block")), 
-                    setNames(candidates[, c(2, 3)], c("id", "block")))
-unique_grp <- unique(unique_grp)
-
-# find records that have no match
-no_match <- setdiff(dat$id, unique_grp$id) # these are id's not blocked
-no_match <- data.frame(id = no_match,
-                       block = (max(unique_grp$block) + 1):(max(unique_grp$block) + length(no_match)))
-
-# get the blocks and ids
-unique_grp <- rbind(unique_grp, no_match)
+# get custers, these are the blocks
+clust <- components(g, "weak") # get clusters
+blocks <- data.frame(id = V(g)$id, # record id
+                     block = clust$membership) # block number  
+head(blocks)
 ```
 
 # Your turn
@@ -560,12 +544,17 @@ Using the `fname_c1` and `lname_c1` columns in the `RecordLinkage::RL500` datase
 # Even faster?
 
 (**fast**): In minhashing we have to perform $m$ permutations to create multiple hashes
-
+\vfill
 (**faster**): We would like to reduce the number of hashes we need to create -- "Densified" One Permutation Hashing (DOPH)
+\vfill
 
 - One permutation of the signature matrix is used
 - The feature space is then binned into $m$ evenly spaced bins
 - The $m$ minimums (for each bin separately) are the $m$ different hash values
+
+\vfill
+
+# "Densified" One Permutation Hashing (DOPH)
 
 ![](images/doph.png)
 
