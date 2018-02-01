@@ -29,7 +29,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ page.root }}index.html">Agron 590RD @ ISU</a>
+            <a class="navbar-brand" href="{{ page.root }}index.html">Record Linkage Workshop</a>
           </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -42,7 +42,7 @@
       					  {% assign current = 'active' %}
       				  {% endif %}
       				  <li class="{{ current }}">
-      					<a href="{{ link.url }}">{{ link.text }}</a>
+      					<a href="{{ page.root }}{{ link.url }}">{{ link.text }}</a>
       				  </li>
       				{% endfor %}
             </ul>
