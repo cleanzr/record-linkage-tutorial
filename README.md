@@ -5,7 +5,7 @@
 Rebecca C. Steorts, Assistant Professor, Duke University 
 https://resteorts.github.io/
 
-Brenda Betancourt, Berstein-Forester Fellow, Duke University
+Brenda Betancourt, Foerster-Bernstein Postdoctoral Fellow, Duke University
 https://www.brendabc.net/
 
 Andee Kaplan, Postdoctoral Scholar, Duke University
