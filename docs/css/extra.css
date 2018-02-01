@@ -1,13 +1,8 @@
-dt {
-    display: block;
+#left {
+  width: 300px; 
+  float: left;
 }
 
-
-dl {
-    margin-bottom: 0;
-}
-
-dd {
-    -webkit-margin-start: 40px;
-    -moz-margin-start: 40px;
+#right {
+  margin-left: 320px;
 }
