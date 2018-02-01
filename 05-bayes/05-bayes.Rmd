@@ -1,22 +1,23 @@
 ---
-title: "Introduction to Bayesian record linkage "
-author: Brenda Betancourt and Andee Kaplan
-institute: |
-    | Duke University
-    | Department of Statistical Science
-shortinstitute: Duke University
+title: 'Introduction to Bayesian record linkage '
+author: "Brenda Betancourt and Andee Kaplan"
 date: |
   | February 8, 2018
   |
-  | Slides available at <http://bit.ly/cimat-bayes>
   |
-output: 
+  | Slides available at <http://bit.ly/cimat-bayes>
+output:
   beamer_presentation:
-    keep_tex: false
+    keep_tex: no
     template: beamer.tex
-fig_caption: true
+  slidy_presentation: default
+institute: |
+  | Duke University
+  | Department of Statistical Science
+natbib: yes
+fig_caption: yes
+shortinstitute: Duke University
 classoption: compress
-natbib: true
 ---
 
 ```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
@@ -46,9 +47,9 @@ problems:
 
 \vspace{1mm}
 
-- Exact computation of the probability that each pair is a match,
+- Exact computation of the probability that each pair of records is a match,
 conditional on the observed data. 
-    * Results conditioning on observed events are more directly interpretable than those obtained by conditioning on unobservable hypotheses.
+    * Posterior distribution of linkage structure.
 
 \vspace{2mm}
 
@@ -57,7 +58,7 @@ conditional on the observed data.
 
 # Clustering Approaches
 
-- \textcolor{red}{Note}: Reliable and accurate linkage depends greatly on the quantity and quality of the identifying information.
+- \textcolor{blue}{Note}: Reliable and accurate linkage depends greatly on the quantity and quality of the identifying information.
 
 \vspace{2mm}
 
@@ -73,7 +74,7 @@ conditional on the observed data.
 
 Which records correspond to the same person?
 \begin{figure}
-\includegraphics[scale=0.35,keepaspectratio]{figures/DukeRL}
+\includegraphics[scale=0.35,keepaspectratio]{figures/linkage1}
 \end{figure}
 
 # Record Linkage and Clustering 
@@ -81,24 +82,29 @@ Which records correspond to the same person?
 Each entity is associated with one or more records and the
 goal is to recover the latent entities (clusters).
 \begin{figure}
-\includegraphics[scale=0.3,keepaspectratio]{figures/DukeRLlatent}
+\includegraphics[scale=0.43,keepaspectratio]{figures/latent1}
+\end{figure}
+
+# Record Linkage and Clustering 
+
+Eight latent entities: One cluster of size 4, one of size 2, six of size 1
+\begin{figure}
+\includegraphics[scale=0.45,keepaspectratio]{figures/latent2}
 \end{figure}
 
 # Partition-based Bayesian clustering models
 
 Goal: cluster N data points into $K$ clusters.
 
-\vspace{1mm}
-
-- Place a prior distribution over partitions of $[N] = \{1,\ldots,N\}$
+- Let $C_N$ be a random partition of $[N] = \{1,\ldots,N\}$
 
 \vspace{1mm}
 
-- Let $C_N$ be a random partition of $[N]$
+- Place a prior distribution over the random partitions $\{C_N\}$
 
 \vspace{1mm}
 
-- $C_N$ represented by a set of cluster assignments i.e linkage structure.
+- A partition $C_N$ is represented by a set of cluster assignments i.e linkage structure.
 
 \vspace{1mm}
 
@@ -107,11 +113,11 @@ Goal: cluster N data points into $K$ clusters.
 
 # Notation
 
-- $X_{ijl}$: observed value of the lth field for the jth record in the ith data set, $1 \leq i \leq k$ and $1 \leq j \leq n_i$. 
+- $X_{ij\ell}$: observed value of the lth field for the jth record in the ith data set, $1 \leq i \leq k$ and $1 \leq j \leq n_i$. 
 
 \vspace{1mm}
 
-- $Y_{j'l}$: true value of the lth field for the j'th latent individual. 
+- $Y_{j'\ell}$: true value of the lth field for the j'th latent individual. 
 
 \vspace{1mm}
 
@@ -121,7 +127,7 @@ Goal: cluster N data points into $K$ clusters.
 
 \vspace{1mm}
 
-- $z_{ijl}$: indicator of whether a distortion has occurred for record field value $X_{ijl}$
+- $z_{ij\ell}$: indicator of whether a distortion has occurred for record field value $X_{ij\ell}$
 
 <!--
 - $X_{ijl}$ and $Y_{j'l}$ represent the same individual if and only if $\lambda_{ij} = j'$ 
@@ -160,15 +166,17 @@ such that each record is assumed to be equally likely a priori to correspond to 
 - The number of data points in each cluster should remain small even for large data sets $\rightarrow$ Large number of singletons and small clusters.
 \end{minipage}
 
-# Mixture Models
+# Dirichlet Process Mixture Models
 
 Other clustering tasks require models that assume cluster sizes
 grow linearly with the size of the data set.
 
 \begin{itemize}
 
-\item Dirichlet process (DP)  $\Longrightarrow$
-Chinese Restaurant Process (CRP)
+\item $\boldsymbol{\Lambda} \sim \text{DP}(\alpha)$, Dirichlet Process 
+prior with concentration parameter $\alpha$
+
+\item Chinese Restaurant Process (CRP)
 \begin{figure}
 \includegraphics[scale=0.6,keepaspectratio]{figures/chinesealpha}
 \end{figure}
@@ -224,36 +232,53 @@ variables.
 # Model Specification: String model
 
 -  The distortion of string-valued variables is modeled using a probabilistic mechanism based on some measure of distance between the true and distorted strings.
+\begin{center}
+$$P(X_{ij\ell}=w| \lambda_{ij}, Y_{\lambda_{ij}\ell}, z_{ij\ell})=
+\frac{\alpha_\ell\exp[-{\color{blue}c d(w, Y_{\lambda_{ij}\ell})}]}
+{\sum_{w \in S_{l}}\alpha_\ell\exp[-c d(w, Y_{\lambda_{ij}\ell})]}$$
+\end{center}
 
-\begin{figure}
-\includegraphics[scale=0.15,keepaspectratio]{figures/likstrings}
-\end{figure}
-where $c$ ia a parameter that needs to be spcified and $d$ represents a string metric distance e.g. \textcolor{blue}{Levenshtein or Jaro-Winkler}.
+
+where $c$ is a parameter that needs to be specified and $d$ represents a string metric distance e.g. \textcolor{blue}{Levenshtein or Jaro-Winkler}.
 
 
 # Model Specification: Likelihood Function
 
-\begin{figure}
-\includegraphics[scale=0.17,keepaspectratio]{figures/EBlikelihood}
-\end{figure}
+\[
+  X_{ij\ell}=w| \lambda_{ij}, Y_{\lambda_{ij}\ell}, z_{ij\ell}  \stackrel{iid}{\sim} \left.
+  \begin{cases}
+    \delta(Y_{\lambda_{ij}\ell}), & \text{if } z_{ij\ell} = 0 \\
+    F_{\ell}(Y_{\lambda_{ij}\ell}), & \text{if } z_{ij\ell} = 1 
+    \text{ and }\ell \leq p_{s} \\
+    G_{\ell}, & \text{if } z_{ij\ell} = 1 
+    \text{ and }\ell > p_{s}
+  \end{cases}
+  \right.
+\]
 
-- $z_{ijl} = 0$, then $X_{ijl} = Y_{\lambda_{ijl}}$
+- $z_{ij\ell} = 0$, then $X_{ij\ell} = Y_{\lambda_{ij\ell}}$
 
 \vspace{0.5mm}
 
-- ${\color{blue}F_{l}}$ is the string model in the last slide.
+- ${\color{blue}F_{\ell}}$ is the string model in the last slide.
 
 \vspace{0.5mm}
 
-- ${\color{blue}G_{l}}$ is the empirical distribution function of the categorical data.
+- ${\color{blue}G_{\ell}}$ is the empirical distribution function of the categorical data.
+
 
 # Model Specification: Hierarchical Model
 
-\begin{figure}
-\includegraphics[scale=0.2,keepaspectratio]{figures/HBmodel}
-\end{figure}
+\begin{center}
+\begin{align*}
+& Y_{\lambda_{ij}\ell} \stackrel{iid}{\sim} G_{\ell}  \\
+& z_{ij\ell}|\beta{i\ell}\stackrel{iid}{\sim} \text{Bernoulli}(\beta{i\ell})   \\
+& \beta{i\ell}\stackrel{iid}{\sim} \text{Beta}(a,b) \\
+& \lambda_{ij} \stackrel{iid}{\sim} \text{DiscreteUniform(1,\ldots,N)}
+\end{align*}
+\end{center}
 
-- $\beta_{il}$ represent the distortion probabilities of the fields. 
+- $\beta_{i\ell}$ represent the distortion probabilities of the fields. 
 
 \vspace{0.5mm}
 
@@ -404,14 +429,15 @@ c(precision, recall)
 - Steorts, R. (2015), Entity Resolution with Empirically Motivated
 Priors, Bayesian Analysis 10(4), pp. 849–875.
 
-- Steorts, R., Hall, R., and Fienberg, S.E. (2016). A Bayesian Approach to Graphical Record Linkage and De-duplication, Journal of the American Statistical Association, 111:516 (1660-1672).
+- Steorts et al. (2016). A Bayesian Approach to Graphical Record Linkage and De-duplication, Journal of the American Statistical Association, 111:516,  pp.1660-1672.
 
 - Sadinle, M. (2014). Detecting duplicates in a homicide registry using a
-bayesian partitioning approach. The Annals of Applied Statistics, Vol. 8, No. 4, 2404–2434
+bayesian partitioning approach. The Annals of Applied Statistics 8(4),  pp. 2404–2434
 
--  Zanella et al (2016). Flexible Models for Microclustering with Applications to Entity Resolution, Advances in Neural Information Processing Systems (NIPS), Vol. 29, pp 1417-1425.
+-  Zanella et al. (2016). Flexible Models for Microclustering with Applications to Entity Resolution, Advances in Neural Information Processing Systems (NIPS) 29, pp. 1417-1425.
 
-- Miller et al (2015). The Microclustering Problem: When the
+- Miller et al. (2015). The Microclustering Problem: When the
 Cluster Sizes Don't Grow with the Number of Data Points. NIPS Bayesian Nonparametrics: The Next Generation Workshop Series.
+
 
 
