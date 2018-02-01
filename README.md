@@ -1,6 +1,6 @@
 # Some of Entity Resolution
 
-Speakers (in order of speaking): 
+## Speakers (in order of speaking) 
 
 Rebecca C. Steorts, Assistant Professor, Duke University 
 https://resteorts.github.io/
@@ -14,11 +14,11 @@ http://andeekaplan.com/
 Beidi Chen, PhD Student, Rice University
 http://rush.rice.edu/team.html
 
-Abstract
+## Abstract
 
 Very often information about social entities is scattered across multiple databases.  Combining that information into one database can result in enormous benefits for analysis, resulting in richer and more reliable conclusions.  Among the types of questions that have been, and can be, addressed by combining information include: How accurate are census enumerations for minority groups? How many of the elderly are at high risk for sepsis in different parts of the country? How many people were victims of war crimes in recent conflicts in Syria? In most practical applications, however, analysts cannot simply link records across databases based on unique identifiers, such as social security numbers, either because they are not a part of some databases or are not available due to privacy concerns.  In such cases, analysts need to use methods from statistical and computational science known as entity resolution (record linkage or de-duplication) to proceed with analysis.  Entity resolution is not only a crucial task for social science and industrial applications, but is a challenging statistical and computational problem itself. In this short course, we first provide an overview and introduction to entity resolution. Second, we provide an introduction to computational speed-ups, known as blocking or partitioning. Third, we introduce a sub-quadratic type of blocking — locality sensitive hashing — which allows one to place similar entities into blocks. Fourth, we illustrate how locality sensitive hashing can be used for unique estimating the number of documented identifiable deaths in a subset of the Syrian conflict using new methodology. Fifth, we provide an introduction to Bayesian entity resolution, which allows one to propagate the entity resolution error exactly into an subsequent process. In the workshop, demos will be given using open software. 
 
-Overview of Workshop
+## Overview of Workshop
 
 TODO: everyone please put an abstract on your talk please no later than Friday. 
 
