@@ -1,13 +1,13 @@
-#left {
-  width: 300px; 
+.left {
+  width: 150px; 
   float: left;
 }
 
-#left > img {
-  width: 280px;
+.left > img {
+  width: 150px;
 }
 
-#right {
-  margin-left: 320px;
+.right {
+  margin-left: 170px;
 }
 
