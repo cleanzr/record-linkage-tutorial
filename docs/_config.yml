@@ -4,6 +4,6 @@ url: https://resteorts.github.io/record-linkage-tutorial
 markdown: kramdown
 navigation:
 - text: Materials
-  url: /index.html
+  url: index.html
 - text: People
-  url: /people.html
+  url: people.html
