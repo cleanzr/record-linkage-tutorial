@@ -1,13 +1,14 @@
 .left {
-  width: 150px; 
+  width: 120px; 
   float: left;
 }
 
 .left > img {
-  width: 150px;
+  width: 120px;
 }
 
 .right {
-  margin-left: 170px;
+  margin-left: 140px;
+  width: 60%;
 }
 
