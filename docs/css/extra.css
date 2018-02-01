@@ -3,6 +3,11 @@
   float: left;
 }
 
+#left img {
+  width: 280px;
+}
+
 #right {
   margin-left: 320px;
 }
+
