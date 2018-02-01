@@ -1,0 +1,9 @@
+name: Some of Entity Resolution
+description: A workshop introducing some of the important topics in record linkage.
+url: https://resteorts.github.io/record-linkage-tutorial
+markdown: kramdown
+navigation:
+- text: Materials
+  url: /index.html
+- text: People
+  url: /people.html
