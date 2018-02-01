@@ -1110,7 +1110,37 @@ There are two methods based upon random sampling that do satisfy the above requi
 
 Does there exist a random sampling method based on similarity with computational complexity less than sub-quadratic? 
 
+\vspace*{1em}
+
 Yes! (It's a variant of locality sensitive hashing (LSH). 
+
+}
+
+\frame{
+\frametitle{Locality Sensitive Hashing (LSH)}
+
+
+Hash functions are locality-sensitive if for any random hash function $h(\cdot)$ and for any pairs of data points (records) $x$ and $y$ we have the following:
+
+\begin{enumerate}
+\item Pr(h(x) = h(y)) is ``high" if x is close to y. 
+\item Pr(h(x) = h(y)) is ``low" if x if far from y. 
+\end{enumerate}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=\textwidth]{figures/lsh}
+\label{default}
+\end{center}
+\end{figure}
+
+As described earlier, we need to define a type of similarity and a type of dimension reduction. 
+
+\vspace*{1em}
+
+We will use Jaccard similarity and the minwise hash (Shrivastava and Li, 2014). 
+
 
 }
 
@@ -1127,7 +1157,7 @@ Yes! (It's a variant of locality sensitive hashing (LSH).
 %Our unique entity estimation procedure is broadly applicable to many applications, and we illustrate this on three additional real, fully labelled, entity resolution data sets, which include the food industry, the music industry, and an application from official statistics. In the absence of ground truth information, we estimate that the number of documented identifiable deaths for the Syrian conflict is 191,874, with standard deviation of 1,772, reported casualties, which is very close to the 2014 HRDAG estimate of 191,369. This clearly demonstrates the power of our efficient estimator in practice, which does not rely on any strong modeling assumptions. Out of 63 billion possible pairs, our estimator only queries around 450,000 adaptively sampled pairs ($\simeq O(M)$) for labels, yielding a 99.99\% reduction. The labelling was done using support vector machines (SVMs) trained on a small number of hand-matched, labeled examples provided by five domain experts. Our work is an example of the efforts required to solve a real noisy challenging problem where modeling assumptions may not hold.
 \end{enumerate}
 
-Chen, Shrivastava, Steorts (2018), Minor Revision, AoAS \url{https://arxiv.org/abs/1710.02690},\\
+Chen, Shrivastava, \textbf{RCS} (2018), Minor Revision, AoAS \url{https://arxiv.org/abs/1710.02690},\\
  \href{https://github.com/keroro824/RL_data/blob/master/README}{Code Link}
 
 
@@ -1156,7 +1186,7 @@ We approximate the number of connected components in the corresponding graph $G^
 \center
 \begin{minipage}{0.7\linewidth}
 \begin{figure}[H]
-			\includegraphics[width=\columnwidth]{figures/map}
+			\includegraphics[width=\columnwidth]{figures/mapping}
 			\caption{A toy example of mapping records to a graph, where vertices represent records and edges refer the relation between records.}
 			\label{map}
 \end{figure}
