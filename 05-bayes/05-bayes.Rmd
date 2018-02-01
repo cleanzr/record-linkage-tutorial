@@ -39,7 +39,7 @@ theme_set(theme_bw(base_family = "serif", base_size = 30))
     p(\boldsymbol \theta | \boldsymbol x) = \frac{p(\boldsymbol x, \boldsymbol \theta)}{p(\boldsymbol x)} = \frac{p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)}{p(\boldsymbol x)} \propto p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)
     $$
 
-# Why Bayes?
+# Why Bayesian Record Linkage?
 
 A Bayesian framework is suitable to solve the following
 problems:
@@ -57,16 +57,17 @@ conditional on the observed data.
 
 # Clustering Approaches
 
+- \textcolor{red}{Note}: Reliable and accurate linkage depends greatly on the quantity and quality of the identifying information.
+
+\vspace{2mm}
+
 - Record linkage can be naturally seen as a clustering problem.
     * Supervised and unsupervised approches.
     
 \vspace{2mm}
 
 - Records representing the same individual are clustered to a latent entity producing a partition of the data.
-    * Steorts, R., Hall, R., and Fienberg, S.E. (2016). A Bayesian Approach to Graphical Record Linkage and De-duplication, Journal of the American Statistical Association, 111:516 (1660-1672).
-    \vspace{1mm}
-    * Sadinle, M. (2014). Detecting duplicates in a homicide registry using a
-bayesian partitioning approach. The Annals of Applied Statistics, Vol. 8, No. 4, 2404–2434
+
 
 # Record Linkage and Clustering 
 
@@ -83,21 +84,9 @@ goal is to recover the latent entities (clusters).
 \includegraphics[scale=0.3,keepaspectratio]{figures/DukeRLlatent}
 \end{figure}
 
-# Graphical Record Linkage
-
-Graphical model representation of  \textcolor{blue}{Steorts et al. (2016)}:
-\begin{figure}
-\includegraphics[scale=0.35,keepaspectratio]{figures/recordLinkage_graphicalModel}
-\end{figure}
-- $\Lambda_{ij}$ represents the linkage structure $\rightarrow$  \textcolor{blue}{uniform prior}.
-<!--uniform over the set of {1,...,N}
-such that each record is assumed to be equally likely a priori to correspond to any of the N latent individuals. Thus, it treats the records as if they are a random sample drawn with replacement.
-% any two partitions with the same number of latent entities are equally probably a priori.--> 
-- Requires information about the number of latent entities a priori and it is very informative.
-
 # Partition-based Bayesian clustering models
 
-Goal: cluster N data points $x_1,\cdots, x_N$ into $K$ clusters.
+Goal: cluster N data points into $K$ clusters.
 
 \vspace{1mm}
 
@@ -109,13 +98,46 @@ Goal: cluster N data points $x_1,\cdots, x_N$ into $K$ clusters.
 
 \vspace{1mm}
 
-- $C_N$ represented by a set of cluster assignments $z_1,\ldots ,z_N$.
+- $C_N$ represented by a set of cluster assignments i.e linkage structure.
 
 \vspace{1mm}
 
 - The number of clusters $K$ does not need to be specified a priori $\rightarrow$
 \textcolor{blue}{Non-parametric} latent variable approach.
 
+# Notation
+
+- $X_{ijl}$: observed value of the lth field for the jth record in the ith data set, $1 \leq i \leq k$ and $1 \leq j \leq n_i$. 
+
+\vspace{1mm}
+
+- $Y_{j'l}$: true value of the lth field for the j'th latent individual. 
+
+\vspace{1mm}
+
+- $\lambda_{ij}$: latent individual to which the jth record in the ith list corresponds. $\boldsymbol{\Lambda}$ is the collection of these values.. 
+    * e.g. Five records in one list $\boldsymbol{\Lambda}= \{1, 1, 2, 3, 3\}
+    \rightarrow$ 3 latent entities or clusters.
+
+\vspace{1mm}
+
+- $z_{ijl}$: indicator of whether a distortion has occurred for record field value $X_{ijl}$
+
+<!--
+- $X_{ijl}$ and $Y_{j'l}$ represent the same individual if and only if $\lambda_{ij} = j'$ 
+-->
+
+# Graphical Record Linkage
+
+Graphical model representation of  \textcolor{blue}{Steorts et al. (2016)}:
+\begin{figure}
+\includegraphics[scale=0.35,keepaspectratio]{figures/recordLinkage_graphicalModel}
+\end{figure}
+- $\Lambda_{ij}$ represents the linkage structure $\rightarrow$  \textcolor{blue}{uniform prior}.
+<!--uniform over the set of {1,...,N}
+such that each record is assumed to be equally likely a priori to correspond to any of the N latent individuals. Thus, it treats the records as if they are a random sample drawn with replacement.
+% any two partitions with the same number of latent entities are equally probably a priori.--> 
+- Requires information about the number of latent entities a priori and it is very informative.
 
 # Record Linkage and Microclustering
 
@@ -157,14 +179,89 @@ Chinese Restaurant Process (CRP)
 
 # Microclustering models
 
-- Prior distributions on partitions that are suitable for the microclustering problem.
-    * Zanella et al (2016). Flexible Models for Microclustering with Applications to Entity Resolution, Advances in Neural Information Processing Systems (NIPS), Vol. 29, pp 1417-1425.
-
+- Prior distributions on partitions that are suitable for the microclustering problem 
+    * Miller et al, 2015 and Zanella et al, 2016
+   
 \vspace{1mm}
 
 - Scalable sampling algorithm in combination with blocking techniques.
-    * Miller et al (2015). The Microclustering Problem: When the
-Cluster Sizes Don't Grow with the Number of Data Points. NIPS Bayesian Nonparametrics: The Next Generation Workshop Series.
+
+\vspace{1mm}
+
+- \textcolor{blue}{NBNB model}: Prior distribution on partitions that exhibits the microclustering property:
+    * \textcolor{blue}{$K$} represents the number of latent entities or clusters
+    * \textcolor{blue}{$N_{k}$} represents the size of cluster $k$ i.e. $N = \sum_{k=1}^K N_k$
+
+\begin{center}    
+$
+K \sim \text {\color{blue}{Neg-Bin}(a,q)}
+\quad \textrm{and} \quad
+N_1,\ldots, N_k \mid K \sim {\color{blue}\text{Neg-Bin}(r,p)}
+$
+\end{center}
+
+# Empirically Motivated Priors
+
+- The prior for the latent entities is the empirical distribution 
+of the data \textcolor{blue}{(Steorts R., 2015)}.
+    * Avoids the problem of specifying a prior but requires specification of $K$ in advance.
+    
+\vspace{1mm}
+- This approach allows us to include both categorical and string-valued 
+variables.
+
+\vspace{1mm}
+
+- The clustering approaches in Steorts et al. (2016) and Zanella et al. (2016) only handle categorical data.
+    * Prior specification involving string data is very difficult!  
+
+
+<!-- Smered only handles categorical same as microclustering and Maurcio's paper is for two files and handles strings too?
+ 
+ blink handles both sting and categorical, see comparison with smered in eblink paper-->
+
+
+# Model Specification: String model
+
+-  The distortion of string-valued variables is modeled using a probabilistic mechanism based on some measure of distance between the true and distorted strings.
+
+\begin{figure}
+\includegraphics[scale=0.15,keepaspectratio]{figures/likstrings}
+\end{figure}
+where $c$ ia a parameter that needs to be spcified and $d$ represents a string metric distance e.g. \textcolor{blue}{Levenshtein or Jaro-Winkler}.
+
+
+# Model Specification: Likelihood Function
+
+\begin{figure}
+\includegraphics[scale=0.17,keepaspectratio]{figures/EBlikelihood}
+\end{figure}
+
+- $z_{ijl} = 0$, then $X_{ijl} = Y_{\lambda_{ijl}}$
+
+\vspace{0.5mm}
+
+- ${\color{blue}F_{l}}$ is the string model in the last slide.
+
+\vspace{0.5mm}
+
+- ${\color{blue}G_{l}}$ is the empirical distribution function of the categorical data.
+
+# Model Specification: Hierarchical Model
+
+\begin{figure}
+\includegraphics[scale=0.2,keepaspectratio]{figures/HBmodel}
+\end{figure}
+
+- $\beta_{il}$ represent the distortion probabilities of the fields. 
+
+\vspace{0.5mm}
+
+- The parameters $a$ and $b$ for the Beta prior need to be specified. 
+
+\vspace{0.5mm}
+
+- The number of latent entities or clusters needs to be specified in advance. 
 
 # `blink` package
 
@@ -298,5 +395,23 @@ c(precision, recall)
 
 # Your turn
 
+
+
+# References
+
+\small
+
+- Steorts, R. (2015), Entity Resolution with Empirically Motivated
+Priors, Bayesian Analysis 10(4), pp. 849–875.
+
+- Steorts, R., Hall, R., and Fienberg, S.E. (2016). A Bayesian Approach to Graphical Record Linkage and De-duplication, Journal of the American Statistical Association, 111:516 (1660-1672).
+
+- Sadinle, M. (2014). Detecting duplicates in a homicide registry using a
+bayesian partitioning approach. The Annals of Applied Statistics, Vol. 8, No. 4, 2404–2434
+
+-  Zanella et al (2016). Flexible Models for Microclustering with Applications to Entity Resolution, Advances in Neural Information Processing Systems (NIPS), Vol. 29, pp 1417-1425.
+
+- Miller et al (2015). The Microclustering Problem: When the
+Cluster Sizes Don't Grow with the Number of Data Points. NIPS Bayesian Nonparametrics: The Next Generation Workshop Series.
 
 
