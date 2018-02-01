@@ -1,0 +1,417 @@
+---
+title: "Introduction to Bayesian record linkage "
+author: Brenda Betancourt and Andee Kaplan
+institute: |
+    | Duke University
+    | Department of Statistical Science
+shortinstitute: Duke University
+date: |
+  | February 8, 2018
+  |
+  | Slides available at <http://bit.ly/cimat-bayes>
+  |
+output: 
+  beamer_presentation:
+    keep_tex: false
+    template: beamer.tex
+fig_caption: true
+classoption: compress
+natbib: true
+---
+
+```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(ggplot2)
+
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
+theme_set(theme_bw(base_family = "serif", base_size = 30))
+```
+
+# What is "Bayesian"?
+
+1. Setting up a *full probability model* -- a joint probability distribution for all observable and unobservable quantities
+    \begin{align*}
+    p(\boldsymbol x | \boldsymbol \theta) &- \text{ likelihood} \\
+    p(\boldsymbol \theta) &- \text{ prior}
+    \end{align*}
+2. Conditioning on observed data -- calculating and interpreting the appropriate *posterior distribution*
+    $$
+    p(\boldsymbol \theta | \boldsymbol x) = \frac{p(\boldsymbol x, \boldsymbol \theta)}{p(\boldsymbol x)} = \frac{p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)}{p(\boldsymbol x)} \propto p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)
+    $$
+
+# Why Bayesian Record Linkage?
+
+A Bayesian framework is suitable to solve the following
+problems:
+
+\vspace{1mm}
+
+- Exact computation of the probability that each pair is a match,
+conditional on the observed data. 
+    * Results conditioning on observed events are more directly interpretable than those obtained by conditioning on unobservable hypotheses.
+
+\vspace{2mm}
+
+- Propagating linkage error as an added component of uncertainty in the estimation process.
+    * Relevant for subsequent modeling.
+
+# Clustering Approaches
+
+- \textcolor{red}{Note}: Reliable and accurate linkage depends greatly on the quantity and quality of the identifying information.
+
+\vspace{2mm}
+
+- Record linkage can be naturally seen as a clustering problem.
+    * Supervised and unsupervised approches.
+    
+\vspace{2mm}
+
+- Records representing the same individual are clustered to a latent entity producing a partition of the data.
+
+
+# Record Linkage and Clustering 
+
+Which records correspond to the same person?
+\begin{figure}
+\includegraphics[scale=0.35,keepaspectratio]{figures/DukeRL}
+\end{figure}
+
+# Record Linkage and Clustering 
+
+Each entity is associated with one or more records and the
+goal is to recover the latent entities (clusters).
+\begin{figure}
+\includegraphics[scale=0.3,keepaspectratio]{figures/DukeRLlatent}
+\end{figure}
+
+# Partition-based Bayesian clustering models
+
+Goal: cluster N data points into $K$ clusters.
+
+\vspace{1mm}
+
+- Place a prior distribution over partitions of $[N] = \{1,\ldots,N\}$
+
+\vspace{1mm}
+
+- Let $C_N$ be a random partition of $[N]$
+
+\vspace{1mm}
+
+- $C_N$ represented by a set of cluster assignments i.e linkage structure.
+
+\vspace{1mm}
+
+- The number of clusters $K$ does not need to be specified a priori $\rightarrow$
+\textcolor{blue}{Non-parametric} latent variable approach.
+
+# Notation
+
+- $X_{ijl}$: observed value of the lth field for the jth record in the ith data set, $1 \leq i \leq k$ and $1 \leq j \leq n_i$. 
+
+\vspace{1mm}
+
+- $Y_{j'l}$: true value of the lth field for the j'th latent individual. 
+
+\vspace{1mm}
+
+- $\lambda_{ij}$: latent individual to which the jth record in the ith list corresponds. $\boldsymbol{\Lambda}$ is the collection of these values.. 
+    * e.g. Five records in one list $\boldsymbol{\Lambda}= \{1, 1, 2, 3, 3\}
+    \rightarrow$ 3 latent entities or clusters.
+
+\vspace{1mm}
+
+- $z_{ijl}$: indicator of whether a distortion has occurred for record field value $X_{ijl}$
+
+<!--
+- $X_{ijl}$ and $Y_{j'l}$ represent the same individual if and only if $\lambda_{ij} = j'$ 
+-->
+
+# Graphical Record Linkage
+
+Graphical model representation of  \textcolor{blue}{Steorts et al. (2016)}:
+\begin{figure}
+\includegraphics[scale=0.35,keepaspectratio]{figures/recordLinkage_graphicalModel}
+\end{figure}
+- $\Lambda_{ij}$ represents the linkage structure $\rightarrow$  \textcolor{blue}{uniform prior}.
+<!--uniform over the set of {1,...,N}
+such that each record is assumed to be equally likely a priori to correspond to any of the N latent individuals. Thus, it treats the records as if they are a random sample drawn with replacement.
+% any two partitions with the same number of latent entities are equally probably a priori.--> 
+- Requires information about the number of latent entities a priori and it is very informative.
+
+# Record Linkage and Microclustering
+
+\begin{figure}
+\vspace*{-1.3cm}
+\hspace*{7.5cm} \includegraphics[scale=0.24,keepaspectratio]{figures/HRDAG-Staging-Logo-2}
+\end{figure}
+\hspace{-1cm}
+\begin{minipage}{4cm}
+\vspace{-1cm}
+%\includegraphics[height=5cm, width=3.5cm]{horner}
+ \includegraphics[scale=0.45,keepaspectratio]{figures/syria-sizes}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}{7cm}
+\vspace{-1.5cm}
+- Enumeration of victims of killings in Syria merging four databases.
+\vspace{1cm}
+
+- The number of data points in each cluster should remain small even for large data sets $\rightarrow$ Large number of singletons and small clusters.
+\end{minipage}
+
+# Mixture Models
+
+Other clustering tasks require models that assume cluster sizes
+grow linearly with the size of the data set.
+
+\begin{itemize}
+
+\item Dirichlet process (DP)  $\Longrightarrow$
+Chinese Restaurant Process (CRP)
+\begin{figure}
+\includegraphics[scale=0.6,keepaspectratio]{figures/chinesealpha}
+\end{figure}
+\item Carmona C., Nieto-Barajas L., Canale A. (2017), Model-based approach for household clustering with mixed scale variables \url{https://arxiv.org/abs/1612.00083} .
+\end{itemize}
+
+<!--The Ministry of Social Development in Mexico is in charge of creating and assigning social programmes targeting specific needs in the population for the improvement of quality of life. To better target the social programmes, the Ministry is aimed to find clusters of households with the same needs based on demographic characteristics as well as poverty conditions of the household.--> 
+
+# Microclustering models
+
+- Prior distributions on partitions that are suitable for the microclustering problem 
+    * Miller et al, 2015 and Zanella et al, 2016
+   
+\vspace{1mm}
+
+- Scalable sampling algorithm in combination with blocking techniques.
+
+\vspace{1mm}
+
+- \textcolor{blue}{NBNB model}: Prior distribution on partitions that exhibits the microclustering property:
+    * \textcolor{blue}{$K$} represents the number of latent entities or clusters
+    * \textcolor{blue}{$N_{k}$} represents the size of cluster $k$ i.e. $N = \sum_{k=1}^K N_k$
+
+\begin{center}    
+$
+K \sim \text {\color{blue}{Neg-Bin}(a,q)}
+\quad \textrm{and} \quad
+N_1,\ldots, N_k \mid K \sim {\color{blue}\text{Neg-Bin}(r,p)}
+$
+\end{center}
+
+# Empirically Motivated Priors
+
+- The prior for the latent entities is the empirical distribution 
+of the data \textcolor{blue}{(Steorts R., 2015)}.
+    * Avoids the problem of specifying a prior but requires specification of $K$ in advance.
+    
+\vspace{1mm}
+- This approach allows us to include both categorical and string-valued 
+variables.
+
+\vspace{1mm}
+
+- The clustering approaches in Steorts et al. (2016) and Zanella et al. (2016) only handle categorical data.
+    * Prior specification involving string data is very difficult!  
+
+
+<!-- Smered only handles categorical same as microclustering and Maurcio's paper is for two files and handles strings too?
+ 
+ blink handles both sting and categorical, see comparison with smered in eblink paper-->
+
+
+# Model Specification: String model
+
+-  The distortion of string-valued variables is modeled using a probabilistic mechanism based on some measure of distance between the true and distorted strings.
+
+\begin{figure}
+\includegraphics[scale=0.15,keepaspectratio]{figures/likstrings}
+\end{figure}
+where $c$ ia a parameter that needs to be spcified and $d$ represents a string metric distance e.g. \textcolor{blue}{Levenshtein or Jaro-Winkler}.
+
+
+# Model Specification: Likelihood Function
+
+\begin{figure}
+\includegraphics[scale=0.17,keepaspectratio]{figures/EBlikelihood}
+\end{figure}
+
+- $z_{ijl} = 0$, then $X_{ijl} = Y_{\lambda_{ijl}}$
+
+\vspace{0.5mm}
+
+- ${\color{blue}F_{l}}$ is the string model in the last slide.
+
+\vspace{0.5mm}
+
+- ${\color{blue}G_{l}}$ is the empirical distribution function of the categorical data.
+
+# Model Specification: Hierarchical Model
+
+\begin{figure}
+\includegraphics[scale=0.2,keepaspectratio]{figures/HBmodel}
+\end{figure}
+
+- $\beta_{il}$ represent the distortion probabilities of the fields. 
+
+\vspace{0.5mm}
+
+- The parameters $a$ and $b$ for the Beta prior need to be specified. 
+
+\vspace{0.5mm}
+
+- The number of latent entities or clusters needs to be specified in advance. 
+
+# `blink` package
+
+`R` package that removes duplicate entries from multiple databses using the empirical Bayes graphical method:
+
+```{r blink-install, eval=FALSE, echo=TRUE}
+install.packages("blink")
+```
+
+- Formatting data for use with `blink`
+- Tuning parameters
+- Running the Gibbs sampler (estimate model parameters)
+- Output
+
+
+# `RLdata500` data
+
+We will continue with the  `RLdata500` dataset in the `RecordLinkage` package consisting of $500$ records with 10% duplication.
+
+```{r data, echo=TRUE}
+library(blink) # load blink library
+library(RecordLinkage) # load data library
+data("RLdata500") # load data
+head(RLdata500) # take a look
+```
+
+# Formatting the data
+
+```{r, echo=TRUE}
+# categorical variables
+X.c <- as.matrix(RLdata500[, c("by","bm","bd")]) 
+p.c <- ncol(X.c) 
+
+# string variables 
+X.s <- as.matrix(RLdata500[, c("fname_c1", "lname_c1")]) 
+p.s <- ncol(X.s) 
+```
+
+`X.c` and `X.s` include all files stacked on top of each other, for categorical and string variables respectively
+
+```{r echo=TRUE}
+# keep track of which rows of are in which files
+file.num <- rep(c(1, 2, 3), c(200, 150, 150))
+```
+
+# Tuning parameters
+
+## Hyperparameters
+
+```{r, echo=TRUE}
+# Subjective choices for distortion probability prior
+# parameters of a Beta(a,b)
+a <- 1
+b <- 999
+```
+
+## Distortion
+
+```{r, echo=TRUE}
+# string distance function example
+d <- function(s1, s2) {
+  adist(s1, s2) # approximate string distance
+}
+
+# steepness parameter
+c <- 1
+```
+
+# Running the Gibbs sampler
+
+```{r, echo=TRUE, cache=TRUE, results='hide'}
+lam.gs <- rl.gibbs(file.num = file.num, # file
+                   X.s = X.s, X.c = X.c, # data 
+                   num.gs = 100000, # iterations
+                   a = a, b = b, # prior params
+                   c = c, d = d, # distortion
+                   M = 500) # max # latents
+```
+
+# Output
+
+\scriptsize
+
+```{r get-estimates-sizes, echo=TRUE, results="hide"}
+# count how many unique latent individuals
+size_est <- apply(lam.gs, 1, function(x) { 
+  length(unique(x)) 
+  })
+```
+
+```{r plots, fig.width=2.25, fig.height=2.5, fig.show='hold'}
+theme_set(theme_bw(base_family = "serif", base_size = 15))
+
+ggplot() +
+  geom_line(aes(1:100000, size_est)) +
+  xlab("Iteration") +
+  ylab("Estimated size")
+
+ggplot() +
+  geom_histogram(aes(size_est[-(1:25000)])) +
+  geom_vline(aes(xintercept=450), colour = "red") +
+  geom_vline(aes(xintercept=mean(size_est[-(1:25000)])), lty=2) +
+  xlab("Estimated size") +
+  xlim(c(400, 500))
+  
+```
+
+# Evaluation
+\scriptsize
+```{r, echo=TRUE, cache=TRUE}
+# estimated pairwise links
+est_links_pair <- pairwise(links(lam.gs[-(1:25000), ]))
+
+# true pairwise links
+true_links_pair <- pairwise(links(matrix(identity.RLdata500, nrow = 1)))
+
+#comparison
+comparison <- links.compare(est_links_pair, true_links_pair, counts.only = TRUE)
+
+# precision
+precision <- comparison$correct/(comparison$incorrect + comparison$correct)
+
+# recall
+recall <- comparison$correct/(comparison$correct + comparison$missing)
+
+
+# results
+c(precision, recall)
+```
+
+
+# Your turn
+
+
+
+# References
+
+\small
+
+- Steorts, R. (2015), Entity Resolution with Empirically Motivated
+Priors, Bayesian Analysis 10(4), pp. 849–875.
+
+- Steorts, R., Hall, R., and Fienberg, S.E. (2016). A Bayesian Approach to Graphical Record Linkage and De-duplication, Journal of the American Statistical Association, 111:516 (1660-1672).
+
+- Sadinle, M. (2014). Detecting duplicates in a homicide registry using a
+bayesian partitioning approach. The Annals of Applied Statistics, Vol. 8, No. 4, 2404–2434
+
+-  Zanella et al (2016). Flexible Models for Microclustering with Applications to Entity Resolution, Advances in Neural Information Processing Systems (NIPS), Vol. 29, pp 1417-1425.
+
+- Miller et al (2015). The Microclustering Problem: When the
+Cluster Sizes Don't Grow with the Number of Data Points. NIPS Bayesian Nonparametrics: The Next Generation Workshop Series.
+
+

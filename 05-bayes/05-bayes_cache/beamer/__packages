@@ -1,0 +1,12 @@
+base
+knitr
+ggplot2
+stringdist
+DBI
+RSQLite
+bit
+ff
+ffbase
+RecordLinkage
+plyr
+blink
