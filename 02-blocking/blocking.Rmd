@@ -63,7 +63,7 @@ rarely noise/error free.
 
 Best for short strings such as person names:
 
-- \textcolor{blue}{Levenshtein (edit) distance (1966)}: minimum number of substitutions required to transform one string into another e.g. A\textcolor{red}{d}a\textcolor{red}{m} vs A\textcolor{red}{l}a\textcolor{red}{n} has a distance $L=2$, normalized as $1-\frac{L}{maxLength} = 0.5$.
+- \textcolor{blue}{Levenshtein (edit) distance (1966)}: minimum number of substitutions required to transform one string into another e.g. A\textcolor{red}{d}a\textcolor{blue}{m} vs A\textcolor{blue}{l}a\textcolor{blue}{n} has a distance $L=2$, normalized as $1-\frac{L}{maxLength} = 0.5$.
 
 \vspace{1mm}
 
@@ -73,7 +73,7 @@ Best for short strings such as person names:
 $ JW(A,B)= J(A,B) + \textcolor{red}{0.1p}(1-J(A,B)) $
 \end{center}
 
-where $p$ is the \# of the first four characters that agree exactly e.g. \textcolor{red}{Adam vs Alan: p=1,  J= 0.67 and JW=0.7.}
+where $p$ is the \# of the first four characters that agree exactly e.g. Adam vs Alan: p=1,  J= 0.67 and JW=0.7.
 
 <!-- k-grams or k-shingles are better for longer or multi-word strings -->
 
@@ -338,9 +338,9 @@ or measurement errors that would exclude true matches.
     
 \begin{center}
 \begin{tabular}{ l l l l }
- {\color{red}\emph{A}} & Mary Clain & 123 Oak St & 90210 \\
- {\color{red}\emph{B}} & Mary Klein & 123 Oak Street & 90210 \\
- {\color{red}\emph{C}} & Mary Klain & 123 Oak St & 50210 \\
+ {\color{blue}\emph{A}} & Mary Clain & 123 Oak St & 90210 \\
+ {\color{blue}\emph{B}} & Mary Klein & 123 Oak Street & 90210 \\
+ {\color{blue}\emph{C}} & Mary Klain & 123 Oak St & 50210 \\
 \end{tabular}
 \end{center}
 
@@ -444,7 +444,7 @@ true status    N    P    L
 # References
 
 - Sariyar M. and Borg A. (2010), The RecordLinkage Package: Detecting
-Errors in Data, The R Journal Vol. 2/2. \textcolor{red}{Check big data functions of the package (>=1'000,000 record pairs).}
+Errors in Data, The R Journal Vol. 2/2. \textcolor{blue}{Check big data functions of the package (>=1'000,000 record pairs).}
 
 \vspace{1mm}
 
