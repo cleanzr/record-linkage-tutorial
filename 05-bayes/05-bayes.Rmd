@@ -3,9 +3,6 @@ title: 'Introduction to Bayesian record linkage '
 author: "Brenda Betancourt and Andee Kaplan"
 date: |
   | February 8, 2018
-  |
-  |
-  | Slides available at <http://bit.ly/cimat-bayes>
 output:
   beamer_presentation:
     keep_tex: no
@@ -318,11 +315,9 @@ head(RLdata500) # take a look
 ```{r, echo=TRUE}
 # categorical variables
 X.c <- as.matrix(RLdata500[, c("by","bm","bd")]) 
-p.c <- ncol(X.c) 
 
 # string variables 
 X.s <- as.matrix(RLdata500[, c("fname_c1", "lname_c1")]) 
-p.s <- ncol(X.s) 
 ```
 
 `X.c` and `X.s` include all files stacked on top of each other, for categorical and string variables respectively
@@ -420,6 +415,65 @@ c(precision, recall)
 
 # Your turn
 
+Using the `title`, `authors`, `year`, and `journal` columns in the `cora` dataset from the `RLdata` package,
+
+1. Let's only use data with **complete cases** (for simplicity):
+    ```{r missing, eval = FALSE}
+    not_missing <- complete.cases(cora[, c("year", "journal", "title", "authors")])
+    ```
+1. Format the data to use with `blink`
+    - Which columns are string vs. categorical?
+    - Of the remaining data, assume that the rows 1-200 are from database 1, 201-400 are from database 2, and 401-560 are from database 3
+1. Create tuning parameters for your model
+    - Think about prior hyperparameters as well as the string distortion function
+1. Run the Gibbs sampler 50 times to update the linkage structure
+1. Evaluate your estimated linkage structure using precision and recall
+
+# Your turn (solution)
+
+\tiny
+
+```{r, message=FALSE, results="hide", echo = TRUE}
+# 1. formatting data 
+# load data
+library(RLdata)
+data("cora")
+
+not_missing <- complete.cases(cora[, c("year", "journal", "title", "authors")])
+
+# categorical variables
+X.c <- as.matrix(cora[not_missing, c("year","journal")]) 
+
+# string variables 
+X.s <- as.matrix(cora[not_missing, c("title", "authors")]) 
+
+# keep track of which rows of are in which files
+file.num <- rep(c(1, 2, 3), c(200, 200, 160))
+
+# 2. hyperparameters
+
+# Subjective choices for distortion probability prior
+# parameters of a Beta(a,b)
+a <- 1
+b <- 999
+
+# string distance function example
+d <- function(s1, s2) {
+  adist(s1, s2) # approximate string distance
+}
+
+# steepness parameter
+c <- 1
+
+# 3. run the gibbs sampler
+lam.gs <- rl.gibbs(file.num = file.num, # file
+                   X.s = X.s, X.c = X.c, # data 
+                   num.gs = 10, # iterations
+                   a = a, b = b, # prior params
+                   c = c, d = d, # distortion
+                   M = nrow(X.s)) # max # latents
+
+```
 
 
 # References
