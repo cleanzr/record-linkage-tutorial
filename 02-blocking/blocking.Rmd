@@ -1,5 +1,5 @@
 ---
-title: "Introduction to traditional record linkage and blocking techniques"
+title: "Introduction to blocking techniques and traditional record linkage"
 author: "Brenda Betancourt"
 date: |
   | February 8, 2018
@@ -20,127 +20,6 @@ fig_caption: yes
 shortinstitute: bb222@stat.duke.edu
 classoption: compress
 ---
-
-#  Approximate matching
-
-- Performing exact matching is very rare in practice since data is
-rarely noise/error free.
-
-\vspace{1mm}
-
-- Matching that allows fields to only be similar rather than exact duplicates.
-
-\vspace{1mm}
-
-- Most large-scale applications employ some level of approximate match between fields.
-
-\vspace{1mm}
-
-- Techniques for direct matching include edit distance and hashing algorithms for string data.
-
-# Example: Iterative deterministic linkage
-
-\textcolor{blue}{Step 1:} two records must match on SSN and one of the following:
-
-\vspace{1mm}
-
-- First and last name.
-- Last name, month of birth, and sex.
-- First name, month of birth, and sex.
-
-\vspace{1mm}
-
-\textcolor{blue}{Step 2:} If SSN is missing or does not match, two records must match on last name, first name, month of birth, sex, and one of the following:
-
-\vspace{1mm}
-
-- Seven to eight digits of the SSN.
-- Two or more of the following: year of birth, day of birth, middle initial, or date of death.
-
-<!-- it would end up being an approximate matching that is a result of a two step deterministic matching -->
-
-# Approximate String Matching
-
-Best for short strings such as person names:
-
-- \textcolor{blue}{Levenshtein (edit) distance (1966)}: minimum number of substitutions required to transform one string into another e.g. A\textcolor{red}{d}a\textcolor{blue}{m} vs A\textcolor{blue}{l}a\textcolor{blue}{n} has a distance $L=2$, normalized as $1-\frac{L}{maxLength} = 0.5$.
-
-\vspace{1mm}
-
-- \textcolor{blue}{Jaro-Winkler (1990):} The Jaro distance (1989) considers common characters and character transpositions. The JW similarity measure is:
-
-\begin{center}
-$ JW(A,B)= J(A,B) + \textcolor{red}{0.1p}(1-J(A,B)) $
-\end{center}
-
-where $p$ is the \# of the first four characters that agree exactly e.g. Adam vs Alan: p=1,  J= 0.67 and JW=0.7.
-
-<!-- k-grams or k-shingles are better for longer or multi-word strings -->
-
-# Example: RLdata500
-
-```{r, eval=TRUE, message=FALSE, warning=FALSE}
-library(RecordLinkage)
-data(RLdata500)
-```
-```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
-library(RecordLinkage)
-data(RLdata500)
-# Code to extract subset of duplicate records
-RLdata500c <- RLdata500[,-c(2,4)]
-cln <- table(identity.RLdata500)
-iddup <- which(cln>1)-1
-dup <- which(identity.RLdata500%in%iddup)
-sub_dup <- RLdata500c[dup,]
-oid <- order(identity.RLdata500[dup])
-dup_set <- sub_dup[oid,]
-tail(dup_set)
-```
-
-
-# Example: RLdata500
-
-```{r, eval=TRUE, message=FALSE, warning=FALSE}
-# Levenshtein similarity 
-levenshteinSim("SCHUTE", "SCHULTE")
-levenshteinSim("CHRISTA", "CHRISTAH")
-# Jaro-Winkler similarity
-jarowinkler(c("SCHUTE","CHRISTA"),c("SCHULTE","CHRISTAH"))
-```
-
-# Soundex algorithm
-
-
-- Generates a code that represents the phonetic pronunciation of a word, helps identifying spelling variations of names. 
-
-\vspace{2mm}
-
-- The Soundex code for a name consists of a letter followed by three numerical digits: 
-    * the letter is the first letter of the name,
-    * the digits encode the remaining consonants.
-
-\vspace{2mm}
-
-- Consonants at a similar place of articulation share the same digit 
-    * e.g. the labial consonants B, F, P and V are each encoded as the number 1.
-
-# Example: Soundex algorithm
-```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
-tail(dup_set)
-```
-```{r, eval=TRUE, message=FALSE, warning=FALSE}
-tail(soundex(dup_set$fname_c1))
-tail(soundex(dup_set$lname_c1))
-```
-
-# Example: Soundex algorithm
-
-```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
-head(dup_set)
-```
-```{r, eval=TRUE, message=FALSE, warning=FALSE}
-head(soundex(dup_set$lname_c1))
-```
 
 # Blocking: Motivation
 
@@ -182,6 +61,14 @@ blocks by lastname initial and comparing records only within each partition (rig
 ![alt text](figures/noblocking_plot.pdf){ width=50% }
 ![alt text](figures/blocking_plot.pdf){ width=50% }
 
+
+# Example: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(RecordLinkage)
+data(RLdata500)
+head(RLdata500)
+```
 
 # Continuation: RLdata500
 
@@ -240,12 +127,12 @@ sum(sapply(tbl, choose, k=2))
 
 \vspace{3mm}
 
-- Understand the kinds of errors that are unlikely for a certain field or a combination of them.
+- Understand the kind of errors that are unlikely for a certain field or a combination of them.
 
 \vspace{3mm}
 
 - More complex blocking schemes can be constructed using conjunctions.
-    * Retain only pairs which agree on either last name initial and zip code
+    * Retain only pairs which agree on last name initial and zip code.
 
 # Example: Voter Survey data
 
@@ -262,6 +149,10 @@ The Views of the Electorate Research (VOTER) Survey was conducted by the survey 
 \vspace{2mm}
 
 - Barack Obama (Democrat) won in 2012 and Donald Trump (Republican) won in 2016.
+
+\textcolor{blue}{https://www.voterstudygroup.org}
+
+
 
 
 # Continuation: Voter Survey data
@@ -326,9 +217,132 @@ Other &   50  &   4   & 14    & 62 \\ \hline \hline
 \end{tabular}
 \end{center}
 
+
+#  Record Linkage: Approximate matching
+
+- Performing exact matching is very rare in practice since data is
+rarely noise/error free.
+
+\vspace{1mm}
+
+- Matching that allows fields to only be similar rather than exact duplicates.
+
+\vspace{1mm}
+
+- Most large-scale applications employ some level of approximate match between fields.
+
+\vspace{1mm}
+
+- Techniques for direct matching include edit distance and hashing algorithms for string data.
+
+# Example: Iterative deterministic linkage
+
+\textcolor{blue}{Step 1:} two records must match on SSN and one of the following:
+
+\vspace{1mm}
+
+- First and last name.
+- Last name, month of birth, and sex.
+- First name, month of birth, and sex.
+
+\vspace{1mm}
+
+\textcolor{blue}{Step 2:} If SSN is missing or does not match, two records must match on last name, first name, month of birth, sex, and one of the following:
+
+\vspace{1mm}
+
+- Seven to eight digits of the SSN.
+- Two or more of the following: year of birth, day of birth, middle initial, or date of death.
+
+<!-- it would end up being an approximate matching that is a result of a two step deterministic matching -->
+
+# Approximate String Matching: Similarity metrics 
+
+Best for short strings such as person names:
+
+- \textcolor{blue}{Levenshtein (edit) (1966)}: minimum number of substitutions required to transform one string into another e.g. A\textcolor{red}{d}a\textcolor{blue}{m} vs A\textcolor{blue}{l}a\textcolor{blue}{n} has a distance $L=2$, normalized as $1-\frac{L}{maxLength} = 0.5$ for similarity.
+
+\vspace{1mm}
+
+- \textcolor{blue}{Jaro-Winkler (1990):} The Jaro distance (1989) considers common characters and character transpositions. The JW similarity measure is:
+
+\begin{center}
+$ JW(A,B)= J(A,B) + \textcolor{red}{0.1p}(1-J(A,B)) $
+\end{center}
+
+where $p$ is the \# of the first four characters that agree exactly e.g. Adam vs Alan: p=1,  J= 0.67 and JW=0.7.
+
+<!-- k-grams or k-shingles are better for longer or multi-word strings -->
+
+# Example: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(RecordLinkage)
+data(RLdata500)
+```
+```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
+library(RecordLinkage)
+data(RLdata500)
+# Code to extract subset of duplicate records
+RLdata500c <- RLdata500[,-c(2,4)]
+cln <- table(identity.RLdata500)
+iddup <- which(cln>1)-1
+dup <- which(identity.RLdata500%in%iddup)
+sub_dup <- RLdata500c[dup,]
+oid <- order(identity.RLdata500[dup])
+dup_set <- sub_dup[oid,]
+tail(dup_set)
+```
+
+# Example: RLdata500
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+# Levenshtein similarity 
+levenshteinSim("SCHUTE", "SCHULTE")
+levenshteinSim("CHRISTA", "CHRISTAH")
+# Jaro-Winkler similarity
+jarowinkler(c("SCHUTE","CHRISTA"),
+            c("SCHULTE","CHRISTAH"))
+```
+
+# Soundex algorithm
+
+
+- Generates a code that represents the phonetic pronunciation of a word, helps identifying spelling variations of names. 
+
+\vspace{2mm}
+
+- The Soundex code for a name consists of a letter followed by three numerical digits: 
+    * the letter is the first letter of the name,
+    * the digits encode the remaining consonants.
+
+\vspace{2mm}
+
+- Consonants at a similar place of articulation share the same digit 
+    * e.g. the labial consonants B, F, P and V are each encoded as the number 1.
+
+# Example: Soundex algorithm
+```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
+tail(dup_set)
+```
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+tail(soundex(dup_set$fname_c1))
+tail(soundex(dup_set$lname_c1))
+```
+
+# Example: Soundex algorithm
+
+```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
+head(dup_set)
+```
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+head(soundex(dup_set$lname_c1))
+```
+
 # Blocking by disjunctions 
 
 - Produces overlapping blocks of the data.
+    * \textcolor{blue}{Disjunction}: records match on field A or field B
 
 \vspace{3mm}
 
@@ -338,9 +352,9 @@ or measurement errors that would exclude true matches.
     
 \begin{center}
 \begin{tabular}{ l l l l }
- {\color{blue}\emph{A}} & Mary Clain & 123 Oak St & 90210 \\
- {\color{blue}\emph{B}} & Mary Klein & 123 Oak Street & 90210 \\
- {\color{blue}\emph{C}} & Mary Klain & 123 Oak St & 50210 \\
+ {\color{blue}\emph{1.}} & Mary Clain & 123 Oak St & 90210 \\
+ {\color{blue}\emph{2.}} & Mary Klein & 123 Oak Street & 90210 \\
+ {\color{blue}\emph{3.}} & Mary Klain & 123 Oak St & 50210 \\
 \end{tabular}
 \end{center}
 
@@ -363,17 +377,17 @@ tail(rpairs$pairs)
 # Example: String comparison and blocking
 
 ```{r, eval=TRUE, message=FALSE, warning=FALSE}
-rpairsfuzzy <- compare.dedup(RLdata500c, phonetic = FALSE,
-blockfld = 3, strcmp = TRUE, strcmpfun = jarowinkler)
+rpairsfuzzy <- compare.dedup(RLdata500c, 
+               phonetic = FALSE, blockfld = 3, 
+               strcmp = TRUE, strcmpfun = jarowinkler)
 
 tail(rpairsfuzzy$pairs)
 ```
 
-
 # The Fellegi-Sunter approach (1969)
 
 - Represent every pair of records using vector of features that describe similarity between individual record fields. 
-    * Use string metrics (Jaro-Winkler) and edit-distances for names and strings        of numbers.
+    * Use string metrics for names and strings of numbers (Levenshtein or Jaro-Winkler).
 
 \vspace{2mm}
 
@@ -389,22 +403,23 @@ tail(rpairsfuzzy$pairs)
 
 \vspace{2mm}
 
-- Establish two thresholds based on desired error levels to optimally separate the weight values for matches, possibly matches, and nonmatches.
+- Establish two thresholds based on desired error levels to optimally separate the weight values for matches, possible matches, and nonmatches.
 
 \vspace{2mm}
 
--  \textcolor{blue}{Drawbacks}: only for two files, no trasitive closures.
+-  \textcolor{blue}{Note}: the quality of classification of the Fellegi-Sunter method relies strongly on reasonable estimations of $M$ and $U$ probabilities.
 
-# Example: Fellegi-Sunter
+# Example: Blocking and Fellegi-Sunter
 
 ```{r, eval=TRUE, message=FALSE, warning=FALSE}
-#tail(rpairs$pairs)
+
+# tail(rpairs$pairs)
 # Using comparison data blocking by first name initial
 # and birth year
 rpairs1 <- epiWeights(rpairs)
 
 # Weights to compute thresholds for classification
-head(rpairs1$Wdata)
+rpairs1$Wdata[1:5]
 ```
 # Example: Fellegi-Sunter
 
@@ -441,20 +456,34 @@ true status    N    P    L
       TRUE     4    0   46
 ```
 
+# Summary
+
+- \textcolor{blue}{Blocking}: reduce comparison space by choosing relatively noise free fields to match records 
+    * Use conjunctions (and) create a partition of the data or disjunctions (or) to create overlapping blocks.
+    
+\vspace{2mm}
+
+- \textcolor{blue}{Strings}: choose a string similarity metric to compare
+record pairs within blocks.
+    * Levenshtein or Jaro-Winkler.
+
+\vspace{2mm}
+
+- \textcolor{blue}{Record linkage}: use Fellegi-Sunter method to classify records as matches, posibble matches or nonmathches.
+
+
 # References
+
+\small
 
 - Sariyar M. and Borg A. (2010), The RecordLinkage Package: Detecting
 Errors in Data, The R Journal Vol. 2/2. \textcolor{blue}{Check big data functions of the package (>=1'000,000 record pairs).}
 
-\vspace{1mm}
-
 - Steorts et al. (2014) A Comparison of Blocking Methods for Record Linkage. In: Domingo-Ferrer J. (eds) Privacy in Statistical Databases. PSD 2014. Lecture Notes in Computer Science, vol 8744. Springer, Cham.
 
-\vspace{1mm}
+- Fellegi I.P., Sunter A.B. (1969), A Theory for Record Linkage, Journal of the American Statistical Association 64(328), pp. 1183–1210.
 
 - Dusetzina et al. Linking Data for Health Services Research: A Framework and Instructional Guide. Rockville (MD): Agency for Healthcare Research and Quality (US) (2014). An Overview of Record Linkage Methods. https://www.ncbi.nlm.nih.gov/books/NBK253312/
-
-\vspace{1mm}
 
 - Entity Resolution and Information Quality, John R. Talburt, Elsevier (2011)
 
