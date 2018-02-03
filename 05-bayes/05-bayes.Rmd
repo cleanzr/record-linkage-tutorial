@@ -427,20 +427,22 @@ Using the `title`, `authors`, `year`, and `journal` columns in the `cora` datase
 1. Create tuning parameters for your model
     - Think about prior hyperparameters as well as the string distortion function
 1. Run the Gibbs sampler 50 times to update the linkage structure
-1. Evaluate your estimated linkage structure using precision and recall
+1. **Extra:** Evaluate your estimated linkage structure using precision and recall
 
 # Your turn (solution)
 
-\tiny
+\scriptsize
 
 ```{r, message=FALSE, results="hide", echo = TRUE}
-# 1. formatting data 
+# 1. complete cases of data onl
 # load data
 library(RLdata)
 data("cora")
+data("cora_gold")
 
 not_missing <- complete.cases(cora[, c("year", "journal", "title", "authors")])
 
+# 2. formatting data 
 # categorical variables
 X.c <- as.matrix(cora[not_missing, c("year","journal")]) 
 
@@ -449,8 +451,14 @@ X.s <- as.matrix(cora[not_missing, c("title", "authors")])
 
 # keep track of which rows of are in which files
 file.num <- rep(c(1, 2, 3), c(200, 200, 160))
+```
 
-# 2. hyperparameters
+# Your turn (solution, cont'd)
+
+\scriptsize
+
+```{r, echo = TRUE, results="hide"}
+# 3. hyperparameters
 
 # Subjective choices for distortion probability prior
 # parameters of a Beta(a,b)
@@ -465,7 +473,7 @@ d <- function(s1, s2) {
 # steepness parameter
 c <- 1
 
-# 3. run the gibbs sampler
+# 4. run the gibbs sampler
 lam.gs <- rl.gibbs(file.num = file.num, # file
                    X.s = X.s, X.c = X.c, # data 
                    num.gs = 10, # iterations
@@ -475,6 +483,73 @@ lam.gs <- rl.gibbs(file.num = file.num, # file
 
 ```
 
+# Your turn (extra solution)
+
+\tiny
+
+```{r, echo = TRUE}
+# 5. (extra) evaluation
+
+# estimated pairwise links
+est_links_pair <- pairwise(links(lam.gs))
+
+# true pairwise links, only for those included
+# get true number
+included_idx <- seq_len(sum(not_missing)) 
+names(included_idx) <- cora[not_missing, "id"]
+included_pairs <- subset(cora_gold, id1 %in% names(included_idx) & id2 %in% names(included_idx))
+
+# get index for graphmaking
+included_pairs <- apply(included_pairs, 2, function(col) {
+  names <- as.character(col)
+  included_idx[names]
+})
+
+true_links_pair <- split(included_pairs, seq(nrow(included_pairs)))
+
+#comparison
+comparison <- links.compare(est_links_pair, true_links_pair, counts.only = TRUE)
+
+# precision
+precision <- comparison$correct/(comparison$incorrect + comparison$correct)
+
+# recall
+recall <- comparison$correct/(comparison$correct + comparison$missing)
+
+
+# results
+c(precision, recall)
+```
+
+# Your turn (extra solution, cont'd)
+
+```{r plots-yt, fig.show='hold', fig.width = 5.5}
+# count how many unique latent individuals
+size_est <- apply(lam.gs, 1, function(x) { 
+  length(unique(x)) 
+  })
+
+
+# get true number of individuals by using graph clusters
+library(igraph)
+g <- make_empty_graph(length(included_idx))
+g <- add_edges(g, as.vector(t(included_pairs)))
+clust <- components(g, "weak")
+
+theme_set(theme_bw(base_family = "serif", base_size = 30))
+
+ggplot() +
+  geom_line(aes(1:10, size_est)) +
+  xlab("Iteration") +
+  ylab("Estimated size")
+
+ggplot() +
+  geom_histogram(aes(size_est)) +
+  geom_vline(aes(xintercept=clust$no), colour = "red") +
+  geom_vline(aes(xintercept=mean(size_est)), lty=2) +
+  xlab("Estimated size")
+  
+```
 
 # References
 

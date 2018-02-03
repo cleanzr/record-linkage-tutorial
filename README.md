@@ -20,8 +20,6 @@ Very often information about social entities is scattered across multiple databa
 
 ## Overview of Workshop
 
-TODO: everyone please put an abstract on your talk please no later than Friday. 
-
 ### I. Overview and introduction to record linkage
 Speaker: Beka Steorts
 

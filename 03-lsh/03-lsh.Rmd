@@ -9,8 +9,6 @@ shortinstitute: andrea.kaplan@duke.edu
 date: |
   | February 8, 2018
   |
-  | Slides available at <http://bit.ly/cimat-lsh>
-  |
 output: 
   beamer_presentation:
     keep_tex: false
