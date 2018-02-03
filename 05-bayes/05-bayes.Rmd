@@ -5,9 +5,8 @@ date: |
   | February 8, 2018
 output:
   beamer_presentation:
-    keep_tex: no
+    keep_tex: false
     template: beamer.tex
-  slidy_presentation: default
 institute: |
   | Duke University
   | Department of Statistical Science
@@ -70,24 +69,21 @@ conditional on the observed data.
 # Record Linkage and Clustering 
 
 Which records correspond to the same person?
-\begin{figure}
-\includegraphics[scale=0.35,keepaspectratio]{figures/linkage1}
-\end{figure}
+
+![](figures/linkage1.png)
 
 # Record Linkage and Clustering 
 
 Each entity is associated with one or more records and the
 goal is to recover the latent entities (clusters).
-\begin{figure}
-\includegraphics[scale=0.43,keepaspectratio]{figures/latent1}
-\end{figure}
+
+![](figures/latent1.png)
 
 # Record Linkage and Clustering 
 
 Eight latent entities: One cluster of size 4, one of size 2, six of size 1
-\begin{figure}
-\includegraphics[scale=0.45,keepaspectratio]{figures/latent2}
-\end{figure}
+
+![](figures/latent2.png)
 
 # Partition-based Bayesian clustering models
 
@@ -133,9 +129,9 @@ Goal: cluster N data points into $K$ clusters.
 # Graphical Record Linkage
 
 Graphical model representation of  \textcolor{blue}{Steorts et al. (2016)}:
-\begin{figure}
-\includegraphics[scale=0.35,keepaspectratio]{figures/recordLinkage_graphicalModel}
-\end{figure}
+
+![](figures/recordLinkage_graphicalModel.pdf){ height=2in }
+
 - $\Lambda_{ij}$ represents the linkage structure $\rightarrow$  \textcolor{blue}{uniform prior}.
 <!--uniform over the set of {1,...,N}
 such that each record is assumed to be equally likely a priori to correspond to any of the N latent individuals. Thus, it treats the records as if they are a random sample drawn with replacement.
@@ -148,19 +144,24 @@ such that each record is assumed to be equally likely a priori to correspond to 
 \vspace*{-1.3cm}
 \hspace*{7.5cm} \includegraphics[scale=0.24,keepaspectratio]{figures/HRDAG-Staging-Logo-2}
 \end{figure}
+
 \hspace{-1cm}
+
 \begin{minipage}{4cm}
 \vspace{-1cm}
 %\includegraphics[height=5cm, width=3.5cm]{horner}
  \includegraphics[scale=0.45,keepaspectratio]{figures/syria-sizes}
 \end{minipage}
+
 \hspace{0.5cm}
+
 \begin{minipage}{7cm}
 \vspace{-1.5cm}
-- Enumeration of victims of killings in Syria merging four databases.
+\begin{itemize}
+\item Enumeration of victims of killings in Syria merging four databases.
 \vspace{1cm}
-
-- The number of data points in each cluster should remain small even for large data sets $\rightarrow$ Large number of singletons and small clusters.
+\item The number of data points in each cluster should remain small even for large data sets $\rightarrow$ Large number of singletons and small clusters.
+\end{itemize}
 \end{minipage}
 
 # Dirichlet Process Mixture Models
@@ -505,6 +506,7 @@ included_pairs <- apply(included_pairs, 2, function(col) {
   included_idx[names]
 })
 
+# need list of pairs to compare
 true_links_pair <- split(included_pairs, seq(nrow(included_pairs)))
 
 #comparison
@@ -515,7 +517,6 @@ precision <- comparison$correct/(comparison$incorrect + comparison$correct)
 
 # recall
 recall <- comparison$correct/(comparison$correct + comparison$missing)
-
 
 # results
 c(precision, recall)
@@ -536,6 +537,7 @@ g <- make_empty_graph(length(included_idx))
 g <- add_edges(g, as.vector(t(included_pairs)))
 clust <- components(g, "weak")
 
+# plots of results
 theme_set(theme_bw(base_family = "serif", base_size = 30))
 
 ggplot() +
