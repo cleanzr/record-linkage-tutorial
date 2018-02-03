@@ -1,0 +1,34 @@
+---
+title: 'Computing Setup'
+author: "Andee Kaplan"
+date: |
+  | February 8, 2018
+output:
+  beamer_presentation:
+    keep_tex: false
+    template: beamer.tex
+institute: |
+  | Duke University
+  | Department of Statistical Science
+natbib: yes
+fig_caption: yes
+shortinstitute: Duke University
+classoption: compress
+---
+
+# Install `R`
+
+1. Go to https://www.r-project.org
+2. Click on "CRAN" on the left bar and select a mirror (0-Cloud is just fine!)
+3. Click Download R for your OS and follow installation instructions
+
+# Install RStudio (optional)
+
+1. Go to https://www.rstudio.com/products/rstudio/download/
+2. Click "Download" for RStudio Desktop Open Source License (Free)
+3. Choose your OS and follow installation instructions
+
+# Install packages
+
+1. Open RStudio (or R console)
+2. Run the installation script
