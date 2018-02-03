@@ -1,19 +1,21 @@
 ---
-title: 'Introduction to Bayesian record linkage '
-author: "Brenda Betancourt and Andee Kaplan"
+title: "Introduction to Bayesian record linkage "
+author: Brenda Betancourt and Andee Kaplan
+institute: |
+    | Duke University
+    | Department of Statistical Science
+shortinstitute: Duke University
 date: |
   | February 8, 2018
-output:
+  |
+  |
+output: 
   beamer_presentation:
     keep_tex: false
     template: beamer.tex
-institute: |
-  | Duke University
-  | Department of Statistical Science
-natbib: yes
-fig_caption: yes
-shortinstitute: Duke University
+    fig_caption: false
 classoption: compress
+natbib: true
 ---
 
 ```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
@@ -70,6 +72,7 @@ conditional on the observed data.
 
 Which records correspond to the same person?
 
+\centering
 ![](figures/linkage1.png)
 
 # Record Linkage and Clustering 
@@ -77,12 +80,15 @@ Which records correspond to the same person?
 Each entity is associated with one or more records and the
 goal is to recover the latent entities (clusters).
 
+\centering
 ![](figures/latent1.png)
+
 
 # Record Linkage and Clustering 
 
 Eight latent entities: One cluster of size 4, one of size 2, six of size 1
 
+\centering
 ![](figures/latent2.png)
 
 # Partition-based Bayesian clustering models
@@ -130,7 +136,10 @@ Goal: cluster N data points into $K$ clusters.
 
 Graphical model representation of  \textcolor{blue}{Steorts et al. (2016)}:
 
-![](figures/recordLinkage_graphicalModel.pdf){ height=2in }
+
+\centering
+![](figures/recordLinkage_graphicalModel.pdf){ width=60% }
+
 
 - $\Lambda_{ij}$ represents the linkage structure $\rightarrow$  \textcolor{blue}{uniform prior}.
 <!--uniform over the set of {1,...,N}
@@ -140,46 +149,31 @@ such that each record is assumed to be equally likely a priori to correspond to 
 
 # Record Linkage and Microclustering
 
-\begin{figure}
-\vspace*{-1.3cm}
-\hspace*{7.5cm} \includegraphics[scale=0.24,keepaspectratio]{figures/HRDAG-Staging-Logo-2}
-\end{figure}
+\small
 
-\hspace{-1cm}
+- Enumeration of victims of killings in Syria merging four databases.
 
-\begin{minipage}{4cm}
-\vspace{-1cm}
-%\includegraphics[height=5cm, width=3.5cm]{horner}
- \includegraphics[scale=0.45,keepaspectratio]{figures/syria-sizes}
-\end{minipage}
+- The number of data points in each cluster should remain small even for         large data sets $\rightarrow$ Large number of singletons and small. 
 
-\hspace{0.5cm}
+\centering
+![](figures/syria-sizes.pdf){width=60%}
 
-\begin{minipage}{7cm}
-\vspace{-1.5cm}
-\begin{itemize}
-\item Enumeration of victims of killings in Syria merging four databases.
-\vspace{1cm}
-\item The number of data points in each cluster should remain small even for large data sets $\rightarrow$ Large number of singletons and small clusters.
-\end{itemize}
-\end{minipage}
 
 # Dirichlet Process Mixture Models
 
 Other clustering tasks require models that assume cluster sizes
 grow linearly with the size of the data set.
 
-\begin{itemize}
 
-\item $\boldsymbol{\Lambda} \sim \text{DP}(\alpha)$, Dirichlet Process 
+- $\boldsymbol{\Lambda} \sim \text{DP}(\alpha)$, Dirichlet Process 
 prior with concentration parameter $\alpha$
 
-\item Chinese Restaurant Process (CRP)
-\begin{figure}
-\includegraphics[scale=0.6,keepaspectratio]{figures/chinesealpha}
-\end{figure}
-\item Carmona C., Nieto-Barajas L., Canale A. (2017), Model-based approach for household clustering with mixed scale variables \url{https://arxiv.org/abs/1612.00083} .
-\end{itemize}
+- Chinese Restaurant Process (CRP)
+
+\centering
+![](figures/chinesealpha.png){ width=70% }
+
+- Carmona C., Nieto-Barajas L., Canale A. (2017), Model-based approach for household clustering with mixed scale variables \url{https://arxiv.org/abs/1612.00083} .
 
 <!--The Ministry of Social Development in Mexico is in charge of creating and assigning social programmes targeting specific needs in the population for the improvement of quality of life. To better target the social programmes, the Ministry is aimed to find clusters of households with the same needs based on demographic characteristics as well as poverty conditions of the household.--> 
 
