@@ -104,7 +104,7 @@ We want to talk about similarity of data $\Rightarrow$ we need sets to compare!
 
 # Let's try
 
-Suppose our document is the string "Hello world" and $k  = 2$, then 
+Suppose our document is the string "Hello world", then 
 
 - the set of $2$-shingles is $\{\text{he, el, ll, lo, ow, wo, or, rl, ld}\}$
 \vfill
