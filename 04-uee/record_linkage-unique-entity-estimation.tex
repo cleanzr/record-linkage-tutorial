@@ -116,7 +116,7 @@
 { Entity Resolution with Societal Impacts in Statistical Machine Learning}
 \author[Beidi Chen and Rebecca C. Steorts, beka@stat.duke.edu]{Beidi Chen and Rebecca C. Steorts} 
 
-\institute{\normalsize Rice University, Department of Computer Science \\Department of Statistical Science, affiliated faculty in Computer Science, Biostatistics and Bioinformatics, the information initiative at Duke (iiD) and \\the Social Science Research Institute (SSRI) \\ Duke University and U.S. Census Bureau\\ \vspace*{1em}
+\institute{\normalsize Rice University, Department of Computer Science \\Department of Statistical Science, affiliated faculty in Computer Science, Biostatistics and Bioinformatics, the information initiative at Duke (iiD) and \\the Social Science Research Institute (SSRI) \\ Duke University Bureau\\ \vspace*{0.2em}
 
 \begin{figure}[htbp]
 \begin{center}
@@ -270,9 +270,11 @@ We build off of essential work that has been established by the Human Rights Dat
 %\end{itemize}
 \end{itemize}
 
-[Price et. al (2014)]
+[Megan Price, Anita Gohdes, and Patrick Ball (2014)]
 
 }
+
+
 
 %\frame{
 %\frametitle{Aleppo}
@@ -1641,12 +1643,13 @@ under the estimate, which we refer to as true negatives (TN).
 
 }
 
+
 \frame{
 \frametitle{Recall, Precision, Reduction Ratio}
 
-$$\text{Recall} = \frac{FN}{CL + FN} = 1 - FNR.$$\\
+$$\text{Recall} = \frac{TP}{TP + FN} = 1 - FNR.$$\\
 \pause
-$$\text{Precision} = \frac{FP}{CNL + FP} = 1 - FPR.$$\\
+$$\text{Precision} = \frac{TP}{TP + FP} = 1 - FPR.$$\\
 
 \pause
 
@@ -1654,8 +1657,12 @@ $$\text{Precision} = \frac{FP}{CNL + FP} = 1 - FPR.$$\\
 
 Reduction ratio (RR) measures the relative reduction of the comparison space from the de-duplication or hashing technique. 
 
+\vspace*{1em}
+
+See Christen (2012), Steorts, Ventura, Sadinle, Fienberg (2014) for a formal definition. 
 
 }
+
 
 
 
@@ -1668,11 +1675,11 @@ Reduction ratio (RR) measures the relative reduction of the comparison space fro
 \item Using our proposed methodology, used 917,577 sampled pairs and then used an SVM for classification of matches and non-matches. 
 \item After looking at a sensitivity analysis of the tuning parameters for our proposed method, we report that there are 191,874 documented identifiable deaths, with standard deviation of 1,772, which is very close to HRDAG's estimate of 191,369 in Price et al. (2014).
 \item Furthermore, we also report the recall (false positives) = 0.83 and the precision (false negatives) = 0.99. 
-\item Finally, one iteration of the method takes only 127 seconds! 
-%\item In our final estimate we used 917,577 sampled pairs and then used an SVM for classification of matches and non-matches. 
-%\item The final estimate of the number of casualties in the Syrian data set is 190,309, very close to the 190,000 reported casualties done by HRDAG in 2014. 
+\item Finally, one iteration of the method takes only 127 seconds! (Real time estimation is possible). 
 \end{itemize}
 }
+
+
 
 
 
