@@ -2,7 +2,7 @@
 title: 'Computing Setup'
 author: "Andee Kaplan"
 date: |
-  | February 8, 2018
+  | May 2, 2018
 output:
   beamer_presentation:
     keep_tex: false

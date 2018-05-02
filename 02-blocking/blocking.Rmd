@@ -2,7 +2,7 @@
 title: "Introduction to blocking techniques and traditional record linkage"
 author: "Brenda Betancourt"
 date: |
-  | February 8, 2018
+  | May 2, 2018
   |
   |
 output:

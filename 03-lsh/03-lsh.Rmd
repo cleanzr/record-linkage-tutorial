@@ -7,7 +7,7 @@ institute: |
     | andrea.kaplan@duke.edu
 shortinstitute: andrea.kaplan@duke.edu
 date: |
-  | February 8, 2018
+  | May 2, 2018
   |
 output: 
   beamer_presentation:

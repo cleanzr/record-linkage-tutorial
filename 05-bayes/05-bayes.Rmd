@@ -6,7 +6,7 @@ institute: |
     | Department of Statistical Science
 shortinstitute: Duke University
 date: |
-  | February 8, 2018
+  | May 2, 2018
   |
   |
 output: 
