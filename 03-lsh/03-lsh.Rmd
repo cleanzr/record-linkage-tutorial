@@ -136,7 +136,7 @@ kable(records)
 \vfill
 1. The $2$-shingles for the first record are $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el}\}$ and for the second are $\{\text{mi, ic, ch, ha, ae, el, lm, me, ey, ye, er}\}$
 \vfill
-2. There are 6 items in common $\{\text{mi, ic, ch, ha, ae, el}\}$ and 16 items total $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, el, lm, me, ey, ye, er}\}$, so the Jaccard similarity is $\frac{6}{16} = \frac{3}{8} = `r round(3/8, 4)`$
+2. There are 6 items in common $\{\text{mi, ic, ch, ha, ae, el}\}$ and 15 items total $\{\text{mi, ic, ch, ha, ae, el, lv, vo, og, ge, lm, me, ey, ye, er}\}$, so the Jaccard similarity is $\frac{6}{15} = \frac{2}{5} = `r 6/15`$
 \vfill
 
 # Useful packages/functions in `R`
@@ -415,7 +415,7 @@ We still haven't addressed the issue of **pairwise comparisons**
 
 1. Divide signature matrix into $b$ bands with $r$ rows each so $m = b * r$ where *m* is the number of times that we drew a permutation of the characteristic matrix in the process of minhashing
 2. Each band is hashed to a bucket by comparing the minhash for those permutations 
-  - If they match within the band, then they will be hashed to the same bucket
+    - If they match within the band, then they will be hashed to the same bucket
 3. If two documents are hashed to the same bucket they will be considered candidate pairs 
   
 We only check *candidate pairs* for similarity
