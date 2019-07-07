@@ -1,12 +1,12 @@
 ---
-title: "Introduction to Bayesian record linkage "
-author: Brenda Betancourt and Andee Kaplan
+title: "Introduction to Bayesian Entity Resolution "
+author: Brenda Betancourt, Andee Kaplan, and Rebecca C. Steorts
 institute: |
     | Duke University
     | Department of Statistical Science
 shortinstitute: Duke University
 date: |
-  | May 2, 2018
+  | July 7, 2019
   |
   |
 output: 
@@ -37,78 +37,91 @@ theme_set(theme_bw(base_family = "serif", base_size = 30))
     $$
     p(\boldsymbol \theta | \boldsymbol x) = \frac{p(\boldsymbol x, \boldsymbol \theta)}{p(\boldsymbol x)} = \frac{p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)}{p(\boldsymbol x)} \propto p(\boldsymbol x|\boldsymbol \theta)p(\boldsymbol \theta)
     $$
-
-# Why Bayesian Record Linkage?
-
-A Bayesian framework is suitable to solve the following
-problems:
-
-\vspace{1mm}
-
-- Exact computation of the probability that each pair of records is a match,
-conditional on the observed data. 
-    * Posterior distribution of linkage structure.
-
-\vspace{2mm}
-
-- Propagating linkage error as an added component of uncertainty in the estimation process.
-    * Relevant for subsequent modeling.
-
-# Clustering Approaches
-
-- \textcolor{blue}{Note}: Reliable and accurate linkage depends greatly on the quantity and quality of the identifying information.
-
-\vspace{2mm}
-
-- Record linkage can be naturally seen as a clustering problem.
-    * Supervised and unsupervised approches.
     
-\vspace{2mm}
+    
+# Why Bayesian Entity Resolution
 
-- Records representing the same individual are clustered to a latent entity producing a partition of the data.
+
+1. Entity resolution can be treated as a clustering problem. 
+2. Records are clustering to a latent entity.
+3. This results in the model becoming a bipartite graph, which allows one to 
+estimate latent individuals across multiple high dimensional databases.
+4. The Bayesian paradigm naturally allows uncertainty quantification of the entity resolution process, a full posterior distribution, credible intervals, etc. 
+5. Theoretical properties have recently been explored for latent variable models, supporting the above approach. 
 
 
-# Record Linkage and Clustering 
+[Copas and Hilton (1990), Tancredi and Liseo (2011), Steorts, Barnes, Neiswanger (2017), Zanella et al. (2016)]
 
-Which records correspond to the same person?
+<!-- # Why Bayesian Entity Resolution? -->
+
+<!-- A Bayesian framework is suitable to solve the following -->
+<!-- problems: -->
+
+<!-- \vspace{1mm} -->
+
+<!-- - Exact computation of the probability that each pair of records is a match, -->
+<!-- conditional on the observed data.  -->
+<!--     * Posterior distribution of linkage structure. -->
+
+<!-- \vspace{2mm} -->
+
+<!-- - Propagating linkage error as an added component of uncertainty in the estimation process. -->
+<!--     * Relevant for subsequent modeling. -->
+
+<!-- # Clustering Approaches -->
+
+<!-- - \textcolor{blue}{Note}: Reliable and accurate linkage depends greatly on the quantity and quality of the identifying information. -->
+
+<!-- \vspace{2mm} -->
+
+<!-- - Record linkage can be naturally seen as a clustering problem. -->
+<!--     * Supervised and unsupervised approches. -->
+
+<!-- \vspace{2mm} -->
+
+<!-- - Records representing the same individual are clustered to a latent entity producing a partition of the data. -->
+
+
+# The entity resolution graph
 
 \centering
-![](figures/linkage1.png)
+![](figures/linkage2)
 
-# Record Linkage and Clustering 
 
-Each entity is associated with one or more records and the
-goal is to recover the latent entities (clusters).
+# The latent variable approach 
+
+<!-- Each entity is associated with one or more records and the -->
+<!-- goal is to recover the latent entities (clusters). -->
 
 \centering
 ![](figures/latent1.png)
 
 
-# Record Linkage and Clustering 
+# The latent variable approach
 
-Eight latent entities: One cluster of size 4, one of size 2, six of size 1
+<!-- Eight latent entities: One cluster of size 4, one of size 2, six of size 1 -->
 
 \centering
 ![](figures/latent2.png)
 
-# Partition-based Bayesian clustering models
+<!-- # Partition-based Bayesian clustering models -->
 
-Goal: cluster N data points into $K$ clusters.
+<!-- Goal: cluster N data points into $K$ clusters. -->
 
-- Let $C_N$ be a random partition of $[N] = \{1,\ldots,N\}$
+<!-- - Let $C_N$ be a random partition of $[N] = \{1,\ldots,N\}$ -->
 
-\vspace{1mm}
+<!-- \vspace{1mm} -->
 
-- Place a prior distribution over the random partitions $\{C_N\}$
+<!-- - Place a prior distribution over the random partitions $\{C_N\}$ -->
 
-\vspace{1mm}
+<!-- \vspace{1mm} -->
 
-- A partition $C_N$ is represented by a set of cluster assignments i.e linkage structure.
+<!-- - A partition $C_N$ is represented by a set of cluster assignments i.e linkage structure. -->
 
-\vspace{1mm}
+<!-- \vspace{1mm} -->
 
-- The number of clusters $K$ does not need to be specified a priori $\rightarrow$
-\textcolor{blue}{Non-parametric} latent variable approach.
+<!-- - The number of clusters $K$ does not need to be specified a priori $\rightarrow$ -->
+<!-- \textcolor{blue}{Non-parametric} latent variable approach. -->
 
 # Notation
 
@@ -147,78 +160,99 @@ such that each record is assumed to be equally likely a priori to correspond to 
 % any two partitions with the same number of latent entities are equally probably a priori.--> 
 - Requires information about the number of latent entities a priori and it is very informative.
 
-# Record Linkage and Microclustering
+<!-- # Record Linkage and Microclustering -->
 
-\small
+<!-- \small -->
 
-- Enumeration of victims of killings in Syria merging four databases.
+<!-- - Enumeration of victims of killings in Syria merging four databases. -->
 
-- The number of data points in each cluster should remain small even for         large data sets $\rightarrow$ Large number of singletons and small. 
+<!-- - The number of data points in each cluster should remain small even for         large data sets $\rightarrow$ Large number of singletons and small.  -->
 
-\centering
-![](figures/syria-sizes.pdf){width=60%}
-
-
-# Dirichlet Process Mixture Models
-
-Other clustering tasks require models that assume cluster sizes
-grow linearly with the size of the data set.
+<!-- \centering -->
+<!-- ![](figures/syria-sizes.pdf){width=60%} -->
 
 
-- $\boldsymbol{\Lambda} \sim \text{DP}(\alpha)$, Dirichlet Process 
-prior with concentration parameter $\alpha$
+<!-- # Dirichlet Process Mixture Models -->
 
-- Chinese Restaurant Process (CRP)
+<!-- Other clustering tasks require models that assume cluster sizes -->
+<!-- grow linearly with the size of the data set. -->
 
-\centering
-![](figures/chinesealpha.png){ width=70% }
 
-- Carmona C., Nieto-Barajas L., Canale A. (2017), Model-based approach for household clustering with mixed scale variables \url{https://arxiv.org/abs/1612.00083} .
+<!-- - $\boldsymbol{\Lambda} \sim \text{DP}(\alpha)$, Dirichlet Process  -->
+<!-- prior with concentration parameter $\alpha$ -->
+
+<!-- - Chinese Restaurant Process (CRP) -->
+
+<!-- \centering -->
+<!-- ![](figures/chinesealpha.png){ width=70% } -->
+
+<!-- - Carmona C., Nieto-Barajas L., Canale A. (2017), Model-based approach for household clustering with mixed scale variables \url{https://arxiv.org/abs/1612.00083} . -->
 
 <!--The Ministry of Social Development in Mexico is in charge of creating and assigning social programmes targeting specific needs in the population for the improvement of quality of life. To better target the social programmes, the Ministry is aimed to find clusters of households with the same needs based on demographic characteristics as well as poverty conditions of the household.--> 
 
-# Microclustering models
+<!-- # Microclustering models -->
 
-- Prior distributions on partitions that are suitable for the microclustering problem 
-    * Miller et al, 2015 and Zanella et al, 2016
-   
-\vspace{1mm}
+<!-- - Prior distributions on partitions that are suitable for the microclustering problem  -->
+<!--     * Miller et al, 2015 and Zanella et al, 2016 -->
 
-- Scalable sampling algorithm in combination with blocking techniques.
+<!-- \vspace{1mm} -->
 
-\vspace{1mm}
+<!-- - Scalable sampling algorithm in combination with blocking techniques. -->
 
-- \textcolor{blue}{NBNB model}: Prior distribution on partitions that exhibits the microclustering property:
-    * \textcolor{blue}{$K$} represents the number of latent entities or clusters
-    * \textcolor{blue}{$N_{k}$} represents the size of cluster $k$ i.e. $N = \sum_{k=1}^K N_k$
+<!-- \vspace{1mm} -->
 
-\begin{center}    
-$
-K \sim \text {\color{blue}{Neg-Bin}(a,q)}
-\quad \textrm{and} \quad
-N_1,\ldots, N_k \mid K \sim {\color{blue}\text{Neg-Bin}(r,p)}
-$
-\end{center}
+<!-- - \textcolor{blue}{NBNB model}: Prior distribution on partitions that exhibits the microclustering property: -->
+<!--     * \textcolor{blue}{$K$} represents the number of latent entities or clusters -->
+<!--     * \textcolor{blue}{$N_{k}$} represents the size of cluster $k$ i.e. $N = \sum_{k=1}^K N_k$ -->
 
-# Empirically Motivated Priors
+<!-- \begin{center}     -->
+<!-- $ -->
+<!-- K \sim \text {\color{blue}{Neg-Bin}(a,q)} -->
+<!-- \quad \textrm{and} \quad -->
+<!-- N_1,\ldots, N_k \mid K \sim {\color{blue}\text{Neg-Bin}(r,p)} -->
+<!-- $ -->
+<!-- \end{center} -->
 
-- The prior for the latent entities is the empirical distribution 
-of the data \textcolor{blue}{(Steorts R., 2015)}.
-    * Avoids the problem of specifying a prior but requires specification of $K$ in advance.
-    
-\vspace{1mm}
-- This approach allows us to include both categorical and string-valued 
-variables.
+<!-- # Empirically Motivated Priors -->
 
-\vspace{1mm}
+<!-- - The prior for the latent entities is the empirical distribution  -->
+<!-- of the data \textcolor{blue}{(Steorts R., 2015)}. -->
+<!--     * Avoids the problem of specifying a prior but requires specification of $K$ in advance. -->
 
-- The clustering approaches in Steorts et al. (2016) and Zanella et al. (2016) only handle categorical data.
-    * Prior specification involving string data is very difficult!  
+<!-- \vspace{1mm} -->
+<!-- - This approach allows us to include both categorical and string-valued  -->
+<!-- variables. -->
+
+<!-- \vspace{1mm} -->
+
+<!-- - The clustering approaches in Steorts et al. (2016) and Zanella et al. (2016) only handle categorical data. -->
+<!--     * Prior specification involving string data is very difficult!   -->
 
 
 <!-- Smered only handles categorical same as microclustering and Maurcio's paper is for two files and handles strings too?
  
  blink handles both sting and categorical, see comparison with smered in eblink paper-->
+ 
+ 
+# Bayesian Entity Resolution
+
+Previous literature: not balanced regarding modeling, handling high-dimensional data, and uncertainty of multiple databases.
+
+- Bayesian model: simultaneously links and de-duplicates.
+* Assume records are noisy, distorted.
+* We have a novel representation ($\boldsymbol{\Lambda}$): linkage structure.
+* The \textcolor{blue}{strength} of a Bayesian approach is that transitivity of the linked records is nearly automatic. 
+* Our data structure provides uncertainty estimates of linked records
+that can be propagated into later analyses.
+
+[\textcolor{blue}{Steorts}, Hall, and Fienberg (2014), \textcolor{blue}{Steorts}, Hall, and Fienberg (2016)]
+
+
+# Empirically Motivated Priors 
+
+- The major weaknes of \textcolor{blue}{Steorts}, Hall, and Fienberg (2016) is the fact that it did not handle text (string) data. 
+
+- Steorts (2015) overcomes this issue by taking an empirical Bayesian approach, and making extensive comparisons to supervised methods. 
 
 
 # Model Specification: String model
@@ -264,11 +298,12 @@ where $c$ is a parameter that needs to be specified and $d$ represents a string 
 \begin{center}
 \begin{align*}
 & Y_{\lambda_{ij}\ell} \stackrel{iid}{\sim} G_{\ell}  \\
-& z_{ij\ell}|\beta{i\ell}\stackrel{iid}{\sim} \text{Bernoulli}(\beta{i\ell})   \\
-& \beta{i\ell}\stackrel{iid}{\sim} \text{Beta}(a,b) \\
+& z_{ij\ell}|\beta_{i\ell}\stackrel{iid}{\sim} \text{Bernoulli}(\beta_{i\ell})   \\
+& \beta_{i\ell}\stackrel{iid}{\sim} \text{Beta}(a,b) \\
 & \lambda_{ij} \stackrel{iid}{\sim} \text{DiscreteUniform(1,\ldots,N)}
 \end{align*}
 \end{center}
+where $a,b,N$ are unknown parameters that must be estimated or fixed. 
 
 - $\beta_{i\ell}$ represent the distortion probabilities of the fields. 
 
