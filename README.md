@@ -77,7 +77,7 @@ Writer of Materials: Beidi Chen and Rebecca C. Steorts
 
 Entity resolution identifies and removes duplicate entities in large, noisy databases and has grown in both usage and new developments as a result of increased data availability. Nevertheless, entity resolution has tradeoffs regarding assumptions of the data generation process, error rates, and computational scalability that make it a difficult task for real applications. In this paper, we focus on a related problem of unique entity estimation, which is the task of estimating the unique number of entities and associated standard errors in a data set with duplicate entities. Unique entity estimation shares many fundamental challenges of entity resolution, namely, that the computational cost of all-to-all entity comparisons is intractable for large databases. To circumvent this computational barrier, we propose an efficient (near-linear time) estimation algorithm based on locality sensitive hashing. Our estimator, under realistic assumptions, is unbiased and has provably low variance compared to existing random sampling based approaches. In addition, we empirically show its superiority over the state-of-the-art estimators on three real applications. The motivation for our work is to derive an accurate estimate of the documented, identifiable deaths in the ongoing Syrian conflict. Our methodology, when applied to the Syrian data set, provides an estimate of 191,874±1772 documented, identifiable deaths, which is very close to the Human Rights Data Analysis Group (HRDAG) estimate of 191,369. Our work provides an example of challenges and efforts involved in solving a real, noisy challenging problem where modeling assumptions may not hold.
 
-Slide deck:
+Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/04-uee/record_linkage-unique-entity-estimation.pdf
 
 Suggested reading: Chen, Shrivastava, Steorts (2018)
 
@@ -88,7 +88,7 @@ Writer of Materials: Brenda Betancourt, Andee Kaplan, and Rebecca C. Steorts
 
 There are many methods of record linkage currently proposed in the literature and used in practice. In this section of the workshop, we introduce methods for Bayesian entity resolution. One of the benefits of using a Bayesian method is that it allows propagation of the entity resolution error exactly into an subsequent process. We will give an overview of the literature and detail a particular class of models - Bayesian graphical record linkage models. Additionally, we will work through some exercises with real datasets using an `R` package that performs this Bayesian analysis and get experience with tuning, setting prior parameters, and evaluation of the methods.
 
-Slide deck:
+Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/05-bayes/05-bayes.pdf
 
 Suggested reading: Steorts, Hall, Fienberg (2014, 2016), Steorts (2015), blink package (CRAN or github). 
 
@@ -100,7 +100,7 @@ Writer of Materials: Neil Marchant and Rebecca C. Steorts
 While there have been many Bayesian record linkage methods proposed in the literature, none of these methods scale to industrial sized data sets. In fact, none of these methods scale to data sets beyond 5,000 records. In this section of the workshop, we introduce distributed methods for Bayesian entity resolution (dblink). More specifically, we give an overview of a recent method of Marchant, et. al (2019), which proposes the first scalable and distributed end-to-end Bayesian model for entity resolution, which propagates uncertainty in blocking, matching, and merging. In addition, several contributions are made including: (i) incorporating probabilistic blocking directly into the model through auxiliary partitions; (ii) support for missing values; (iii) a partially-collapsed Gibbs samper; and (iv) a novel perturbation sampling algorithm  that enables fast updates of the entity attributes. In this workshop, we will present dblink in a more simple setting for intuition, and provide intuition for computational speed ups. Finally, we illustrate experimental results on dblink 
 on five synthetic and real data, which show that d-blink can achieve significant efficiency gains—in excess of 200×—when compared to existing methodology.
 
-Slide deck:
+Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/06-dblink/06-dblink.pdf
 
 Suggested reading: Slide deck.  
 
