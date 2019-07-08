@@ -27,12 +27,23 @@ Remark: This workshop is meant to be a one or two day workshop, however, it can 
 
 ## Overview of Workshop
 
+### 0. Setup
+
+In order to make sure that you are able to run all demos for the workshop, please make sure that 
+
+1. You have the latest version of R installed on your laptop. 
+2. You run the following scripts, which will be needed for all `R' demos:
+https://github.com/resteorts/record-linkage-tutorial/blob/master/00-setup/packages_install.R
+
+
 ### I. Overview and introduction to entity resolution
 Speaker: Rebecca C. Steorts
 
 Writer of Materials: Andee Kaplan and Rebecca C. Steorts
 
 Very often information about social entities is scattered across multiple databases. Combining that information into one database can result in enormous benefits for analysis, resulting in richer and more reliable conclusions. Among the types of questions that have been, and can be, addressed by combining information include: How accurate are census enumerations for minority groups? How many of the elderly are at high risk for sepsis in different parts of the country ? How many people were victims of war crimes in recent conflicts in Syria? In most practical applications, however, analysts cannot simply link records across databases based on unique identifiers, such as social security numbers, either because they are not a part of some databases or are not available due to privacy concerns. In such cases, analysts need to use methods from statistical and computational science known as record linkage (also called entity resolution or de-duplication) to proceed with analysis. Record linkage is not only a crucial task for social science and industrial applications, but is a challenging statistical and computational problem itself, because many databases contain errors (noise, lies, omissions, duplications, etc.), and the number of parameters to be estimated grows with the number of records. To meet present and near-future needs, record linkage methods must be flexible and scalable to large databases; furthermore, they must be able to handle uncertainty and be easily integrated with post-linkage statistical analyses, such as logistic regression or capture recapture. All this must be done while maintaining accuracy and low error rates.
+
+Slide deck: 
 
 Suggested reading: Christen (2012), Fellegi and Sunter (1969). 
 
