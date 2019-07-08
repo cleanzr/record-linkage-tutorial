@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+	\tikzstyle{main}=[circle, minimum size=9mm, thick, draw=black!80, node distance=15mm]
+	\tikzstyle{hyparam}=[rectangle, minimum size=5mm, thick, draw=black!80, fill=black!10, node distance=15mm]
+	\tikzstyle{param}=[rectangle, minimum size=7mm, thick, draw=black!80, node distance=15mm]
+	\tikzstyle{connect}=[-latex, thick]
+	\tikzstyle{selector}=[-latex, -|, snake=snake,segment amplitude=.4mm,segment length=2mm,line after snake=1mm, thick]
+	\tikzstyle{shortconnect}=[-latex, thin]
+	\tikzstyle{plate}=[rectangle, inner sep=3.5mm, yshift=-1mm, draw=black, rounded corners=6pt]
+	\tikzstyle{highlight}=[draw=blue,text=blue]
+	\tikzstyle{platelab}=[anchor=south east, xshift=-0.4mm, yshift=0.4mm]
+	\tikzstyle{switch}=[circle, minimum size=1mm, fill=black!100, draw=black!100]
+	\node[param, fill=black!10] (alpha) {$\alpha_\ell$};
+	\node[main] (theta) [below right of=alpha, xshift=10mm, yshift=6mm] {$\theta_{k\ell}$};
+	\node[param, fill=black!10] (beta) [below left of=theta, xshift=-10mm, yshift=6mm] {$\beta_\ell$};
+	\node[main] (z) [below of=theta] {$z_{km\ell}$};
+	\node[main, fill=black!10] (x) [below of=z] {$x_{km\ell}$};
+	\node[main] (lambda) [below of=x] {$\lambda_{km}$};
+	\node[main, highlight] (gamma) [below of=lambda] {$\gamma_{km}$};
+	\node[main] (y) [right of=x, xshift=16mm, yshift=8mm] {$y_{n\ell}$};
+	\node[param, fill=black!10] (phi) [above of=y] {$\phi_\ell$};
+	\path (alpha) edge [connect] (theta)
+	(beta) edge [connect] (theta)
+	(theta) edge [connect] (z)
+	(z) edge [connect] (x)
+	(lambda) edge [selector] (x)
+	(gamma) edge [connect, highlight, fill=blue] (lambda)
+	(y) edge [connect] (x)
+	(y) edge [connect, highlight, fill=blue] (lambda)
+	(y) edge [connect, highlight, fill=blue] (gamma)
+	(phi) edge [connect] (y);
+	\node[plate, fit=(y), inner sep=5mm] (plate-n) {};
+	\node[platelab] at (plate-n.south east) (n) {\footnotesize$n \in 1 \ldots N$};
+	\node[plate, fit=(z) (gamma), inner sep=4.5mm] (plate-m) {};
+	\node[platelab] at (plate-m.south east) {\footnotesize$m \in 1 \ldots M_k$};
+	\node[plate, fit=(theta) (plate-m)] (plate-k) {};
+	\node[platelab] at (plate-k.south east) {\footnotesize$k \in 1 \ldots K$};
+	\node[plate, fit=(alpha) (x) (plate-n), yshift=1mm, inner sep=3mm] (plate-l) {};
+	\node[platelab] at (plate-l.south east) {\footnotesize$\ell \in 1 \ldots L$};
+\end{tikzpicture}

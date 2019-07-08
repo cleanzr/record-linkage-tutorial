@@ -1,0 +1,7 @@
+Title: Will the Real Steve Fienberg Please Stand Up: A Bayesian Approach to Graphical Record Linkage*
+
+Information about social entities in spread across multiple databases, which often do not  share unique identifiers. This information must be assembled in some way. One such way is record linkage, which does just this. We approach this problem as one of discovering a latent bipartite network, which links manifest records to a common set of unique individuals. This novel representation lets use a hierarchical Bayesian model to simultaneously infer the linkage structure, attributes and the number the latent individuals in the population. This Bayesian method quantifies the uncertainty in the inference and allows us to propagate the uncertainty into later substantive analyses. 
+
+We test our model using data from the National Long Term Care Survey (NLTCS), a longitudinal study of the health of elderly (65+)  individuals (http://www.nltcs.aas.duke.edu). The NLTCS was conducted approximately every six years, with each
+wave containing roughly 20,000 individuals.  Two aspects of the NLTCS make it suitable for our purposes: individuals were tracked from wave to wave wit
+unique identifiers, but at each wave,  many patients had died (or otherwise left the study) and were replaced by newly-eligible patients.  We can test the ability of our model to link records across files by seeing how well it is able to track individuals across waves, and compare its estimates to the ground truth provided by the unique identifiers.

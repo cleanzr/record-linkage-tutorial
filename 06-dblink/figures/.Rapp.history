@@ -1,0 +1,520 @@
+15+21+18
+26275+20105+2236+288+66+33+14+6+6+4+2+1+1+1
+126275+20105+2236+288+66+33+14+17+6+6+4+2+1+1+1
+0.95*100
+1000/100*.95
+0.25+0.45+0.3
+underName <- c("Aluko", "Lyon Chen", "Judy Feng", "Jeff Ho", "Michelle Ho", "Anna Jiang", "Steve Kang", "Cameron Kaplan", "Amanda Levenberg", "Jiayin Lin", "Xirui Liu","Lucy Lu", "Wendy Lu", "Kevin Marren", "Basil Seif", "Angie Shen", "Corey Vernot", "William Whedon","Bryce Wolery"," Sam Yin", "Ellen Yuan", "Jaslyn Zhang", "Dayou Zhou", "Liaowang Zou")#
+# undergrads#
+h1under <- c(43,33,48,44,46,33,45,0,44,46,46,46,46,0,35,46,43,50,50,46,46,38,50,46)/50#
+h2under <- c(58,64,70,55,62,44,70,55,70,70,69,70,70,39,60,69,68,69,67,70,65,70,70,70)/70#
+#
+h3under<- c(40,38,40,44,44,38,39,0,44,43,44,39,42,37,42,44,36,44,41,44,44,40,44,42)/44#
+#
+h4under<-#
+c(65,0,69,70,68,0,70,0,70,68,68,70,68,52,70,70,70,70,68,70,70,68,68,70)/70#
+#
+midterm1under <- c(31,23,37,31,18,23,44,24,47,13,38,46,26,31,26,42,25,52,47,56,22,31,53,52)/73#
+#
+midterm2under <- c(43,0,48,50,49,50,52,0,52,52,54,53,51,47,44,53,52,52,49,53,52,46,54,48)/54#
+#
+plot(density(midterm2under),main="Undergrad Grades Midterm Two")#
+summary(midterm2under)#
+(tempGradeUnder <-.25*(h1under+h2under+h3under)/4 + 0.45*midterm1under+0.3*midterm2under)#
+#
+head( underGrade <- data.frame(underName, tempGradeUnder, midterm1under, midterm2under,h1under, h2under,h3under))#
+#
+(rank <- underGrade[order(-tempGradeUnder),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+summary(midterm2under )
+summary(midterm2grad )
+midterm2grad <-c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,48,54,54,53,50,52,52,49,47,45,0,45,48,38,53,0,47,53,50,50)/54
+summary(midterm2grad )
+underName <- c("Aluko", "Lyon Chen", "Judy Feng", "Jeff Ho", "Michelle Ho", "Anna Jiang", "Steve Kang", "Cameron Kaplan", "Amanda Levenberg", "Jiayin Lin", "Xirui Liu","Lucy Lu", "Wendy Lu", "Kevin Marren", "Basil Seif", "Angie Shen", "Corey Vernot", "William Whedon","Bryce Wolery"," Sam Yin", "Ellen Yuan", "Jaslyn Zhang", "Dayou Zhou", "Liaowang Zou")#
+# undergrads#
+h1under <- c(43,33,48,44,46,33,45,0,44,46,46,46,46,0,35,46,43,50,50,46,46,38,50,46)/50#
+h2under <- c(58,64,70,55,62,44,70,55,70,70,69,70,70,39,60,69,68,69,67,70,65,70,70,70)/70#
+#
+h3under<- c(40,38,40,44,44,38,39,0,44,43,44,39,42,37,42,44,36,44,41,44,44,40,44,42)/44#
+#
+h4under<-#
+c(65,0,69,70,68,0,70,0,70,68,68,70,68,52,70,70,70,70,68,70,70,68,68,70)/70#
+#
+midterm1under <- c(31,23,37,31,18,23,44,24,47,13,38,46,26,31,26,42,25,52,47,56,22,31,53,52)/73#
+#
+midterm2under <- c(43,0,48,50,49,50,52,0,52,52,54,53,51,47,44,53,52,52,49,53,52,46,54,48)/54#
+#
+plot(density(midterm2under),main="Undergrad Grades Midterm Two")#
+summary(midterm2under)#
+(tempGradeUnder <-.25*(h1under+h2under+h3under)/4 + 0.45*midterm1under+0.3*midterm2under)#
+#
+head( underGrade <- data.frame(underName, tempGradeUnder, midterm1under, midterm2under,h1under, h2under,h3under))#
+#
+(rank <- underGrade[order(-tempGradeUnder),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,52,49,47,45,045,48,38,53,0,47,53,50,50)#
+#
+midterm2grad <-c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,48,54,54,53,50,52,52,49,47,45,0,45,48,38,53,0,47,53,50,50)/54#
+#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+(rank <- graduateStudents[order(-tempGradeGrad),])
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,52,49,47,45,045,48,38,53,0,47,53,50,50)#
+#
+midterm2grad <-c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,48,54,54,53,50,52,52,49,47,45,0,45,48,38,53,0,47,53,50,50)/54#
+#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])
+rank
+graduateStudents
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+underName <- c("Aluko", "Lyon Chen", "Judy Feng", "Jeff Ho", "Michelle Ho", "Anna Jiang", "Steve Kang", "Cameron Kaplan", "Amanda Levenberg", "Jiayin Lin", "Xirui Liu","Lucy Lu", "Wendy Lu", "Kevin Marren", "Basil Seif", "Angie Shen", "Corey Vernot", "William Whedon","Bryce Wolery"," Sam Yin", "Ellen Yuan", "Jaslyn Zhang", "Dayou Zhou", "Liaowang Zou")#
+# undergrads#
+h1under <- c(43,33,48,44,46,33,45,0,44,46,46,46,46,0,35,46,43,50,50,46,46,38,50,46)/50#
+h2under <- c(58,64,70,55,62,44,70,55,70,70,69,70,70,39,60,69,68,69,67,70,65,70,70,70)/70#
+#
+h3under<- c(40,38,40,44,44,38,39,0,44,43,44,39,42,37,42,44,36,44,41,44,44,40,44,42)/44#
+#
+h4under<-#
+c(65,0,69,70,68,0,70,0,70,68,68,70,68,52,70,70,70,70,68,70,70,68,68,70)/70#
+#
+midterm1under <- c(31,23,37,31,18,23,44,24,47,13,38,46,26,31,26,42,25,52,47,56,22,31,53,52)/73#
+#
+midterm2under <- c(43,0,48,50,49,50,52,0,52,52,54,53,51,47,44,53,52,52,49,53,52,46,54,48)/54#
+#
+plot(density(midterm2under),main="Undergrad Grades Midterm Two")#
+summary(midterm2under)#
+(tempGradeUnder <-.25*(h1under+h2under+h3under)/4 + 0.45*midterm1under+0.3*midterm2under)#
+#
+head( underGrade <- data.frame(underName, tempGradeUnder, midterm1under, midterm2under,h1under, h2under,h3under))#
+#
+(rank <- underGrade[order(-tempGradeUnder),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+underGrade
+ln(0)
+log(0)
+underName <- c("Aluko", "Lyon Chen", "Judy Feng", "Jeff Ho", "Michelle Ho", "Anna Jiang", "Steve Kang", "Cameron Kaplan", "Amanda Levenberg", "Jiayin Lin", "Xirui Liu","Lucy Lu", "Wendy Lu", "Kevin Marren", "Basil Seif", "Angie Shen", "Corey Vernot", "William Whedon","Bryce Wolery"," Sam Yin", "Ellen Yuan", "Jaslyn Zhang", "Dayou Zhou", "Liaowang Zou")#
+# undergrads#
+h1under <- c(43,33,48,44,46,33,45,0,44,46,46,46,46,0,35,46,43,50,50,46,46,38,50,46)/50#
+h2under <- c(58,64,70,55,62,44,70,55,70,70,69,70,70,39,60,69,68,69,67,70,65,70,70,70)/70#
+#
+h3under<- c(40,38,40,44,44,38,39,0,44,43,44,39,42,37,42,44,36,44,41,44,44,40,44,42)/44#
+#
+h4under<-#
+c(65,0,69,70,68,0,70,0,70,68,68,70,68,52,70,70,70,70,68,70,70,68,68,70)/70#
+#
+midterm1under <- c(31,23,37,31,18,23,44,24,47,13,38,46,26,31,26,42,25,52,47,56,22,31,53,52)/73#
+#
+midterm2under <- c(43,0,48,50,49,50,52,0,52,52,54,53,51,47,44,53,52,52,49,53,52,46,54,48)/54#
+#
+plot(density(midterm2under),main="Undergrad Grades Midterm Two")#
+summary(midterm2under)#
+(tempGradeUnder <-.25*(h1under+h2under+h3under)/4 + 0.45*midterm1under+0.3*midterm2under)#
+#
+head( underGrade <- data.frame(underName, tempGradeUnder, midterm1under, midterm2under,h1under, h2under,h3under))#
+#
+(rank <- underGrade[order(-tempGradeUnder),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+9+20+18
+54-7
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(53,53,0,34,53,0,0,48,50,53,49,47,48,47,0,47,53,50)
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+rank
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,510,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+rank
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,510,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)
+dim(midterm2grad)
+length(midterm2grad)
+length(midterm1grad)
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/3 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/4 + 0.45*midterm1grad +.30*midterm2grad)
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+ h1grad)/4 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+(tempGradeGrad <-.25*(h1grad+h2grad+h3grad+h4grad)/4 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+(tempGradeGrad <-.25*(h1grad+h2grad+h3grad+h4grad)/4 + 0.45*midterm1grad +.30*midterm2grad)
+25*(h1grad+h2grad+h3grad+h4grad)/4
+h1grad+h2grad+h3grad+h4grad
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50
+h1grad
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)
+(tempGradeGrad <-.25*(h1grad+h2grad+h3grad+h4grad)/4 + 0.45*midterm1grad +.30*midterm2grad)
+(h1grad+h2grad+h3grad+h4grad)/4
+0.25+.45+.3
+midterm1grad
+midterm2grad
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)/54
+(tempGradeGrad <-.25*(h1grad+h2grad+h3grad+h4grad)/4 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+#
+midterm2grad <-#
+c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)/54#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+h3grad+h4grad)/4 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+15*20
+60+21+30
+18/24
+23/37
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")  #
+#
+gradNumber <- seq(1:length(gradName))#
+## grad students  #
+h1grad <- c(43,45,42,46,49,45,42,49,45,43,48,42,41,45,48,39,33,0,48,46,50,50,46,42,48,50,42,42,42,40,41,48,15,45,50,48,44)/50#
+#
+h2grad <- c(64,69,63,70,69,70,70,70,69,68,67,69,69,70,38,70,70,69,70,70,70,57,67,67,70,70,70,65,70,70,70,70,70,70,70,70,69)/70#
+#
+h3grad<- c(41,39.5,44,44,42,42,43,44,38,41,43,36,44,44,42,44,36,42,42,41,43,40,40,44,44,43,40,43,44,44,44,40,44,43,44,43,44)/44#
+#
+h4grad<- #
+c(70,70,70,66,70,0,68,70,70,0,66,66,70,70,70,0,0,0,70,68,70,66,68,70,70,68,70,0,70,68,68,70,0,70,68,70,70)/70#
+#
+h5grad <-#
+c(50,0,55,50,55,0,55,60,55,0,0,0,60,60,50,0,0,0,60,50,55,55,60,50,60,55,60,0,50,50,60,50,0,60,60,60,50)/60#
+#
+midterm1grad <- c(39,34,32,52,55,19,36,42,30,36,25,35,36,46,51,30,1,21,45,37,61,37,32,39,39,29,34,46,28,26,50,27,16,59,59,47,50)/73#
+midterm2grad <- c(46,48,53,50,53,0,53,54,51,0,34,53,50,52,50,0,0,0,48,54,53,50,52,53,49,47,45,0,45,48,47,53,0,47,53,50,50)/54#
+plot(density(midterm2grad),main="Graduate Grades Midterm Two")#
+#
+(tempGradeGrad <-.25*(h1grad+h2grad+h3grad+h4grad+h5grad)/5 + 0.45*midterm1grad +.30*midterm2grad)#
+#
+gradName<- c("Bellows", "Brallich", "Burinskiy", "Calkins", "Yanyou Chen", "YenHua Chen", "Cherry", "Moohyung Cho", "Foster", "Gerken", "Guirola", "Hamilton", "Ida Hjermitslev", "Yunan Hu", "Ran Huo", "Jain", "Yuqi Jiang", "Dewran Kocak", "Xioahui Li", "Jinjie Lin", "Liu Lu", "Reuben", "Marco Morucci", "Oberg", "Takashi Okamoto", "Lei Qian", "Dinghan Shen", "Silverman", "Spater", "Tellez", "Guoyin Wang", "Webster", "Andrew Wong", "Yu", "Azeem Zamam", "Zhang", "Zhao")#
+#
+head(graduateStudents <- data.frame(gradName,tempGradeGrad, midterm1grad, midterm2grad, h1grad, h2grad, h3grad, h4grad, h5grad))#
+#
+(rank <- graduateStudents[order(-tempGradeGrad),])#
+#
+rownames(rank) <- 1:nrow(rank)#
+#
+rank
+27/31
+230*.2
+230*.1
+231500*.01
+25/31
+19/24
+19/22
+100-40-40
+24*12
+70*12
+840*12
+840/2
+840+420
+1260+288
+1548-60-93-70
+3000-1200
+1800-1325
+7955+2959+7572
+18486/57077
+1-.32
+load('~/work_on/small_clusters/notes/nips_2016/finalData/NBNB100.Rdata')
+ls()
+plot(temp,xlab=expression(M_N))
+plot(temp,xlab="N",ylab="Mn/N"")
+)
+d;
+''
+""
+plot(temp,xlab="N",ylab="Mn/N)
+)
+""
+"
+plot(temp,xlab="N",ylab="Mn/N")
+plot(temp,xlab="N",ylab="Mn/N",lty=l)
+plot()
+?plot()
+plot(temp,xlab="N",ylab="Mn/N",type="L")
+plot(temp,xlab="N",ylab="Mn/N",type="l")
+plot(temp,xlab="N",ylab="Mn/N",type="p")
+plot(temp,xlab="N",ylab="Mn/N",type="l")
+plot(temp,xlab="N",ylab=expression(M_N),type="l")
+plot(temp,xlab="N",ylab=expression("M"[N]),type="l")
+plot(temp,xlab="N",ylab=expression("M"[N]/N),type="l")
+?pdf()
+setwd("~/work_on/small_clusters/notes/nips_2016/figures")
+?pdf()
+pdf(file="nbnbABCN100.pdf",height=3,width=5)#
+plot(temp,xlab="N",ylab=expression("M"[N]/N),type="l")#
+dev.off()
+10^
+4
+5*10^4
+5*10^3
+require(MCMCpack)
+S<-2*10^2
+S
+S<-10^2
+S<-10^2#
+length_N_vec<-75#
+log_N_vec<-(#
+  c(length_N_vec:(2*length_N_vec))/(2*length_N_vec)#
+)*log(10^4)#
+N_vec<-floor(exp(log_N_vec))#
+M_average_vec<-rep(NA,length(N_vec))#
+iter<-1#
+for (N in N_vec){#
+  print(paste("N=",N,"; ",iter,"/",length_N_vec))#
+  M_vec<-rep(NA,S)#
+  a<-1#
+  q<-1-2/N#
+  #toll<-N/(10^3)#
+   toll<-0.1#
+  for (s in 1:S){#
+    Nk_vec<-0#
+    while(abs(sum(Nk_vec)-N)>toll){#
+      K<-rnbinom(n = 1,size = a,prob = 1-q)#
+      p<-rbeta(n = 1,shape1 = 2, shape2 = 2)#
+      r<-rgamma(n = 1,shape = 1,rate = 1)#
+      p_vec<-dnbinom(x=0:ceiling(N+toll), size=r, prob=p,log = FALSE)#
+      if(runif(1)< (sum(p_vec)^K)  ){#
+        p_vec<-p_vec/sum(p_vec)#
+        alpha<-max(rgamma(n = 1,shape = 1,rate = 1),0.02)#
+        mu<-c(rdirichlet(n=1, alpha=alpha*p_vec))#
+        Nk_vec<-sample.int(n = length(mu),size = K,prob = mu,replace = TRUE)#
+      }else{#
+        Nk_vec<-0#
+      }#
+    }#
+    M_vec[s]<-max(Nk_vec)#
+  }#
+  M_average_vec[iter]<-mean(M_vec)#
+  iter<-iter+1#
+}

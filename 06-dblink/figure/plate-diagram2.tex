@@ -1,0 +1,67 @@
+\begin{tikzpicture}
+	\tikzset{
+		hatch distance/.store in=\hatchdistance,
+		hatch distance=8pt,
+		hatch thickness/.store in=\hatchthickness,
+		hatch thickness=2pt
+  }
+
+	\makeatletter
+	\pgfdeclarepatternformonly[\hatchdistance,\hatchthickness]{flexible hatch}
+	{\pgfqpoint{0pt}{0pt}}
+	{\pgfqpoint{\hatchdistance}{\hatchdistance}}
+	{\pgfpoint{\hatchdistance-1pt}{\hatchdistance-1pt}}%
+	{
+		\pgfsetcolor{\tikz@pattern@color}
+		\pgfsetlinewidth{\hatchthickness}
+		\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\hatchdistance}{\hatchdistance}}
+		\pgfusepath{stroke}
+	}
+	\makeatother
+
+	\tikzstyle{main}=[circle, minimum size=9mm, thick, draw=black!80, node distance=15mm]
+	\tikzstyle{hyparam}=[rectangle, minimum size=5mm, thick, draw=black!80, fill=black!10, node distance=15mm]
+	\tikzstyle{param}=[rectangle, minimum size=8mm, thick, draw=black!80, node distance=15mm]
+	\tikzstyle{connect}=[-latex, thick]
+	%\tikzstyle{selector}=[-latex, -|, snake=snake,segment amplitude=.4mm,segment length=2mm,line after snake=1mm, thick]
+	\tikzstyle{shortconnect}=[-latex, thin]
+	\tikzstyle{plate}=[rectangle, inner sep=3.5mm, yshift=-1mm, draw=black, rounded corners=6pt]
+	\tikzstyle{highlight}=[draw=blue,text=blue]
+	\tikzstyle{platelab}=[anchor=south east, xshift=-0.4mm, yshift=0.4mm]
+	\tikzstyle{switch}=[circle, minimum size=1mm, fill=black, draw=black]
+	\node[param, fill=black!10] (alpha) {$\alpha_{a}$};
+	\node[main] (theta) [below right of=alpha, xshift=10mm, yshift=6mm] {$\theta_{ta}$};
+	\node[param, fill=black!10] (beta) [below left of=theta, xshift=-10mm, yshift=6mm] {$\beta_{a}$};
+	\node[main] (z) [below of=theta] {$z_{tra}$};
+	\node[main, pattern=flexible hatch, pattern color=black!10] (x) [below of=z] {$x_{tra}$};
+	\node[main] (lambda) [below of=x, yshift=-1mm] {$\lambda_{tr}$};
+	\node[main, highlight] (gamma) [below of=lambda] {$\gamma_{tr}$};
+	\node[main] (y) [left of=x, xshift=-8mm, yshift=5mm] {$y_{ea}$};
+	\node[param, fill=black!10] (phi) [above left of=y, yshift=3mm] {$\phi_{a}$};
+	\node[param, highlight] (P) [left of=gamma, xshift=-8mm] {$\partset_{p}$};
+	\node[param, fill=black!10, highlight] (eta) [right of=theta] {$\eta_{ta}$};
+	\node[main, fill=black!10, highlight] (o) [below of=eta] {$o_{tra}$};
+	\path (alpha) edge [connect] (theta)
+	(beta) edge [connect] (theta)
+	(theta) edge [connect] (z)
+	(z) edge [connect] (x)
+	(lambda) edge [connect] (x)
+	(gamma) edge [connect, highlight, fill=blue] (lambda)
+	(eta) edge [connect, highlight, fill=blue] (o)
+	(y) edge [connect] (x)
+	(y) edge [connect, highlight, fill=blue] (P)
+	(P) edge [connect, highlight, fill=blue] (gamma)
+  (P) edge [connect, highlight, fill=blue] (lambda)
+	(phi) edge [connect] (y);
+	\node[plate, fit=(y)] (plate-e) {};
+	\node[platelab] at (plate-e.south east) (e) {\footnotesize$E$};
+	\node[plate, fit=(z) (gamma) (x) (lambda) (o), inner sep=4.5mm] (plate-r) {};
+	\node[platelab] at (plate-r.south east) {\footnotesize$R_t$};
+	\node[plate, fit=(theta) (eta) (plate-r), inner sep=3mm] (plate-t) {};
+	\node[platelab] at (plate-t.south east) {\footnotesize$T$};
+  \node[plate, fit=(P), highlight] (plate-P) {};
+  \node[platelab, text=blue] at (plate-P.south east) {\footnotesize$P$};
+	\node[plate, fit=(phi) (alpha) (x) (eta) (plate-e), yshift=0mm, inner sep=3mm] (plate-a) {};
+	\node[platelab] at (plate-a.south east) {\footnotesize$A$};
+\end{tikzpicture}
