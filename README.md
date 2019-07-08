@@ -90,6 +90,8 @@ There are many methods of record linkage currently proposed in the literature an
 
 Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/05-bayes/05-bayes.pdf
 
+Demo: https://github.com/resteorts/record-linkage-tutorial/blob/master/05-bayes/05-bayes.R
+
 Suggested reading: Steorts, Hall, Fienberg (2014, 2016), Steorts (2015), blink package (CRAN or github). 
 
 ### VI. Distributed Bayesian Entity Resolution 
