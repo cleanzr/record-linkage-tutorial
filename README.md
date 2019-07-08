@@ -38,6 +38,7 @@ Suggested reading: Christen (2012), Fellegi and Sunter (1969).
 
 ### II. Introduction to traditional record linkage and blocking  
 Speaker: Rebecca C. Steorts 
+
 Writer of Materials: Brenda Betancourt
 
 There are two main types of linkage algorithms: deterministic and probabilistic. Choosing the best algorithm to use in a given situation depends on many interacting factors including time, resources, and the quantity and quality of the available data  to be able to identify an individual uniquely. With this in mind, it is important to be equipped with data linkage algorithms for varying scenarios. Deterministic algorithms determine whether record pairs agree or disagree on a given set of identifiers, and the match status for a pair of records can be assessed in a single step or in multiple steps. The deterministic approach ignores the fact that data can be noisy and certain identifiers have more discriminatory power than others do. On the other hand, probabilistic techniques assess the discriminatory power of each identifier and the likelihood that two records are a true match based on levels of agreement on the various identifiers. In this section we introduce the Fellegi-Sunter approach which is the most popular probabilistic method for record linkage and work through a example with real data using `R`. In addition, we discuss and show examples of traditional blocking techniques used to reduce computation time and memory consumption by only comparing records that agree on values for a subset of attributes, called blocking fields.
@@ -47,6 +48,7 @@ Suggested reading: Steorts, Ventura, Sadinle, Fienberg (2014); Steorts and Shriv
 
 ### III. Introduction to locality sensitive hashing (this is a fast way of blocking).   
 Speaker: Andee Kaplan
+
 Writer of Materials: Andee Kaplan 
 
 In this section we will introduce a sub-quadratic type of blocking - locality sensitive hashing - which allows one to place similar entities into blocks. This is a fast way to create blocks of data that will allow for record linkage methods to be used in parallel for each block. We focus mainly on how to speed up block creation through the use of minwise hashing and densified one permutation hashing as an initial step in the record linkage process. In this section we will focus on understanding the basic ideas behind locality sensitive hashing as well as get some hands on experiences using the methods in `R`. The goal of this hour is to provide background on a fast way to create blocks of data, which can then be used for record linkage.
@@ -55,6 +57,7 @@ Suggested reading: Mining Massive Datasets (http://www.mmds.org/); Steorts, Vent
 
 ### IV. Introduction to unique entity estimation (this is a way of estimating entities that uses locality sensitive hashing)  
 Speaker: Beidi Chen and Rebecca C. Steorts 
+
 Writer of Materials: Beidi Chen and Rebecca C. Steorts
 
 Entity resolution identifies and removes duplicate entities in large, noisy databases and has grown in both usage and new developments as a result of increased data availability. Nevertheless, entity resolution has tradeoffs regarding assumptions of the data generation process, error rates, and computational scalability that make it a difficult task for real applications. In this paper, we focus on a related problem of unique entity estimation, which is the task of estimating the unique number of entities and associated standard errors in a data set with duplicate entities. Unique entity estimation shares many fundamental challenges of entity resolution, namely, that the computational cost of all-to-all entity comparisons is intractable for large databases. To circumvent this computational barrier, we propose an efficient (near-linear time) estimation algorithm based on locality sensitive hashing. Our estimator, under realistic assumptions, is unbiased and has provably low variance compared to existing random sampling based approaches. In addition, we empirically show its superiority over the state-of-the-art estimators on three real applications. The motivation for our work is to derive an accurate estimate of the documented, identifiable deaths in the ongoing Syrian conflict. Our methodology, when applied to the Syrian data set, provides an estimate of 191,874±1772 documented, identifiable deaths, which is very close to the Human Rights Data Analysis Group (HRDAG) estimate of 191,369. Our work provides an example of challenges and efforts involved in solving a real, noisy challenging problem where modeling assumptions may not hold.
@@ -63,6 +66,7 @@ Suggested reading: Chen, Shrivastava, Steorts (2018)
 
 ### V. Introduction to Bayesian Entity Resolution 
 Speaker: Rebecca C. Steorts
+
 Writer of Materials: Brenda Betancourt, Andee Kaplan, and Rebecca C. Steorts
 
 There are many methods of record linkage currently proposed in the literature and used in practice. In this section of the workshop, we introduce methods for Bayesian entity resolution. One of the benefits of using a Bayesian method is that it allows propagation of the entity resolution error exactly into an subsequent process. We will give an overview of the literature and detail a particular class of models - Bayesian graphical record linkage models. Additionally, we will work through some exercises with real datasets using an `R` package that performs this Bayesian analysis and get experience with tuning, setting prior parameters, and evaluation of the methods.
@@ -71,6 +75,7 @@ Suggested reading: Steorts, Hall, Fienberg (2014, 2016), Steorts (2015), blink p
 
 ### VI. Distributed Bayesian Entity Resolution 
 Speaker: Rebecca C. Steorts
+
 Writer of Materials: Neil Marchant and Rebecca C. Steorts
 
 While there have been many Bayesian record linkage methods proposed in the literature, none of these methods scale to industrial sized data sets. In fact, none of these methods scale to data sets beyond 5,000 records. In this section of the workshop, we introduce distributed methods for Bayesian entity resolution (dblink). More specifically, we give an overview of a recent method of Marchant, et. al (2019), which proposes the first scalable and distributed end-to-end Bayesian model for entity resolution, which propagates uncertainty in blocking, matching, and merging. In addition, several contributions are made including: (i) incorporating probabilistic blocking directly into the model through auxiliary partitions; (ii) support for missing values; (iii) a partially-collapsed Gibbs samper; and (iv) a novel perturbation sampling algorithm  that enables fast updates of the entity attributes. In this workshop, we will present dblink in a more simple setting for intuition, and provide intuition for computational speed ups. Finally, we illustrate experimental results on dblink 
