@@ -32,17 +32,21 @@ classoption: compress
 - Exact Matching
 - String Matching
 - Fellegi and Sunter (1969); Newcombe (1959).
+3. Demos 
+- There are demos illustrating each proposed method
 
 
 # Computational challenge of entity resolution
 
+- Assume $M$ total records in two databases. 
+- Naive record linkage requires $M^2$ record comparisons. 
  
 
-- Given a total of $M$ records in two databases, one must perform $M^2$ record comparisons. 
+<!-- - Given a total of $M$ records in two databases, one must perform $M^2$ record comparisons.  -->
 
-- We must make all-to-all records comparisons, which is very inefficient. 
+<!-- - We must make all-to-all records comparisons, which is very inefficient.  -->
 
-- Example: suppose we have two databases with 5,000 total records $\rightarrow$ 25,000,000 comparisons!
+<!-- - Example: suppose we have two databases with 5,000 total records $\rightarrow$ 25,000,000 comparisons! -->
 
 <!-- - This means that we must make all-to-all record comparisons, which is very inefficient.  -->
 
@@ -50,24 +54,32 @@ classoption: compress
 <!-- the dataset -->
 <!--     * Two files with 5,000 records $\rightarrow$ 25,000,000 comparisons! -->
     
-![alt text](figures/noblocking_plot.pdf){ width=45% }    
-
-# Blocking: dimensionality trick 
-
-- Blocking seeks to create partitions, blocks, or bins such that similar records are placed in the same bin. 
-
-- Filter out dissimilar record pairs that are extremely unlikely to be matches.
-    * Perform record linkage only within blocks 
+![Must perform all-to-all record comparisons.](figures/noblocking_plot.pdf){ width=50% }    
 
 
-# Traditional (Deterministic) Blocking
+# Blocking
 
-- Traditional blocking : compare record pairs that match on one or more features.
-    * Creates a deterministic partition of the data
+- Blocking partitions similar records into bins or blocks.
+<!-- - Blocking filters out dissimilar record pairs.  -->
+- Record linkage is only performed within the blocks. 
 
-\vspace{3mm}
 
-- Record pairs that do not meet the blocking criteria are automatically classified as non-matches.
+# Blocking
+
+1. Traditional blocking
+
+- A deterministic partition is formed based upon the data. 
+- A partition is created by treating certain fields that are thought to be nearly error-free as fixed. 
+
+Example: Partition of date of birth year. 
+
+2. Probabilistic blocking 
+
+- A probability model is used to cluster the data into blocks/partitions. 
+
+Example: Locality Sensitive Hashing.  
+
+Under both blocking approaches, record pairs that do not meet the blocking criteria are automatically classified as non-matches.
 
 
 # Example: Traditional blocking
@@ -143,7 +155,7 @@ sum(sapply(tbl, choose, k=2))
 - Features often contain errors, noise, etc. and may not be suitable for determistic blocking. 
 
 
-- Why? A noisy feature used for determisitic blocking can miss a large proportion of matches (i.e. increased false negatives rates).
+- A noisy feature used for determisitic blocking can miss a large proportion of matches (i.e. increased false negatives rates).
 
 
 
@@ -167,11 +179,11 @@ sum(sapply(tbl, choose, k=2))
 
 # How to choose the blocking features (variables or keys)
 
-- Fields containing the fewest errors or missing values should be chosen as blocking variables e.g. clinical diagnosis in EHR.
+- Features containing the fewest errors or missing values should be chosen as blocking variables. 
 
 \vspace{3mm}
 
-- Understand the kind of errors that are unlikely for a certain field or a combination of them.
+- Understand the kind of errors that are unlikely for a certain feature. 
 
 \vspace{3mm}
 
@@ -264,13 +276,13 @@ sum(sapply(tbl, choose, k=2))
 
 #  Classical Record Linkage: Exact matching 
 
-- Exact matching: Exact matching is a method that says two records are a match if they agree on every feature.  
+- Exact matching is a method that says two records are a match if they agree on every feature.  
 
 - Performing exact matching is very common in the social and health sciences in practice, however, this is not common in statistics, computer science, or machine learning. 
 
 - Other types of matching or merging are used, where records are called to be a match if they agree based upon a similarity comparison or a probabilitistic model. 
 
-- Examples include: string matching, Fellegi-Sunter method, semi-supervised methods, and hash techniques. 
+- Examples include: string matching, Fellegi-Sunter method, semi-supervised methods, and hashing techniques. 
 
 <!-- \vspace{1mm} -->
 
@@ -421,30 +433,31 @@ rpairsfuzzy <- compare.dedup(RLdata500c,
 tail(rpairsfuzzy$pairs)
 ```
 
-# The Fellegi-Sunter approach (1969)
+# Fellegi-Sunter (1969); Newcombe (1959)
 
-- Represent every pair of records using vector of features that describe similarity between individual record fields. 
-    * Use string metrics for names and strings of numbers (Levenshtein or Jaro-Winkler).
+- Fellegi-Sunter (1969); Newcombe (1959) proposed the first method for record linkage.
+- Records are determined to be a match/non-match using a likelihood ratio test, which can be written as a mixture model. 
+- String metrics were used for names/numerical data (Levenshtein or Jaro-Winkler).
 
-\vspace{2mm}
+# Fellegi-Sunter (1969); Newcombe (1959)
 
-- Place feature vectors for record pairs into three classes: matches $(M)$, nonmatches $(U)$, and possible matches.
+- There are feature vector for record pairs, which are classfied into matches $(M)$, nonmatches $(U)$, and possible matches.
 
 \vspace{2mm}
 
 - Let $P(\gamma|M)$ and $P(\gamma|U)$ be probabilities of observing a feature vector $\gamma$ for a matched and nonmatched pair, respectively.
 
-# The Fellegi-Sunter approach (1969)
+# Fellegi-Sunter (1969); Newcombe (1959)
 
-- Perform record-pair classification by calculating the ratio $w=(P(\gamma|M)/P(\gamma|U))$ for each candidate record pair.
-
-\vspace{2mm}
-
-- Establish two thresholds based on desired error levels to optimally separate the weight values for matches, possible matches, and nonmatches.
+- Perform record-pair classification by calculating the ratio $$w=(P(\gamma|M)/P(\gamma|U))$$ for each candidate record pair.
 
 \vspace{2mm}
 
--  \textcolor{blue}{Note}: the quality of classification of the Fellegi-Sunter method relies strongly on reasonable estimations of $M$ and $U$ probabilities.
+- Find two thresholds based on desired error levels to optimally separate the weight values for matches, possible matches, and nonmatches.\footnote{This method is very sensitive to the valueds of the thresholds.}
+
+\vspace{2mm}
+
+-  The quality of classification of the Fellegi-Sunter method relies strongly on reasonable estimations of $M$ and $U$ probabilities.
 
 # Example: Blocking and Fellegi-Sunter
 
