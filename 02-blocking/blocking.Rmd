@@ -1,6 +1,6 @@
 ---
-title: "Introduction to blocking techniques and traditional record linkage"
-author: "Rebecca C. Steorts"
+title: "Introduction to Blocking and Classical Record Linkage"
+author: "Brenda Betancourt and Rebecca C. Steorts"
 date: |
   | July 10, 2019
   |
@@ -24,36 +24,62 @@ shortinstitute: bb222@stat.duke.edu
 classoption: compress
 ---
 
-# Blocking: Motivation
+# Blocking and Classical Record Linkage
 
-- Naively matching two files or finding duplicates within a file requires comparing all pairs of records.
-
-\vspace{3mm}
-
-- Infeasible for large files even when the comparisons are computationally inexpensive.
-
-\vspace{3mm}
-
-- The number of record pairs grows quadratically with the size of
-the dataset
-    * Two files with 5,000 records $\rightarrow$ 25,000,000 comparisons!
-
-# What is blocking?
-
-Technique to reduce the comparison space: 
-
-- Filter out dissimilar record pairs that are extremely unlikely to be matches.
-    * Perform record linkage only within blocks 
+1. Blocking
+- Focus will be on deterministic blocking
+2. Classical Record Linkage Methods
+- Exact Matching
+- String Matching
+- Fellegi and Sunter (1969); Newcombe (1959).
+3. Demos 
+- There are demos illustrating each proposed method
 
 
-\vspace{3mm}
+# Computational challenge of entity resolution
 
-- Traditional blocking : compare record pairs that match on one or more keys.
-    * Creates a partition of the data
+- Assume $M$ total records in two databases. 
+- Naive record linkage requires $M^2$ record comparisons. 
+ 
 
-\vspace{3mm}
+<!-- - Given a total of $M$ records in two databases, one must perform $M^2$ record comparisons.  -->
 
-- Record pairs that do not meet the blocking criteria are automatically classified as non-matches.
+<!-- - We must make all-to-all records comparisons, which is very inefficient.  -->
+
+<!-- - Example: suppose we have two databases with 5,000 total records $\rightarrow$ 25,000,000 comparisons! -->
+
+<!-- - This means that we must make all-to-all record comparisons, which is very inefficient.  -->
+
+<!-- - The number of record pairs grows quadratically with the size of -->
+<!-- the dataset -->
+<!--     * Two files with 5,000 records $\rightarrow$ 25,000,000 comparisons! -->
+    
+![Must perform all-to-all record comparisons.](figures/noblocking_plot.pdf){ width=50% }    
+
+
+# Blocking
+
+- Blocking partitions similar records into bins or blocks.
+<!-- - Blocking filters out dissimilar record pairs.  -->
+- Record linkage is only performed within the blocks. 
+
+
+# Blocking
+
+1. Traditional blocking
+
+- A deterministic partition is formed based upon the data. 
+- A partition is created by treating certain fields that are thought to be nearly error-free as fixed. 
+
+Example: Partition of date of birth year. 
+
+2. Probabilistic blocking 
+
+- A probability model is used to cluster the data into blocks/partitions. 
+
+Example: Locality Sensitive Hashing.  
+
+Under both blocking approaches, record pairs that do not meet the blocking criteria are automatically classified as non-matches.
 
 
 # Example: Traditional blocking
@@ -61,8 +87,8 @@ Technique to reduce the comparison space:
 All-to-all record comparisons (left) versus partitioning records into
 blocks by lastname initial and comparing records only within each partition (right).
 
-![alt text](figures/noblocking_plot.pdf){ width=50% }
-![alt text](figures/blocking_plot.pdf){ width=50% }
+![alt text](figures/noblocking_plot.pdf){ width=40% }
+![alt text](figures/blocking_plot.pdf){ width=40% }
 
 
 # Example: RLdata500
@@ -109,159 +135,183 @@ sapply(tbl, choose, k=2)
 
 # Reduction on comparison space
 sum(sapply(tbl, choose, k=2))
+```
 
+# Continuation: RLdata500
+
+What is the reduction from the overall space to the reduced space? 
+
+Hint: The original space of comparisons was 
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+choose(500,2)
+```
+and  we have reduced the number of comparisons to 
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+sum(sapply(tbl, choose, k=2))
 ```
 
 # Blocking caveats
 
-- Fields can be unreliable for many applications and blocking may miss large proportions of matches i.e. increased false negatives rates.
+- Features often contain errors, noise, etc. and may not be suitable for determistic blocking. 
+
+
+- A noisy feature used for determisitic blocking can miss a large proportion of matches (i.e. increased false negatives rates).
+
+
+
+- The frequency distribution of the values of the blocking features will affect the block sizes.
+
+
+- There is a trade off between the size of the blocks and computational efficency.
+    * If the blocks are too big, then the computational speed increases.
+     *  If the blocks are too small, then true matches may be missed.
+
+
+
+
+<!-- \vspace{3mm} -->
+
+<!-- - The frequency distribution of the values in the fields used as blocking keys will affect the size of the blocks. -->
+
+<!-- \vspace{3mm} -->
+
+<!-- - Trade-off between block sizes: true matches being missed vs computational efficiency. -->
+
+# How to choose the blocking features (variables or keys)
+
+- Features containing the fewest errors or missing values should be chosen as blocking variables. 
 
 \vspace{3mm}
 
-- The frequency distribution of the values in the fields used as blocking keys will affect the size of the blocks.
-
-\vspace{3mm}
-
-- Trade-off between block sizes: true matches being missed vs computational efficiency.
-
-# How to choose the blocking key or keys
-
-- Fields containing the fewest errors or missing values should be chosen as blocking variables e.g. clinical diagnosis in EHR.
-
-\vspace{3mm}
-
-- Understand the kind of errors that are unlikely for a certain field or a combination of them.
+- Understand the kind of errors that are unlikely for a certain feature. 
 
 \vspace{3mm}
 
 - More complex blocking schemes can be constructed using conjunctions.
     * Retain only pairs which agree on last name initial and zip code.
 
-# Example: Voter Survey data
+<!-- # Example: Voter Survey data -->
 
-The Views of the Electorate Research (VOTER) Survey was conducted by the survey firm YouGov. 
+<!-- The Views of the Electorate Research (VOTER) Survey was conducted by the survey firm YouGov.  -->
 
-\vspace{2mm}
+<!-- \vspace{2mm} -->
 
-- 8,000 adults (age 18+) with internet access took the survey on-line between November 29 and December 29, 2016.
+<!-- - 8,000 adults (age 18+) with internet access took the survey on-line between November 29 and December 29, 2016. -->
 
-\vspace{2mm}
+<!-- \vspace{2mm} -->
 
-- These respondents were originally interviewed by YouGov in 2011-2012.
+<!-- - These respondents were originally interviewed by YouGov in 2011-2012. -->
 
-\vspace{2mm}
+<!-- \vspace{2mm} -->
 
-- Barack Obama (Democrat) won in 2012 and Donald Trump (Republican) won in 2016.
+<!-- - Barack Obama (Democrat) won in 2012 and Donald Trump (Republican) won in 2016. -->
 
-\textcolor{blue}{https://www.voterstudygroup.org}
-
-
+<!-- \textcolor{blue}{https://www.voterstudygroup.org} -->
 
 
-# Continuation: Voter Survey data
-
-- Demographic variables
-    * Year of birth (age) 
-    * Gender
-    * Race
-    * State
-    * Education level
-    * Family income
-
-\vspace{3mm}
-
-- Party affiliation: democrat, republican, independent, other 
-
-\vspace{3mm}
-
-Which fields are reliable for blocking in this example?
-
-# Continuation: Is race reliable?
-
-\definecolor{LightCyan}{rgb}{0.88,1,1}
-\definecolor{Gray}{gray}{0.9}
-\begin{center}
-\begin{tabular}{l|cc}
-
-           &     2012 &  2016 \\ 
-\hline \hline          
-White      &     6244 &  6198 \\ 
-Black      &       654 &  645 \\ 
-Hispanic   &      400 &  397  \\ 
-Mixed      &       160 &  186  \\ 
-Other      &      137 &  167  \\ 
-Asian      &       117 &  118  \\ 
-Native American &   60 &   59 \\ 
-Middle Eastern  &  10 &   12 \\ \hline \hline
-\end{tabular}
-
-\begin{tabular}{r|cccc}
-      & White & Black & Mixed & Other \\ 
-\hline \hline      
-White & 6073  &   5   & {\cellcolor{LightCyan}46}    & 74 \\ 
-Black &    4  & 627   & 10    & 10 \\ 
-Mixed &  {\cellcolor{LightCyan}31}  &   6   & 100   &  8 \\ 
-Other &   50  &   4   & 14    & 62 \\ \hline \hline
-\end{tabular}
-\end{center}
-
-# Continuation: Is party affiliation reliable?
-
-\begin{center}
-\begin{tabular}{l|ccccc}
-           & Democrat   & Indepen.  & Republican & Not sure & Other\\
-\hline \hline            
-  Democrat    &    2424   &       192   &      90   &    25  &   23 \\
-  Indepen. &     263   &     1929    &    221    &   16  &  57 \\
-  Republican  &      39   &      215    &   1881    &   11  &  60 \\
-  Not sure    &      48   &       48    &     54    &   41  &   5 \\
-  Other       &      17   &       46    &     34    &    2  &  41 \\
-  \hline \hline
-\end{tabular}
-\end{center}
 
 
-#  Record Linkage: Approximate matching
+<!-- # Continuation: Voter Survey data -->
 
-- Performing exact matching is very rare in practice since data is
-rarely noise/error free.
+<!-- - Demographic variables -->
+<!--     * Year of birth (age)  -->
+<!--     * Gender -->
+<!--     * Race -->
+<!--     * State -->
+<!--     * Education level -->
+<!--     * Family income -->
 
-\vspace{1mm}
+<!-- \vspace{3mm} -->
 
-- Matching that allows fields to only be similar rather than exact duplicates.
+<!-- - Party affiliation: democrat, republican, independent, other  -->
 
-\vspace{1mm}
+<!-- \vspace{3mm} -->
 
-- Most large-scale applications employ some level of approximate match between fields.
+<!-- Which fields are reliable for blocking in this example? -->
 
-\vspace{1mm}
+<!-- # Continuation: Is race reliable? -->
 
-- Techniques for direct matching include edit distance and hashing algorithms for string data.
+<!-- \definecolor{LightCyan}{rgb}{0.88,1,1} -->
+<!-- \definecolor{Gray}{gray}{0.9} -->
+<!-- \begin{center} -->
+<!-- \begin{tabular}{l|cc} -->
 
-# Example: Iterative deterministic linkage
+<!--            &     2012 &  2016 \\  -->
+<!-- \hline \hline           -->
+<!-- White      &     6244 &  6198 \\  -->
+<!-- Black      &       654 &  645 \\  -->
+<!-- Hispanic   &      400 &  397  \\  -->
+<!-- Mixed      &       160 &  186  \\  -->
+<!-- Other      &      137 &  167  \\  -->
+<!-- Asian      &       117 &  118  \\  -->
+<!-- Native American &   60 &   59 \\  -->
+<!-- Middle Eastern  &  10 &   12 \\ \hline \hline -->
+<!-- \end{tabular} -->
 
-\textcolor{blue}{Step 1:} two records must match on SSN and one of the following:
+<!-- \begin{tabular}{r|cccc} -->
+<!--       & White & Black & Mixed & Other \\  -->
+<!-- \hline \hline       -->
+<!-- White & 6073  &   5   & {\cellcolor{LightCyan}46}    & 74 \\  -->
+<!-- Black &    4  & 627   & 10    & 10 \\  -->
+<!-- Mixed &  {\cellcolor{LightCyan}31}  &   6   & 100   &  8 \\  -->
+<!-- Other &   50  &   4   & 14    & 62 \\ \hline \hline -->
+<!-- \end{tabular} -->
+<!-- \end{center} -->
 
-\vspace{1mm}
+<!-- # Continuation: Is party affiliation reliable? -->
 
-- First and last name.
-- Last name, month of birth, and sex.
-- First name, month of birth, and sex.
+<!-- \begin{center} -->
+<!-- \begin{tabular}{l|ccccc} -->
+<!--            & Democrat   & Indepen.  & Republican & Not sure & Other\\ -->
+<!-- \hline \hline             -->
+<!--   Democrat    &    2424   &       192   &      90   &    25  &   23 \\ -->
+<!--   Indepen. &     263   &     1929    &    221    &   16  &  57 \\ -->
+<!--   Republican  &      39   &      215    &   1881    &   11  &  60 \\ -->
+<!--   Not sure    &      48   &       48    &     54    &   41  &   5 \\ -->
+<!--   Other       &      17   &       46    &     34    &    2  &  41 \\ -->
+<!--   \hline \hline -->
+<!-- \end{tabular} -->
+<!-- \end{center} -->
 
-\vspace{1mm}
 
-\textcolor{blue}{Step 2:} If SSN is missing or does not match, two records must match on last name, first name, month of birth, sex, and one of the following:
+#  Classical Record Linkage: Exact matching 
 
-\vspace{1mm}
+- Exact matching is a method that says two records are a match if they agree on every feature.  
 
-- Seven to eight digits of the SSN.
-- Two or more of the following: year of birth, day of birth, middle initial, or date of death.
+- Performing exact matching is very common in the social and health sciences in practice, however, this is not common in statistics, computer science, or machine learning. 
+
+- Other types of matching or merging are used, where records are called to be a match if they agree based upon a similarity comparison or a probabilitistic model. 
+
+- Examples include: string matching, Fellegi-Sunter method, semi-supervised methods, and hashing techniques. 
+
+<!-- \vspace{1mm} -->
+
+<!-- - Matching that allows fields to only be similar rather than exact duplicates. -->
+
+<!-- \vspace{1mm} -->
+
+<!-- # Example: Iterative deterministic linkage -->
+
+<!-- \textcolor{blue}{Step 1:} two records must match on SSN and one of the following: -->
+
+<!-- \vspace{1mm} -->
+
+<!-- - First and last name. -->
+<!-- - Last name, month of birth, and sex. -->
+<!-- - First name, month of birth, and sex. -->
+
+<!-- \vspace{1mm} -->
+
+<!-- \textcolor{blue}{Step 2:} If SSN is missing or does not match, two records must match on last name, first name, month of birth, sex, and one of the following: -->
+
+<!-- \vspace{1mm} -->
+
+<!-- - Seven to eight digits of the SSN. -->
+<!-- - Two or more of the following: year of birth, day of birth, middle initial, or date of death. -->
 
 <!-- it would end up being an approximate matching that is a result of a two step deterministic matching -->
 
-# Approximate String Matching: Similarity metrics 
-
-Best for short strings such as person names:
+# Classical Record Linkage: Similarity metrics 
 
 - \textcolor{blue}{Levenshtein (edit) (1966)}: minimum number of substitutions required to transform one string into another e.g. A\textcolor{red}{d}a\textcolor{blue}{m} vs A\textcolor{blue}{l}a\textcolor{blue}{n} has a distance $L=2$, normalized as $1-\frac{L}{maxLength} = 0.5$ for similarity.
 
@@ -274,6 +324,8 @@ $ JW(A,B)= J(A,B) + \textcolor{red}{0.1p}(1-J(A,B)) $
 \end{center}
 
 where $p$ is the \# of the first four characters that agree exactly e.g. Adam vs Alan: p=1,  J= 0.67 and JW=0.7.
+
+These work well on English names that are less than 7 characters. 
 
 <!-- k-grams or k-shingles are better for longer or multi-word strings -->
 
@@ -308,21 +360,15 @@ jarowinkler(c("SCHUTE","CHRISTA"),
             c("SCHULTE","CHRISTAH"))
 ```
 
-# Soundex algorithm
+# Similarity metrics (continued) 
 
-
-- Generates a code that represents the phonetic pronunciation of a word, helps identifying spelling variations of names. 
-
-\vspace{2mm}
-
+- The Soundex algorithm generates a code representing the phonetic pronunciation of a word. 
+- This is typicall more useful on non-English names or longer names. 
 - The Soundex code for a name consists of a letter followed by three numerical digits: 
     * the letter is the first letter of the name,
     * the digits encode the remaining consonants.
-
-\vspace{2mm}
-
 - Consonants at a similar place of articulation share the same digit 
-    * e.g. the labial consonants B, F, P and V are each encoded as the number 1.
+    * The consonants B, F, P and V are each encoded by a 1.
 
 # Example: Soundex algorithm
 ```{r, eval=TRUE, echo=F, message=FALSE, warning=FALSE}
@@ -387,30 +433,31 @@ rpairsfuzzy <- compare.dedup(RLdata500c,
 tail(rpairsfuzzy$pairs)
 ```
 
-# The Fellegi-Sunter approach (1969)
+# Fellegi-Sunter (1969); Newcombe (1959)
 
-- Represent every pair of records using vector of features that describe similarity between individual record fields. 
-    * Use string metrics for names and strings of numbers (Levenshtein or Jaro-Winkler).
+- Fellegi-Sunter (1969); Newcombe (1959) proposed the first method for record linkage.
+- Records are determined to be a match/non-match using a likelihood ratio test, which can be written as a mixture model. 
+- String metrics were used for names/numerical data (Levenshtein or Jaro-Winkler).
 
-\vspace{2mm}
+# Fellegi-Sunter (1969); Newcombe (1959)
 
-- Place feature vectors for record pairs into three classes: matches $(M)$, nonmatches $(U)$, and possible matches.
+- There are feature vector for record pairs, which are classfied into matches $(M)$, nonmatches $(U)$, and possible matches.
 
 \vspace{2mm}
 
 - Let $P(\gamma|M)$ and $P(\gamma|U)$ be probabilities of observing a feature vector $\gamma$ for a matched and nonmatched pair, respectively.
 
-# The Fellegi-Sunter approach (1969)
+# Fellegi-Sunter (1969); Newcombe (1959)
 
-- Perform record-pair classification by calculating the ratio $w=(P(\gamma|M)/P(\gamma|U))$ for each candidate record pair.
-
-\vspace{2mm}
-
-- Establish two thresholds based on desired error levels to optimally separate the weight values for matches, possible matches, and nonmatches.
+- Perform record-pair classification by calculating the ratio $$w=(P(\gamma|M)/P(\gamma|U))$$ for each candidate record pair.
 
 \vspace{2mm}
 
--  \textcolor{blue}{Note}: the quality of classification of the Fellegi-Sunter method relies strongly on reasonable estimations of $M$ and $U$ probabilities.
+- Find two thresholds based on desired error levels to optimally separate the weight values for matches, possible matches, and nonmatches.\footnote{This method is very sensitive to the valueds of the thresholds.}
+
+\vspace{2mm}
+
+-  The quality of classification of the Fellegi-Sunter method relies strongly on reasonable estimations of $M$ and $U$ probabilities.
 
 # Example: Blocking and Fellegi-Sunter
 
