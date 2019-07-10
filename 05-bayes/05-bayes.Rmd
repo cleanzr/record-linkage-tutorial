@@ -2,8 +2,12 @@
 title: "Introduction to Bayesian Entity Resolution "
 author: Brenda Betancourt, Andee Kaplan, and Rebecca C. Steorts
 institute: |
-    | Duke University
-    | Department of Statistical Science
+ | Department of Statistical Science, affiliated faculty in Computer Science, 
+  | Biostatistics and Bioinformatics, the information initiative at Duke (iiD) and
+  | the Social Science Research Institute (SSRI) 
+  | Duke University and U.S. Census Bureau
+  | beka@stat.duke.edu
+  | Population Dynamics and Health Program Workshop, University of Michigan
 shortinstitute: Duke University
 date: |
   | July 7, 2019
