@@ -416,6 +416,7 @@ or measurement errors that would exclude true matches.
 # or bith year to be compared.
 # Only 2709 pairs instead of 124750!
 
+# Builds comparison patterns of record pairs 
 rpairs <- compare.dedup(RLdata500c, 
 blockfld = list(1, 3), #list with blocking fields
 identity = identity.RLdata500)
