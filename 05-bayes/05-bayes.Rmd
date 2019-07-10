@@ -402,7 +402,7 @@ size_est <- apply(lam.gs, 1, function(x) {
   })
 ```
 
-```{r plots, fig.width=2.25, fig.height=2.5, fig.show='hold'}
+```{r plots, fig.width=2, fig.height=2, fig.show='hold'}
 theme_set(theme_bw(base_family = "serif", base_size = 15))
 
 ggplot() +
@@ -553,7 +553,7 @@ c(precision, recall)
 
 # Your turn (extra solution, cont'd)
 
-```{r plots-yt, fig.show='hold', fig.width = 5.5}
+```{r plots-yt, fig.show='hold', fig.width = 4.5}
 # count how many unique latent individuals
 size_est <- apply(lam.gs, 1, function(x) { 
   length(unique(x)) 
