@@ -115,7 +115,7 @@
 
 
 \title[Entity Resolution: \\Measuring and Reporting Quality]
-{Entity Resolution: \\Measuring and Reporting Quality}
+{An Introduction to  Entity Resolution}
 \author[Rebecca C. Steorts, beka@stat.duke.edu]{Rebecca C. Steorts} 
 
 \institute{\normalsize Department of Statistical Science, affiliated faculty in Computer Science, Biostatistics and Bioinformatics, the information initiative at Duke (iiD) and \\the Social Science Research Institute (SSRI) \\ Duke University and U.S. Census Bureau\\\vspace*{1em}Population Dynamics and Health Program Workshop, University of Michigan }
@@ -185,7 +185,7 @@ Additional Goal: Posterior densities, uncertainty quantification, etc.
 }
 
 \frame{
-\frametitle{The record linkage graph}
+\frametitle{The entity resolution graph}
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[scale=0.35]{figures/linkage2}
@@ -193,6 +193,8 @@ Additional Goal: Posterior densities, uncertainty quantification, etc.
 %\label{default}
 \end{center}
 \end{figure}
+
+
 
 }
 
@@ -225,7 +227,7 @@ Additional Goal: Posterior densities, uncertainty quantification, etc.
 }
 
 \frame{
-\frametitle{The record linkage graph}
+\frametitle{The entity resolution graph}
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[scale=0.35]{figures/linkage2}
@@ -233,6 +235,8 @@ Additional Goal: Posterior densities, uncertainty quantification, etc.
 %\label{default}
 \end{center}
 \end{figure}
+
+
 
 }
 
@@ -339,7 +343,7 @@ These two goals fundamentally go against one another, making record linkage a ve
 
 %In this talk, we will focus on (2) since satisfying the above goals is very difficult. 
 
-Depending on the motivating goal of a record linkage task, we approach it using either 1 or 2. 
+%Depending on the motivating goal of a record linkage task, we approach it using either 1 or 2. 
 
 }
 
@@ -368,6 +372,7 @@ Depending on the motivating goal of a record linkage task, we approach it using 
 \begin{enumerate}
 \item De-duplication
 \item Record linkage
+\item Entity resolution 
 \item Blocking
 \end{enumerate}
 
@@ -413,16 +418,18 @@ and locality sensitive hashing.
 }
 
 \frame{
-\frametitle{The record linkage graph}
+\frametitle{The entity resolution graph}
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[scale=0.3]{figures/linkage2}
+\includegraphics[scale=0.25]{figures/linkage2}
 %\caption{default}
 %\label{default}
 \end{center}
 \end{figure}
 
-Here, we call this record linkage, since we look at the record linkage uncertainty of the entire graphical structure. 
+\textbf{De-duplication} refers to duplication within just one database. 
+\textbf{Record linkage} refers to duplication across multiple databases. 
+\textbf{Entity resolution} refers to both duplication across and within databases (the entire graph).
 
 }
 
@@ -724,19 +731,19 @@ The \texttt{RLdata500} data set consists of 500 records with 10 percent duplicat
 \centering
 \begin{tabular}{lcc}\toprule
 Procedure&FNR&FDR\\\midrule
-blink (Steorts (2015))&0.02&0.08\\
+blink (Steorts (2015))&\textcolor{red}{0.02}& \textcolor{red}{0.08}\\
 Exact Matching&1&0\\
 Near-Twin&1&0\\
-BART (10\% training)&0.10&0.16\\
+BART (10\% training)&\textcolor{red}{0.10}&\textcolor{red}{0.16}\\
 BART (20\% training)&0.07&0.11\\
 BART (50\% training)&0.03&0.04\\
 BART (full data)&0.02&0\\
 %Random Forests&0.04&0.08\\
-Random Forests (10\% training)&0.05&0.15\\
+Random Forests (10\% training)&\textcolor{red}{0.05}&\textcolor{red}{0.15}\\
 Random Forests (20\% training)&0.04&0.09\\
 Random Forests (50\% training)&0.02&0.06\\
 Random Forests (full data)&0.04&0.06\\
-Logistic Regression (10\% training)&0.09&0.16\\
+Logistic Regression (10\% training)&\textcolor{red}{0.09}&\textcolor{red}{0.16}\\
 Logistic Regression (20\% training)&0.06&0.07\\
 Logistic Regression (50\% training)&0.02&0.01\\
 Logistic Regression (full data)&0.02&0\\
@@ -772,22 +779,22 @@ Robustness, computational time complexity, and sensitivity analysis can be furth
 
 }
 
-\frame{
-\frametitle{What Record Linkage Needs}
-
-\begin{enumerate}
-\item Workshops and Forums 
-\item Open Source Software
-\item Reproducibility and Fairness
-\item Evaluation Metrics and Comparisons
-\item Transparency 
-\item Ethical Use of Data
-\item Proper Privacy Protections of Sensitive Data
-\end{enumerate}
-
-
-
-}
+%\frame{
+%\frametitle{What Record Linkage Needs}
+%
+%\begin{enumerate}
+%\item Workshops and Forums 
+%\item Open Source Software
+%\item Reproducibility and Fairness
+%\item Evaluation Metrics and Comparisons
+%\item Transparency 
+%\item Ethical Use of Data
+%\item Proper Privacy Protections of Sensitive Data
+%\end{enumerate}
+%
+%
+%
+%}
 
 
 \frame{
@@ -815,7 +822,7 @@ Robustness, computational time complexity, and sensitivity analysis can be furth
 %\item An Introduction to Locality Sensitive Hashing (Demos)
 %\item Unique Entity Estimation Applied to the Syrian Conflict
 \item Bayesian Approaches to Graphical Entity Resolution (Demos)
-\item Distributed Bayesian Entity Resolution 
+\item Distributed Bayesian Entity Resolution (Demos)
 \end{enumerate}
 
 \pause
@@ -823,7 +830,7 @@ Robustness, computational time complexity, and sensitivity analysis can be furth
 There are other following materials that may be of interest after completion of this short course: 
 \begin{enumerate}
 \item An Introduction to Locality Sensitive Hashing (Demos)
-\item Unique Entity Estimation Applied to the Syrian Conflict
+\item Unique Entity Estimation Applied to the Syrian Conflict (Demos_
 \end{enumerate}
 
 \vspace*{1em}
