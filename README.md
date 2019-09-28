@@ -6,7 +6,7 @@ Rebecca C. Steorts, Assistant Professor, Duke University
 https://resteorts.github.io/
 
 Brenda Betancourt, Assistant Professor, University of Florida
-(Former Postdoctoral Fellow, Duke University)
+(Former Foerster-Bernstein Postdoctoral Fellow, Duke University)
 https://www.brendabc.net/
 
 Andee Kaplan, Assistant Professor, Colorado State University 
@@ -106,5 +106,5 @@ Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/06-
 
 Suggested reading: Slide deck. (Paper and software is coming soon). 
 
-Kaplan, Betancourt, and Steorts have been funded for this work under NSF CAREER Award. In addition, Steorts has been funded for this work under NICHD Center Grant P2CHD041028. The ideas of this project are of the researchers and not of the funding organization. 
+Kaplan, Betancourt, and Steorts have been funded for this work under NSF CAREER Award. Betancourt would like to thank the Foerster-Bernstein Fellowship and Duke University for support of this work. In addition, Steorts has been funded for this work under NICHD Center Grant P2CHD041028. The ideas of this project are of the researchers and not of the funding organization. 
 
