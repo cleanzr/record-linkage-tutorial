@@ -15,6 +15,10 @@ X.c <- as.matrix(RLdata500[, c("by","bm","bd")])
 X.s <- as.matrix(RLdata500[, c("fname_c1", "lname_c1")]) 
 
 # keep track of which rows of are in which files
+# Assuming there are 200 records in file 1, 150 
+# in file 2, and 150 in file 3 (Made up assumption
+# for illustration)
+
 file.num <- rep(c(1, 2, 3), c(200, 150, 150))
 
 # Subjective choices for distortion probability prior
@@ -32,7 +36,7 @@ c <- 1
 
 lam.gs <- rl.gibbs(file.num = file.num, # file
                    X.s = X.s, X.c = X.c, # data 
-                   num.gs = 100000, # iterations
+                   num.gs = 10, # iterations
                    a = a, b = b, # prior params
                    c = c, d = d, # distortion
                    M = 500) # max # latents

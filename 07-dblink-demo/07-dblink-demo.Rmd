@@ -1,0 +1,576 @@
+---
+title: "Demo to dblink"
+author: Neil Marchant and Rebecca C. Steorts
+institute: |
+ | Department of Statistical Science, affiliated faculty in Computer Science, 
+  | Biostatistics and Bioinformatics, the information initiative at Duke (iiD) and
+  | the Social Science Research Institute (SSRI) 
+  | Duke University and U.S. Census Bureau
+  | beka@stat.duke.edu
+  |
+shortinstitute: Duke University
+date: |
+  | October 29, 2019
+  |
+  |
+output: 
+  beamer_presentation:
+    keep_tex: false
+    template: beamer.tex
+    fig_caption: false
+classoption: compress
+natbib: true
+---
+
+```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(mcmcse)
+library(tidyr)
+library(stringr)
+
+
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE)
+theme_set(theme_bw(base_family = "serif", base_size = 30))
+```
+
+
+# Assumptions
+
+0. You are familar with entity resolution and the literature. 
+1. You have read the paper Marchant et al. (2019) and related literature. 
+2. You have read the documentation on dblink at \url{https://github.com/cleanzr/dblink}
+3. You have the correct software installed on your machine (see the documentation).\footnote{We require Java 8+, Spark 2.3.1, and Scala 2.11, Hadoop 2.7.}
+4. You have a background in computer science and statistics and are proficient in programming in multiple languages. (This is not a black box program!)
+
+# Installing dblink 
+
+Let's first go through the install instructions on our laptops or on a server. 
+
+# 0: Installing Java
+
+The following two steps require that Java 8+ is installed on your system. 
+To check whether it is installed on a macOS or Linux system, run the command
+```bash
+$ java -version
+```
+
+Remark: You should see a version number of the form 8.x (or equivalently 1.8.x).
+Installation instructions for Oracle JDK on Windows, macOS and Linux are 
+available [here](https://java.com/en/download/help/download_options.xml).
+
+_Note: As of April 2019, the licensing terms of the Oracle JDK have changed. 
+We recommend using an open source alternative such as the OpenJDK. Packages 
+are available in many Linux distributions. Instructions for macOS are 
+available [here](macos-java8.md)._
+
+# 1. Get access to a Spark cluster
+
+
+Since dblink is implemented as a Spark application, you'll need access to a 
+Spark cluster in order to run it.\footnote{Setting up a Spark cluster from scratch can be quite involved and is beyond 
+the scope of this guide.}
+
+In this guide, we take an even simpler approach: we'll run Spark in 
+_pseudocluster mode_ on your local machine.
+This is fine for testing purposes or for small data sets.
+
+We'll now take you through detailed instructions for setting up Spark in 
+pseudocluster mode on a macOS or Linux system.
+
+# 1. Get access to a Spark cluster
+
+\tiny
+First, download the prebuilt 2.3.1 release from the Spark
+[release archive](https://archive.apache.org/dist/spark/).
+```bash
+$ wget https://archive.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz
+```
+then extract the archive.
+```bash
+$ tar -xvf spark-2.3.1-bin-hadoop2.7.tgz
+```
+
+Move the Spark folder to `/opt` and create a symbolic link so that you can 
+easily switch to another version in the future.
+```bash
+$ sudo mv spark-2.3.1-bin-hadoop2.7 /opt
+$ sudo ln -s /opt/spark-2.3.1-bin-hadoop2.7/ /opt/spark
+```
+
+# 1. Get access to a Spark cluster
+
+Define the `SPARK_HOME` variable and add the Spark binaries to your `PATH`. 
+The way that this is done depends on your operating system and/or shell.
+Assuming enviornment variables are defined in `~/.profile`, you can 
+run the following commands:
+```bash
+$ echo 'export SPARK_HOME=/opt/spark' >> ~/.profile
+$ echo 'export PATH=$PATH:$SPARK_HOME/bin' >> ~/.profile
+```
+
+After appending these two lines, run the following command to update your 
+path for the current session. 
+```bash
+$ source ~/.profile 
+```
+
+# 1. Get access to a Spark cluster
+Notes:
+* If using Bash on Debian, Fedora or RHEL derivatives, environment 
+variables are typically defined in `~/.bash_profile` rather than 
+`~/.profile`
+* If using ZSH, environment variables are typically defined in 
+`~/.zprofile`
+* You can check which shell you're using by running `echo $SHELL`
+
+# 2. Obtain the dblink JAR file
+
+In this step you'll obtain the dblink fat JAR, which has file name 
+`dblink-assembly-0.1.jar`.
+It contains all of the class files and resources for dblink, packed together 
+with any dependencies.
+
+# 2. Obtain the dblink JAR file (Option 1)
+
+(Recommended) Download a prebuilt JAR from [here](https://github.com/ngmarchant/dblink/releases). 
+This has been built against Spark 2.3.1 and is not guaranteed to work with 
+other versions of Spark.
+
+# 2. Obtain the dblink JAR file (Option 2)
+
+Building the fat JAR from source using a tool called sbt. You'll need to install 
+sbt on your system. Instructions are available for Windows, macOS and Linux 
+in the sbt. We give alternative installtion in the second set of instructions
+for those using bash on MacOS. 
+[documentation](https://www.scala-sbt.org/1.x/docs/Setup.html)
+
+# 2. Obtain the dblink JAR file (Option 2)
+\small
+
+On macOS or Linux, you can verify that sbt is installed correctly by running.
+```bash
+$ sbt about
+```
+
+Once you've successfully installed sbt, get the dblink source code from 
+GitHub:
+```bash
+$ git clone https://github.com/ngmarchant/dblink.git
+```
+then change into the dblink directory and build the package
+```bash
+$ cd dblink
+$ sbt assembly
+```
+This should produce a fat JAR at `./target/scala-2.11/dblink-assembly-0.1.jar`.
+
+_Note: [IntelliJ IDEA](https://www.jetbrains.com/idea/) can also be used to 
+build the fat JAR. It is arguably more user-friendly as it has a GUI and 
+users can avoid installing sbt._
+
+# 3. Run dblink
+\tiny
+
+Having completed the above two steps, you're now ready to launch dblink.
+This is done using the [`spark-submit`](https://spark.apache.org/docs/latest/submitting-applications.html) 
+interface, which supports all types of Spark deployments.
+
+As a test, let's try running the RLdata500 example provided with the source 
+code on your local machine.
+From within the `dblink` directory, run the following command:
+```bash
+$SPARK_HOME/bin/spark-submit \
+  --master "local[1]" \
+  --conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=log4j.properties" \
+  --conf "spark.driver.extraClassPath=./target/scala-2.11/dblink-assembly-0.1.jar" \
+  ./target/scala-2.11/dblink-assembly-0.1.jar \
+  ./examples/RLdata500.conf
+```
+
+# 3. Run dblink (Options)
+
+This will run Spark in pseudocluster (local) mode with 1 core. You can increase 
+the number of cores available by changing `local[1]` to `local[n]` where `n` 
+is the number of cores or `local[*]` to use all available cores.
+To run dblink on other data sets you will need to edit the config file (called 
+`RLdata500.conf` above).
+
+Instructions for doing this are provided [here](configuration.md).
+
+
+# 4. Output of dblink
+dblink saves output into a specified directory. In the RLdata500 example from 
+above, the output is written to `./examples/RLdata500_results/`. 
+
+1. `run.txt`: contains details about the job (MCMC run). This includes the 
+data files, the attributes used, parameter settings etc.
+2. `partitions-state.parquet` and `driver-state`: stores the final state of 
+the Markov chain, so that MCMC can be resumed (e.g. you can run the Markov 
+chain for longer without starting from scratch).
+3. `diagnostics.csv` contains summary statistics along the chain which can be 
+used to assess convergence/mixing.
+4. `linkage-chain.parquet` contains posterior samples of the linkage structure 
+in Parquet format.
+
+# 4. Output of dblink (optional files)
+
+1. `evaluation-results.txt`: contains output from an "evaluate" step (e.g. 
+precision, recall, other measures). Requires ground truth entity identifiers 
+in the data files.
+2. `cluster-size-distribution.csv` contains the cluster size distribution 
+along the chain (rows are iterations, columns contain counts for each 
+cluster/entity size.  Only appears if requested in a "summarize" step.
+3. `partition-sizes.csv` contains the partition sizes along the chain (rows 
+are iterations, columns are counts of the number of entities residing in each 
+partition). Only appears if requested in a "summarize" step.
+
+# Exercise
+
+Run RLdata500 using the config script provided. 
+
+Hint, we want to run the following: 
+
+From within the `dblink` directory, run the following command:
+\tiny
+
+```bash
+$SPARK_HOME/bin/spark-submit \
+  --master "local[1]" \
+  --conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=log4j.properties" \
+  --conf "spark.driver.extraClassPath=./target/scala-2.11/dblink-assembly-0.1.jar" \
+  ./target/scala-2.11/dblink-assembly-0.1.jar \
+  ./examples/RLdata500.conf
+```
+
+# 5. How do we analyze some of the output for all of our experiments? 
+
+- We can immediately look at the precision, recall, F-measure. 
+- We can look at trace plots for summary statistics of interest for each data set.
+- We can look at the balance loading of the partitions. 
+- We can look at the posterior bias plot. 
+
+
+# Traceplot for feature distortion of RLdata500 
+
+\centering
+![](RLdata10000_attribute-distortions.pdf)
+
+```{r}
+# Details of each experiment
+expts <- list(list(name = "ABSEmployee", path = "dblink-experiments/local/results/ABSEmployee_64partitions_PCG-I", burnin = 10000),
+              list(name = "NCVR", path = "dblink-experiments/local/results/NCVR_64partitions_PCG-I", burnin = 110000),
+              list(name = "NLTCS", path = "dblink-experiments/local/results/NLTCS_16partitions_PCG-I", burnin = 10000),
+              list(name = "RLdata10000", path = "dblink-experiments/local/results/RLdata10000_2partitions_PCG-I", burnin = 10000),
+              list(name = "SHIW", path = "dblink-experiments/local/results/SHIW_8partitions_PCG-I", burnin = 10000))
+
+update_geom_defaults("point", list(size=1.5))
+theme_set(theme_bw(base_size=8))
+plot.width <- 8
+plot.height <- 1
+plot.x <- 1
+
+# Define a function to produce autocorrelation plots
+acfGrid <- function(df, key, value) {
+  df.grouped <- df %>% select(one_of(c(key, value))) %>%
+    group_by((!!as.symbol(key)))
+  
+  df.acf <- df.grouped %>%
+    summarise(list_acf=list(acf(eval(parse(text=value)), plot=FALSE))) %>%
+    mutate(acf_vals=purrr::map(list_acf, ~as.numeric(.x$acf))) %>% 
+    select(-list_acf) %>% 
+    unnest() %>% 
+    group_by((!!as.symbol(key))) %>% 
+    mutate(lag=row_number() - 1) # assumes already sorted by iteration
+  
+  df.ci <- df.grouped %>%
+    summarise(ci = qnorm((1 + 0.95)/2)/sqrt(n()))
+  
+  ggplot(df.acf, aes(x=lag, y=acf_vals)) +
+    geom_bar(stat="identity") +
+    geom_hline(yintercept = 0) +
+    geom_hline(data = df.ci, aes(yintercept = -ci), color="blue", linetype="dotted") +
+    geom_hline(data = df.ci, aes(yintercept = ci), color="blue", linetype="dotted") +
+    labs(x="Lag", y="ACF") +
+    facet_grid(as.formula(paste0(key, "~.")), scales = "free_y")
+}
+
+# Read in data for each experiment and produce diagnostic plots
+for (expt in expts) {
+  message("Processing experiment ", expt[['name']], ":")
+  
+  diagnostics <- read.csv(paste(expt[['path']],"diagnostics.csv", sep="/"))
+  clusters <- read.csv(paste(expt[['path']],"cluster-size-distribution.csv", sep="/"))
+  names(clusters) <- c(names(clusters)[1], 
+                       str_remove(names(clusters)[-1], pattern="X"))
+  
+  # Remove burnin iterations
+  diagnostics <- diagnostics %>% filter(iteration >= expt[['burnin']])
+  clusters <- clusters %>% filter(iteration >= expt[['burnin']])
+  
+  # Trace plot for observed number of entities
+  diagnostics %>%
+    ggplot(aes(x=iteration, y=numObservedEntities)) +
+    geom_line() +
+    xlab("Iteration") +
+    ylab("Population size") +
+    ggtitle("Trace plot of observed population size")
+  
+  ess <- ess(diagnostics$numObservedEntities)
+  message("- Number of observed entities: ",nrow(diagnostics)," raw samples; ESS is ", ess)
+  
+  # Trace plot for attribute-level distortions
+  diagnostics %>%
+    select(iteration, starts_with("aggDist")) %>%
+    gather(field, num.distortions, starts_with("aggDist")) %>%
+    mutate(field = str_match(field, "\\.(.+)")[,2]) -> aggDist.df
+  
+  aggDist.df %>% ggplot(aes(x=iteration, y=num.distortions)) + 
+    geom_line(size=0.1) + facet_grid(field~., scales = "free_y") + 
+    theme(legend.position = "none") +
+    xlab("Iteration") + ylab("Aggregate distortion") -> attributeDistortionsPlot
+  ggsave(paste0(expt[['name']], "_attribute-distortions.pdf"), 
+         attributeDistortionsPlot, 
+         width = plot.width, 
+         height = 1.5*plot.height * length(unique(attributeDistortionsPlot$data$field)) + plot.x,
+         units = "cm")
+  
+  acfGrid(aggDist.df, "field", "num.distortions") -> attributeDistortionsACFPlot
+  ggsave(paste0(expt[['name']], "_attribute-distortions-acf.pdf"), 
+         attributeDistortionsACFPlot, 
+         width = plot.width, 
+         height = 1.5*plot.height * length(unique(attributeDistortionsACFPlot$data$field)) + plot.x,
+         units = "cm")
+  
+  diagnostics %>%
+    select(starts_with("aggDist")) %>%
+    multiESS() -> ess
+  message("- Aggregate distortion: ",nrow(diagnostics)," raw samples; ESS is ", ess)
+  
+  # Trace plots for record distortions
+  diagnostics %>% 
+    select(iteration, starts_with("recDistortion")) %>%
+    gather(num.distorted.fields, num.records, starts_with("recDistortion")) %>%
+    mutate(num.distorted.fields = 
+             as.integer(str_remove(num.distorted.fields, "^.*?[.]"))) -> recDist.df
+  
+  recDist.df %>% ggplot(aes(x=iteration, y=num.records)) + 
+    geom_line(size=0.1) + facet_grid(num.distorted.fields~., scales = "free_y") + 
+    xlab("Iteration") + ylab("Frequency") -> recordDistortionsPlot
+  ggsave(paste0(expt[['name']], "_record-distortions.pdf"), 
+         recordDistortionsPlot, 
+         width = plot.width, 
+         height = plot.height * length(unique(recordDistortionsPlot$data$num.distorted.fields)) + plot.x, 
+         units = "cm")
+  
+  acfGrid(recDist.df, "num.distorted.fields", "num.records") -> recordDistortionsACFPlot
+  ggsave(paste0(expt[['name']], "_record-distortions-acf.pdf"), 
+         recordDistortionsACFPlot, 
+         width = plot.width, 
+         height = plot.height * length(unique(recordDistortionsACFPlot$data$num.distorted.fields)) + plot.x, 
+         units = "cm")
+  
+  recDistortions <- diagnostics %>% select(starts_with("recDistortion"))
+  freq <- colSums(recDistortions)
+  freq <- freq/sum(freq)
+  recDistortions <- recDistortions[,freq > 1e-6]
+  ess <- multiESS(recDistortions)
+  message("- Distribution over distortion counts per record: ",nrow(diagnostics)," raw samples; ESS is ", ess)
+  
+  # Trace plots for cluster size distribution
+  clusters %>% 
+    gather(cluster.size, num.clusters, -iteration) %>%
+    mutate(cluster.size = as.integer(str_remove(cluster.size, "-clusters"))) -> clust.df
+  
+  clust.df %>%
+    ggplot(aes(x=iteration, y=num.clusters)) + 
+    geom_line(size=0.1) + facet_grid(cluster.size~., scales = "free_y") + 
+    xlab("Iteration") + ylab("Frequency") -> clusterSizePlot
+  ggsave(paste0(expt[['name']], "_cluster-size-distribution.pdf"), 
+         clusterSizePlot, 
+         width = plot.width, 
+         height = plot.height * length(unique(clusterSizePlot$data$cluster.size)) + plot.x, 
+         units = "cm")
+  
+  acfGrid(clust.df, "cluster.size", "num.clusters") -> clusterSizeACFPlot
+  ggsave(paste0(expt[['name']], "_cluster-size-distribution-acf.pdf"), 
+         clusterSizeACFPlot, 
+         width = plot.width, 
+         height = plot.height * length(unique(clusterSizeACFPlot$data$cluster.size)) + plot.x, 
+         units = "cm")
+  
+  clustSizes <- clusters %>% select(-starts_with("iteration"))
+  freqs <- colSums(clustSizes)
+  freqs <- freqs/sum(freqs)
+  clustSizes <- clustSizes[,freqs > 1e-6]
+  ess <- multiESS(clustSizes)
+  message("- Distribution over cluster sizes: ",nrow(diagnostics)," raw samples; ESS is ", ess)
+}
+
+```
+
+
+
+# Partition size versus number of MCMC iterations
+```{r, echo=FALSE, cache=TRUE}
+expts <- list(list(name = "NLTCS", numRecords = 57077, path = "dblink-experiments/aws/results/NLTCS_16partitions_PCG-I"),
+              list(name = "ABSEmployee", numRecords = 600000, path = "dblink-experiments/aws/results/ABSEmployee_64partitions_PCG-I"), 
+              list(name = "NCVR", numRecords = 448134, path = "dblink-experiments/aws/results/NCVR_64partitions_PCG-I"),
+              list(name = "SHIW0810", numRecords = 39743, path = "dblink-experiments/aws/results/SHIW_8partitions_PCG-I"),
+              list(name = "RLdata10000", numRecords = 10000, path = "dblink-experiments/aws/results/RLdata10000_2partitions_PCG-I/"))
+plotWidth <- 4.0
+plotHeight <- 1.8
+
+update_geom_defaults("point", list(size=1.5))
+theme_set(theme_bw(base_size=9))
+
+results <- lapply(expts, function(expt) {
+  partitionSizes <- read.csv(paste(expt[['path']],"partition-sizes.csv", sep = "/")) %>% 
+    filter(iteration <= 50000)
+  balanced <- expt[['numRecords']] / (ncol(partitionSizes) - 1)
+  absdev <- apply(partitionSizes[,-1], 1, function(x) sum(abs(x - balanced)))
+  
+  data.frame(iteration = partitionSizes$iteration, 
+             dataset = rep_len(expt[['name']], nrow(partitionSizes)),
+             absdev = absdev / expt[['numRecords']])
+})
+
+results.combined <- bind_rows(results)
+
+#pdf("partition-sizes-plot.pdf", height = plotHeight, width = plotWidth)
+results.combined %>%
+  ggplot(aes(x = iteration)) + 
+  geom_line(aes(y = absdev, col = dataset), alpha = 0.7, size = 0.2) + 
+  labs(x = "Iteration", y = "Rel. abs. deviation", col = "Data set") + 
+  theme(legend.margin=margin(0,0,0,0), legend.key.size = unit(10,"points"), legend.text = element_text(size = 6))
+```
+\small
+Balance is measured in terms of the relative absolute deviation from the perfectly balanced configuration. The number of partitions P= 64,64,16,2,8 for each data set (in the order listed in the legend).
+
+# Posterior Bias Plot
+
+```{r}
+expts <- list(list(name = "ABSEmployee", burnin = 10000, numRecords = 600000, trueNumEntities = 400000, path = "dblink-experiments/aws/results/ABSEmployee_64partitions_PCG-I"),
+              list(name = "NCVR", burnin = 60000, numRecords = 448134, trueNumEntities = 296433, path = "dblink-experiments/aws/results/NCVR_64partitions_PCG-I"),
+              list(name = "NLTCS", burnin = 10000, numRecords = 57077, trueNumEntities = 34945, path = "dblink-experiments/aws/results/NLTCS_16partitions_PCG-I"),
+              list(name = "RLdata10000", burnin = 10000, numRecords = 10000, trueNumEntities = 9000, path = "dblink-experiments/aws/results/RLdata10000_2partitions_PCG-I"),
+              list(name = "SHIW0810", burnin = 10000, numRecords = 39743, trueNumEntities = 28584, path = "dblink-experiments/aws/results/SHIW_8partitions_PCG-I"))
+
+save.fname <- "posterior-bias-plot.pdf"
+plotWidth <- 4.0
+plotHeight <- 2.0
+
+update_geom_defaults("point", list(size=1.5))
+theme_set(theme_bw(base_size=9))
+
+results <- lapply(expts, function(expt) {
+  # Read diagnostic CSV files from experiment
+  diagnostics <- read.csv(paste(expt[['path']],"diagnostics.csv", sep="/"))
+  
+  # Get number of entities
+  numEntities <- diagnostics %>% filter(iteration < expt[['burnin']]) %>% .$numObservedEntities
+  
+  data.frame(numEntities = numEntities, expt, stringsAsFactors = FALSE)
+}) %>% bind_rows()
+
+## add true counts
+results %>%
+  mutate(percError = 100 * (numEntities - trueNumEntities) / trueNumEntities) %>% 
+  group_by(name) %>%
+  summarise(priorError = 100 * ((1-1/exp(1))*(unique(numRecords)) - unique(trueNumEntities))/unique(trueNumEntities), 
+            mean = mean(percError), ll = quantile(percError, .025), ul = quantile(percError, .975)) %>%
+  ggplot() +
+  geom_segment(aes(name, xend = name, y = ll, yend = ul), position = position_nudge(x = .1), colour = "red4") +
+  geom_point(aes(name, mean, colour = "post"), position = position_nudge(x = .1), size = 0.5) +
+  geom_point(aes(name, priorError, colour = "prior"), position = position_nudge(x = -.1), size = 0.5) +
+  geom_hline(aes(yintercept = 0), lty = 2) +
+  xlab("Data set") + ylab("Error %") +
+  scale_colour_manual(name="Estimate",
+                      values=c(post="red", prior="blue"),
+                      labels=c("Posterior", "Prior")) +
+  coord_flip() + 
+  theme(legend.margin=margin(0, 0, 0, 0), legend.key.size = unit(10,"points"), legend.text = element_text(size = 6)) -> posterior_bias.p
+
+ggsave("posterior-bias-plot-dark.pdf", posterior_bias.p, width = plotWidth, height = plotHeight)
+
+## add legend -----
+
+results %>%
+  mutate(percError = 100 * (numEntities - trueNumEntities) / trueNumEntities) %>% 
+  group_by(name) %>%
+  summarise(priorError = 100 * ((1-1/exp(1))*(unique(numRecords)) - unique(trueNumEntities))/unique(trueNumEntities), 
+            mean = mean(percError), ll = quantile(percError, .025), ul = quantile(percError, .975)) %>%
+  ggplot() +
+  geom_segment(aes(name, xend = name, y = ll, yend = ul, colour = "post-ci"), position = position_nudge(x = .1)) +
+  geom_point(aes(name, mean, colour = "post"), position = position_nudge(x = .1), size = 0.5) +
+  geom_point(aes(name, priorError, colour = "prior"), position = position_nudge(x = -.1), size = 0.5) +
+  geom_hline(aes(yintercept = 0), lty = 2) +
+  xlab("Data set") + ylab("Error %") +
+  scale_colour_manual(name="Estimate",
+                      values=c(post="red", `post-ci`="red4", prior="blue"),
+                      labels=c("Posterior", "95% CI", "Prior")) +
+  coord_flip() + 
+  theme(legend.margin=margin(0, 0, 0, 0), legend.key.size = unit(10,"points"), legend.text = element_text(size = 6)) -> posterior_bias.p
+
+ggsave("posterior-bias-plot-dark-legend.pdf", posterior_bias.p, width = plotWidth, height = plotHeight)
+
+# grey ci ----
+
+results %>%
+  mutate(percError = 100 * (numEntities - trueNumEntities) / trueNumEntities) %>% 
+  group_by(name) %>%
+  summarise(priorError = 100 * ((1-1/exp(1))*(unique(numRecords)) - unique(trueNumEntities))/unique(trueNumEntities), 
+            mean = mean(percError), ll = quantile(percError, .025), ul = quantile(percError, .975)) %>%
+  ggplot() +
+  geom_segment(aes(name, xend = name, y = ll, yend = ul), position = position_nudge(x = .1), colour = "grey50") +
+  geom_point(aes(name, mean, colour = "post"), position = position_nudge(x = .1), size = 0.5) +
+  geom_point(aes(name, priorError, colour = "prior"), position = position_nudge(x = -.1), size = 0.5) +
+  geom_hline(aes(yintercept = 0), lty = 2) +
+  xlab("Data set") + ylab("Error %") +
+  scale_colour_manual(name="Estimate",
+                      values=c(post="red", prior="blue"),
+                      labels=c("Posterior", "Prior")) +
+  coord_flip() + 
+  theme(legend.margin=margin(0, 0, 0, 0), legend.key.size = unit(10,"points"), legend.text = element_text(size = 6)) -> posterior_bias.p
+
+ggsave("posterior-bias-plot-grey.pdf", posterior_bias.p, width = plotWidth, height = plotHeight)
+
+## grey legend -----
+
+results %>%
+  mutate(percError = 100 * (numEntities - trueNumEntities) / trueNumEntities) %>% 
+  group_by(name) %>%
+  summarise(priorError = 100 * ((1-1/exp(1))*(unique(numRecords)) - unique(trueNumEntities))/unique(trueNumEntities), 
+            mean = mean(percError), ll = quantile(percError, .025), ul = quantile(percError, .975)) %>%
+  ggplot() +
+  geom_segment(aes(name, xend = name, y = ll, yend = ul, colour = "post-ci"), position = position_nudge(x = .1)) +
+  geom_point(aes(name, mean, colour = "post"), position = position_nudge(x = .1), size = 0.5) +
+  geom_point(aes(name, priorError, colour = "prior"), position = position_nudge(x = -.1), size = 0.5) +
+  geom_hline(aes(yintercept = 0), lty = 2) +
+  xlab("Data set") + ylab("Error %") +
+  scale_colour_manual(name="Estimate",
+                      values=c(post="red", `post-ci`="grey50", prior="blue"),
+                      labels=c("Posterior", "95% CI", "Prior")) +
+  coord_flip() + 
+  theme(legend.margin=margin(0, 0, 0, 0), legend.key.size = unit(10,"points"), legend.text = element_text(size = 6)) -> posterior_bias.p
+
+ggsave("posterior-bias-plot-grey-legend.pdf", posterior_bias.p, width = plotWidth, height = plotHeight)
+```
+
+
+![](posterior-bias-plot-grey-legend.pdf)
+
+# Suggestions and Exercises
+
+1. Please try and replicate these exercises this week on your own. 
+2. Replicate all experiments in the paper for all settings that we have specified. 
+3. Once these have been verified, we can then talk about running this on real data in the wild! 
+
+\center
+Questions? 
+
+
+
+
