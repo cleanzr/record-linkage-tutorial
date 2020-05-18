@@ -615,17 +615,43 @@ under the estimate, which we refer to as true negatives (TN).
 }
 
 \frame{
-\frametitle{Recall, Precision, Reduction Ratio}
+\frametitle{Recall, Precision, F-measure}
 
-$$\text{Recall} = \frac{TP}{TP + FN} = 1 - FNR.$$\\
+$$\text{Recall} = \frac{TP}{TP + FN} = 1 - \text{FNR}.$$\\
 \pause
-$$\text{Precision} = \frac{TP}{TP + FP} = 1 - FPR.$$\\
+$$\text{Precision} = \frac{TP}{TP + FP} = 1 - \text{FDR}.$$\\
+
+$$\text{F-measure} = 2 \times \frac{(precision \times recall)}{(precision + recall)}.
+
+%\frac{FP}{TP + FP} = 1 - FDR.$$\\
+}
+
+\frame{
+\frametitle{Recall, Precision, F-measure}
+
+$$\text{Recall} = \frac{TP}{TP + FN} = 1 - \text{FNR}.$$\\
+\pause
+$$\text{Precision} = \frac{TP}{TP + FP} = 1 - \text{FDR}.$$\\
+\pause
+
+$$\text{F-measure} = 2 \times \frac{(precision \times recall)}{(precision + recall)}.
 
 \pause
 
-\vspace{1em}
+$$\text{specificity} =  \frac{TN}{TN + FP}.$$\\
 
-Reduction ratio (RR) measures the relative reduction of the comparison space from the de-duplication or hashing technique. 
+$$\text{FPR} = \frac{FP}{TN + FP} = 1- \text{specificity}.$$\\
+
+There are issues with using the FPR discussed in Christen (2012) pg. 169 and Steorts (2015) and 
+these should not be utilized for entity resolution problems. 
+
+%\frac{FP}{TP + FP} = 1 - FDR.$$\\
+}
+
+\frame{
+\frametitle{Reduction Ratio}
+
+The reduction ratio (RR) measures the relative reduction of the comparison space from the de-duplication or hashing technique. 
 
 \vspace*{1em}
 
