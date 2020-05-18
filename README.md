@@ -19,7 +19,7 @@ https://github.com/ngmarchant
 Beidi Chen, PhD Student, Rice University
 http://rush.rice.edu/team.html
 
-Acknowledgements: We would like to thank Olivier Binette for identifying typos and improving the quality of this tutorial. 
+Acknowledgements: We would like to thank Olivier Binette (PhD student, Duke University) for identifying typos and improving the quality of this tutorial. 
 
 ## Abstract
 
