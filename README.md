@@ -98,8 +98,10 @@ Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/05-
 
 Demo: https://github.com/resteorts/record-linkage-tutorial/blob/master/05-bayes/05-bayes.R
 
-Videos: https://github.com/cleanzr/record-linkage-tutorial/blob/master/05-bayes/videos/intro-to-bayes-part1.mp4
-https://github.com/cleanzr/record-linkage-tutorial/blob/master/05-bayes/videos/intro-to-bayes-partII.mp4
+Videos: 
+
+- https://github.com/cleanzr/record-linkage-tutorial/blob/master/05-bayes/videos/intro-to-bayes-part1.mp4
+- https://github.com/cleanzr/record-linkage-tutorial/blob/master/05-bayes/videos/intro-to-bayes-partII.mp4
 
 Suggested reading: Steorts, Hall, Fienberg (2014, 2016), Steorts (2015), blink package (CRAN or github). 
 
