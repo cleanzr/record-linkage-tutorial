@@ -49,6 +49,9 @@ Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/01-
 
 Suggested reading: Christen (2012), Fellegi and Sunter (1969). 
 
+Videos: https://github.com/cleanzr/record-linkage-tutorial/blob/master/01-intro/videos/intro-to-er-part1.mp4
+https://github.com/cleanzr/record-linkage-tutorial/blob/master/01-intro/videos/intro-to-er-partII.mp4
+
 ### II. Introduction to traditional record linkage and blocking (Michigan)
 Speaker: Rebecca C. Steorts 
 
