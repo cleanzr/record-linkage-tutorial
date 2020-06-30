@@ -62,6 +62,11 @@ There are two main types of linkage algorithms: deterministic and probabilistic.
 
 Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/02-blocking/blocking.pdf
 
+Videos:
+
+- https://github.com/cleanzr/record-linkage-tutorial/blob/master/02-blocking/videos/blocking-partI.mp4
+- https://github.com/cleanzr/record-linkage-tutorial/blob/master/02-blocking/videos/blocking-partII.mp4
+
 Suggested reading: Steorts, Ventura, Sadinle, Fienberg (2014); Steorts and Shrivastava (2018).
 
 
