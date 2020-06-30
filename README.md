@@ -115,6 +115,8 @@ on five synthetic and real data, which show that d-blink can achieve significant
 
 Slide deck: https://github.com/resteorts/record-linkage-tutorial/blob/master/06-dblink/06-dblink.pdf
 
+Video: https://github.com/cleanzr/record-linkage-tutorial/blob/master/06-dblink/videos/intro-to-dblink.mp4
+
 Suggested reading: Slide deck. (Paper and software is coming soon). 
 
 Kaplan, Betancourt, and Steorts have been funded for this work under NSF CAREER Award. Betancourt would like to thank the Foerster-Bernstein Fellowship and Duke University for support of this work. In addition, Steorts has been funded for this work under NICHD Center Grant P2CHD041028. The ideas of this project are of the researchers and not of the funding organization. 
